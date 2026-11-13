@@ -1061,12 +1061,13 @@
             const normalizedTs = (rawTs < 1e11 && rawTs > 0) ? rawTs * 1000 : rawTs;
             if (normalizedTs > latestPacketTs) latestPacketTs = normalizedTs;
 
+            const isDefault = (nodeKey === CONFIG.DEFAULT_NODE.id);
             const nodeObj = {
               id: nodeKey,
-              nama: (raw.meta && raw.meta.nama) ? raw.meta.nama : (raw.nama || nodeKey),
-              lokasi: (raw.meta && raw.meta.lokasi) ? raw.meta.lokasi : (raw.lokasi || "Lokasi Lapangan"),
-              lat: (raw.meta && raw.meta.lat) ? raw.meta.lat : (raw.lat || CONFIG.DEFAULT_NODE.lat),
-              lng: (raw.meta && raw.meta.lng) ? raw.meta.lng : (raw.lng || CONFIG.DEFAULT_NODE.lng),
+              nama: isDefault ? CONFIG.DEFAULT_NODE.nama : ((raw.meta && raw.meta.nama) ? raw.meta.nama : (raw.nama || nodeKey)),
+              lokasi: isDefault ? CONFIG.DEFAULT_NODE.lokasi : ((raw.meta && raw.meta.lokasi) ? raw.meta.lokasi : (raw.lokasi || "Lokasi Lapangan")),
+              lat: isDefault ? CONFIG.DEFAULT_NODE.lat : ((raw.meta && raw.meta.lat) ? raw.meta.lat : (raw.lat || CONFIG.DEFAULT_NODE.lat)),
+              lng: isDefault ? CONFIG.DEFAULT_NODE.lng : ((raw.meta && raw.meta.lng) ? raw.meta.lng : (raw.lng || CONFIG.DEFAULT_NODE.lng)),
               latest: raw.latest || raw,
               history: raw.history || null
             };
@@ -1113,14 +1114,16 @@
           const existingNode = state.nodes.get(CONFIG.DEFAULT_NODE.id);
           const fallbackNode = existingNode || {
             id: CONFIG.DEFAULT_NODE.id,
-            nama: val.node_id || CONFIG.DEFAULT_NODE.nama,
+            nama: CONFIG.DEFAULT_NODE.nama,
             lokasi: CONFIG.DEFAULT_NODE.lokasi,
-            lat: val.latitude || CONFIG.DEFAULT_NODE.lat,
-            lng: val.longitude || CONFIG.DEFAULT_NODE.lng,
+            lat: CONFIG.DEFAULT_NODE.lat,
+            lng: CONFIG.DEFAULT_NODE.lng,
           };
-          fallbackNode.nama = val.node_id || CONFIG.DEFAULT_NODE.nama;
-          fallbackNode.lat = val.latitude || CONFIG.DEFAULT_NODE.lat;
-          fallbackNode.lng = val.longitude || CONFIG.DEFAULT_NODE.lng;
+          // Kunci lokasi & identitas agar tidak bergeser dari koordinat paten Tower 2 ITS
+          fallbackNode.nama = CONFIG.DEFAULT_NODE.nama;
+          fallbackNode.lokasi = CONFIG.DEFAULT_NODE.lokasi;
+          fallbackNode.lat = CONFIG.DEFAULT_NODE.lat;
+          fallbackNode.lng = CONFIG.DEFAULT_NODE.lng;
           fallbackNode.latest = {
             ts: packetTs,
             suhu: val.suhu,
