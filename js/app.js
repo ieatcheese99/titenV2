@@ -201,6 +201,19 @@
       runOpeningZoomAnimation();
     }
 
+    // Pastikan ukuran viewport peta Leaflet tersinkronisasi presisi dengan layout dashboard
+    window.addEventListener("resize", () => {
+      if (state.map) {
+        state.map.invalidateSize();
+      }
+    });
+
+    setTimeout(() => {
+      if (state.map) {
+        state.map.invalidateSize();
+      }
+    }, 250);
+
     // Pasang listener klik peta
     state.map.on("click", (e) => {
       // Jika klik area kosong di mobile, collapse bottom sheet ke peek
@@ -1336,16 +1349,18 @@
       btnCloseDevice.onclick = () => {
         devicePanel.classList.add("collapsed");
         if (btnOpenDevice) btnOpenDevice.classList.add("visible");
+        setTimeout(() => { if (state.map) state.map.invalidateSize(); }, 320);
       };
     }
     if (btnOpenDevice && devicePanel) {
       btnOpenDevice.onclick = () => {
         devicePanel.classList.remove("collapsed");
         btnOpenDevice.classList.remove("visible");
+        setTimeout(() => { if (state.map) state.map.invalidateSize(); }, 320);
       };
     }
 
-    // 3B. Tombol tutup/buka konsol bencana (bawah)
+    // 3B. Tombol tutup/buka konsol bencana (kanan pada PC, bawah pada mobile)
     const btnCloseDeck = getEl("btnCloseDeck");
     const btnOpenDeck = getEl("btnOpenDeck");
     const deckPanel = getEl("disasterConsoleDeck");
@@ -1354,12 +1369,14 @@
       btnCloseDeck.onclick = () => {
         deckPanel.classList.add("collapsed");
         if (btnOpenDeck) btnOpenDeck.classList.add("visible");
+        setTimeout(() => { if (state.map) state.map.invalidateSize(); }, 320);
       };
     }
     if (btnOpenDeck && deckPanel) {
       btnOpenDeck.onclick = () => {
         deckPanel.classList.remove("collapsed");
         btnOpenDeck.classList.remove("visible");
+        setTimeout(() => { if (state.map) state.map.invalidateSize(); }, 320);
       };
     }
 

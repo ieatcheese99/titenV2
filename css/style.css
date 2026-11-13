@@ -39,12 +39,33 @@
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  /* Layout Spacing */
+  /* Layout Spacing 3-Column Command Dashboard */
   --topbar-height: 56px;
-  --panel-width: 410px;
+  --panel-left-width: 430px;
+  --panel-right-width: 480px;
+  --panel-outer-gap: 16px;
+  --panel-inner-gap: 16px;
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 14px;
+}
+
+@media (min-width: 1201px) and (max-width: 1440px) {
+  :root {
+    --panel-left-width: 380px;
+    --panel-right-width: 430px;
+    --panel-outer-gap: 14px;
+    --panel-inner-gap: 14px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1200px) {
+  :root {
+    --panel-left-width: 320px;
+    --panel-right-width: 360px;
+    --panel-outer-gap: 10px;
+    --panel-inner-gap: 10px;
+  }
 }
 
 /* Tema Terang Permanen (Clean Industrial Light Mode) */
@@ -105,16 +126,23 @@ button, input, select {
 }
 
 /* ==========================================================================
-   3. PETA LAYAR PENUH & KONTROL ATRIBUSI
+   3. PETA INTERAKTIF PUSAT (CENTER MAP CONTAINER)
    ========================================================================== */
 #map {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 1;
+  top: calc(var(--topbar-height) + var(--panel-outer-gap));
+  bottom: var(--panel-outer-gap);
+  left: calc(var(--panel-left-width) + var(--panel-outer-gap) + var(--panel-inner-gap));
+  right: calc(var(--panel-right-width) + var(--panel-outer-gap) + var(--panel-inner-gap));
+  width: auto;
+  height: auto;
+  z-index: 10;
   background-color: var(--bg-canvas);
+  border-radius: 18px;
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1), right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Pastikan atribusi Leaflet rapi di sudut bawah dan tidak tertutup */
@@ -459,19 +487,25 @@ button, input, select {
    7. PANEL KONDISI PERANGKAT (KIRI ATAS) & KONSOL BENCANA (BAWAH)
    ========================================================================== */
 
-/* 7A. Panel Kondisi Perangkat (Kiri Atas - Khusus Hardware & Diagnostik) */
+/* ==========================================================================
+   7. DASHBOARD FLANKING PANELS: KONDISI PERANGKAT (KIRI) & KONSOL BENCANA (KANAN)
+   ========================================================================== */
+
+/* 7A. Panel Kondisi Perangkat (Kiri - Khusus Hardware & Diagnostik) */
 .device-status-panel {
   position: absolute;
-  top: calc(var(--topbar-height) + 20px);
-  left: 24px;
-  width: 520px;
-  max-height: min(640px, calc(100vh - var(--topbar-height) - 40px));
+  top: calc(var(--topbar-height) + var(--panel-outer-gap));
+  bottom: var(--panel-outer-gap);
+  left: var(--panel-outer-gap);
+  width: var(--panel-left-width);
+  height: auto;
+  max-height: none;
   z-index: 1000;
   background: var(--bg-backdrop);
   backdrop-filter: blur(16px);
   border: 1px solid var(--border-subtle);
   border-radius: 18px;
-  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.16), 0 3px 12px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.14), 0 3px 12px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -486,14 +520,14 @@ button, input, select {
 
 .btn-toggle-device-panel {
   position: absolute;
-  top: calc(var(--topbar-height) + 20px);
-  left: 24px;
+  top: calc(var(--topbar-height) + var(--panel-outer-gap));
+  left: var(--panel-outer-gap);
   z-index: 999;
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   padding: 12px 20px;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--text-primary);
   box-shadow: var(--shadow-md);
@@ -509,17 +543,19 @@ button, input, select {
 }
 
 .device-status-panel .panel-header {
-  padding: 18px 24px 14px 24px;
+  padding: 18px 20px 14px 20px;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-surface-muted);
 }
 
 .device-status-panel .panel-title {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 800;
   line-height: 1.25;
 }
 
 .device-status-panel .panel-subtitle {
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 500;
   margin-top: 4px;
 }
@@ -531,20 +567,21 @@ button, input, select {
 }
 
 .device-status-panel .btn-close-panel {
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
 }
 
 .device-panel-content {
-  padding: 18px 24px 24px 24px;
+  padding: 16px 18px 20px 18px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
+  flex: 1;
 }
 
 .device-panel-content .sensor-metric-card {
-  padding: 18px 22px;
+  padding: 16px 18px;
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: 14px;
@@ -552,32 +589,32 @@ button, input, select {
 }
 
 .device-panel-content .sensor-header {
-  font-size: 14.5px;
+  font-size: 13.5px;
   font-weight: 700;
 }
 
 .device-panel-content .sensor-status-tag {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 800;
-  padding: 3px 10px;
-  border-radius: 6px;
+  padding: 2px 8px;
+  border-radius: 5px;
 }
 
 .device-panel-content .sensor-big-value {
-  font-size: 56px;
+  font-size: 48px;
   font-weight: 800;
   line-height: 1;
   letter-spacing: -0.02em;
 }
 
 .device-panel-content .sensor-unit {
-  font-size: 26px;
+  font-size: 22px;
   font-weight: 700;
   margin-left: 3px;
 }
 
 .device-panel-content #valBateraiVolt {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 700;
   color: var(--text-secondary);
 }
@@ -589,37 +626,39 @@ button, input, select {
 }
 
 .device-panel-content .sensor-footer-info {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
 }
 
 .device-panel-content .sensor-sub-label {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-muted);
 }
 
 .device-panel-content #valRelay {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 800;
   line-height: 1.2;
 }
 
-/* 7B. Konsol Bencana Bawah (Command Deck: Ringkasan, Longsor, Karhutla, Riwayat) */
+/* 7B. Konsol Bencana & Alam (Kanan - Telemetri Bencana & Rekomendasi) */
 .disaster-console-deck {
   position: absolute;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(1560px, calc(100vw - 64px));
-  max-height: 540px;
-  min-height: 360px;
-  z-index: 1010;
+  top: calc(var(--topbar-height) + var(--panel-outer-gap));
+  bottom: var(--panel-outer-gap);
+  right: var(--panel-outer-gap);
+  left: auto;
+  transform: none;
+  width: var(--panel-right-width);
+  height: auto;
+  max-height: none;
+  z-index: 1000;
   background: var(--bg-backdrop);
   backdrop-filter: blur(16px);
   border: 1px solid var(--border-subtle);
   border-radius: 18px;
-  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.2), 0 4px 18px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.14), 0 3px 12px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -627,22 +666,24 @@ button, input, select {
 }
 
 .disaster-console-deck.collapsed {
-  transform: translate(-50%, calc(100% + 40px));
+  transform: translateX(calc(100% + 30px));
   opacity: 0;
   pointer-events: none;
 }
 
 .btn-toggle-deck {
   position: absolute;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1009;
+  top: calc(var(--topbar-height) + var(--panel-outer-gap));
+  right: var(--panel-outer-gap);
+  bottom: auto;
+  left: auto;
+  transform: none;
+  z-index: 999;
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  padding: 12px 24px;
-  font-size: 15px;
+  padding: 12px 20px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--text-primary);
   box-shadow: var(--shadow-md);
@@ -659,37 +700,46 @@ button, input, select {
 
 .deck-header-bar {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 14px 28px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  padding: 16px 20px 12px 20px;
   border-bottom: 1px solid var(--border-subtle);
   background: var(--bg-surface-muted);
-  flex-wrap: nowrap;
 }
 
 .deck-header-top-row {
-  display: contents; /* Pada desktop, child langsung ikut flexbox header bar */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.deck-title-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .deck-summary-pills {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-shrink: 0;
-  order: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  width: 100%;
 }
 
 .deck-summary-card {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 18px;
+  justify-content: space-between;
+  padding: 8px 12px;
   border-radius: 10px;
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 700;
+  min-width: 0;
 }
 
 .deck-summary-card.status-normal { border-left: 3px solid var(--color-normal); }
@@ -699,37 +749,46 @@ button, input, select {
 .deck-summary-card.status-offline { border-left: 3px solid var(--color-offline); }
 
 .deck-summary-label {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 800;
   text-transform: uppercase;
   color: var(--text-muted);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
 }
 
 .deck-summary-badge {
-  font-size: 13.5px;
+  font-size: 11.5px;
   font-weight: 800;
   font-family: var(--font-mono);
-  padding: 4px 10px;
-  border-radius: 6px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  flex-shrink: 0;
 }
 
 .deck-tabs {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
   border-bottom: none;
   background: transparent;
   padding: 0;
-  order: 2;
+  width: 100%;
+}
+
+.deck-tabs::-webkit-scrollbar {
+  display: none;
 }
 
 .deck-tabs .tab-btn {
-  padding: 12px 24px;
-  font-size: 16px;
-  font-weight: 800;
-  min-height: 48px;
-  border-bottom: 3px solid transparent;
+  flex: 1;
+  text-align: center;
+  padding: 9px 10px;
+  font-size: 13px;
+  font-weight: 700;
+  min-height: 40px;
+  border-bottom: 2px solid transparent;
 }
 
 .deck-tabs .tab-btn.active {
@@ -741,32 +800,18 @@ button, input, select {
   display: none;
 }
 
-.deck-header-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
-  order: 3;
-}
-
-.deck-header-actions .chip-data-status {
-  font-size: 13px;
-  font-weight: 800;
-  padding: 4px 12px;
-}
-
 .btn-close-deck {
   background: transparent;
   border: none;
   color: var(--text-muted);
   cursor: pointer;
-  padding: 6px;
+  padding: 4px;
   border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 38px;
-  min-height: 38px;
+  min-width: 34px;
+  min-height: 34px;
 }
 
 .btn-close-deck:hover {
@@ -775,107 +820,108 @@ button, input, select {
 }
 
 .deck-content {
-  padding: 24px 28px 28px 28px;
+  padding: 16px 18px 20px 18px;
   overflow-y: auto;
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 .deck-ringkasan-grid {
-  display: grid;
-  grid-template-columns: 1.15fr 1.35fr;
-  gap: 24px;
-  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 .deck-quick-metrics {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: 12px;
 }
 
 .deck-quick-metrics .sensor-metric-card {
-  padding: 22px 24px;
-  border-radius: 16px;
+  padding: 16px 16px;
+  border-radius: 14px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 170px;
+  min-height: 140px;
 }
 
 .deck-quick-metrics .sensor-header {
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 700;
 }
 
 .deck-quick-metrics .sensor-status-tag {
-  font-size: 13.5px;
+  font-size: 11px;
   font-weight: 800;
-  padding: 4px 12px;
-  border-radius: 6px;
+  padding: 2px 7px;
+  border-radius: 4px;
 }
 
 .deck-quick-metrics .sensor-big-value {
-  font-size: 68px;
+  font-size: 46px;
   font-weight: 800;
   line-height: 1;
   letter-spacing: -0.02em;
 }
 
 .deck-quick-metrics .sensor-unit {
-  font-size: 28px;
+  font-size: 20px;
   font-weight: 700;
-  margin-left: 4px;
+  margin-left: 2px;
 }
 
 .deck-horizontal-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-  align-items: stretch;
-}
-
-.deck-horizontal-grid .sensor-metric-card {
-  padding: 22px 24px;
-  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
   gap: 12px;
 }
 
+.deck-horizontal-grid .sensor-metric-card {
+  padding: 16px 18px;
+  border-radius: 14px;
+  gap: 10px;
+}
+
 .deck-horizontal-grid .sensor-header {
-  font-size: 16px;
+  font-size: 13.5px;
   font-weight: 700;
 }
 
 .deck-horizontal-grid .sensor-status-tag {
-  font-size: 13px;
+  font-size: 11.5px;
   font-weight: 800;
-  padding: 4px 10px;
+  padding: 2px 7px;
 }
 
 .deck-horizontal-grid .sensor-big-value {
-  font-size: 58px;
+  font-size: 40px;
   font-weight: 800;
   line-height: 1;
   letter-spacing: -0.02em;
 }
 
 .deck-horizontal-grid .sensor-unit {
-  font-size: 26px;
+  font-size: 18px;
   font-weight: 700;
-  margin-left: 3px;
+  margin-left: 2px;
 }
 
 .deck-horizontal-grid .tabular-nums {
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 600;
 }
 
 .deck-horizontal-grid .progress-container {
-  height: 14px;
+  height: 12px;
   border-radius: 9999px;
 }
 
 .deck-horizontal-grid .sensor-footer-info {
-  font-size: 13px;
+  font-size: 11.5px;
   font-weight: 600;
 }
 
@@ -1266,9 +1312,9 @@ button, input, select {
    ========================================================================== */
 .map-controls-group {
   position: absolute;
-  right: 14px;
-  bottom: 24px;
-  z-index: 1000;
+  right: calc(var(--panel-right-width) + var(--panel-outer-gap) + var(--panel-inner-gap) + 16px);
+  bottom: calc(var(--panel-outer-gap) + 16px);
+  z-index: 100;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -1314,8 +1360,8 @@ button, input, select {
 }
 
 .layer-panel {
-  top: calc(var(--topbar-height) + 14px);
-  right: 14px;
+  top: calc(var(--topbar-height) + var(--panel-outer-gap) + 12px);
+  right: calc(var(--panel-right-width) + var(--panel-outer-gap) + var(--panel-inner-gap) + 16px);
   width: 290px;
 }
 
@@ -1364,10 +1410,10 @@ button, input, select {
 }
 
 .legend-panel {
-  left: 24px;
-  bottom: 24px;
+  left: calc(var(--panel-left-width) + var(--panel-outer-gap) + var(--panel-inner-gap) + 16px);
+  bottom: calc(var(--panel-outer-gap) + 16px);
   width: 220px;
-  z-index: 1000;
+  z-index: 100;
 }
 
 .legend-scale-row {
@@ -1555,9 +1601,29 @@ button, input, select {
     padding: 4px 10px;
   }
 
+  /* Reset peta pada mobile menjadi layar penuh di latar belakang */
+  #map {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+    z-index: 1;
+  }
+
   /* Sembunyikan panel kondisi perangkat kiri atas di mobile (digabung ke tab Perangkat bottom sheet) */
   .device-status-panel,
   .btn-toggle-device-panel {
+    display: none !important;
+  }
+
+  /* Sembunyikan judul desktop konsol bencana di mobile */
+  .deck-title-actions {
     display: none !important;
   }
 

@@ -37,7 +37,7 @@
   <link rel="stylesheet" href="assets/vendor/leaflet.min.css" />
 
   <!-- Stylesheet Utama EWS TITEN -->
-  <link rel="stylesheet" href="css/style.css?v=3.3.6" />
+  <link rel="stylesheet" href="css/style.css?v=3.3.7" />
 </head>
 <body>
 
@@ -227,10 +227,27 @@
     <!-- Pegangan Swipe di Mobile -->
     <div class="mobile-drag-handle md:hidden"></div>
 
-    <!-- Bar Kepala Konsol Bawah -->
+    <!-- Bar Kepala Konsol (Kanan pada PC, Bawah pada Mobile) -->
     <div class="deck-header-bar">
       <!-- Baris Kepala Bagian Atas (Pills & Aksi) -->
       <div class="deck-header-top-row">
+        <!-- Judul & Aksi Panel Kanan (Desktop) -->
+        <div class="deck-title-actions">
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 2px;">
+              <i data-lucide="shield-alert" style="width: 16px; height: 16px; color: var(--color-primary);"></i>
+              <span style="font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.06em;">Kondisi Lapangan</span>
+            </div>
+            <h2 class="panel-title" style="font-size: 18px; margin: 0;">Konsol Bencana</h2>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span id="chipDataStatus" class="chip-data-status live">LIVE</span>
+            <button id="btnCloseDeck" class="btn-close-deck" title="Sembunyikan / Ciutkan Konsol Bencana">
+              <i data-lucide="x" id="iconToggleDeck" style="width: 18px; height: 18px;"></i>
+            </button>
+          </div>
+        </div>
+
         <!-- Ringkasan Ganda: Longsor & Karhutla -->
         <div class="deck-summary-pills">
           <div id="cardSummaryLongsor" class="deck-summary-card status-normal" title="Status Bahaya Tanah Longsor">
@@ -241,14 +258,6 @@
             <span class="deck-summary-label">Karhutla:</span>
             <span id="badgeSummaryKarhutla" class="deck-summary-badge">NORMAL</span>
           </div>
-        </div>
-
-        <!-- Tombol Aksi Kanan Konsol -->
-        <div class="deck-header-actions">
-          <span id="chipDataStatus" class="chip-data-status live">LIVE</span>
-          <button id="btnCloseDeck" class="btn-close-deck" title="Sembunyikan / Ciutkan Konsol Bencana">
-            <i data-lucide="chevron-down" id="iconToggleDeck" style="width: 16px; height: 16px;"></i>
-          </button>
         </div>
       </div>
 
@@ -268,23 +277,6 @@
       <!-- TAB 1: RINGKASAN -->
       <div id="tab-ringkasan" class="tab-pane active" role="tabpanel">
         <div class="deck-ringkasan-grid">
-          <!-- Kotak Rekomendasi Tindakan & Kontak Ganda -->
-          <div id="actionRecommendationBox" class="action-recommendation-box">
-            <div class="action-title">
-              <i data-lucide="shield-alert" style="width: 16px; height: 16px; color: var(--color-primary);"></i>
-              <span>Tindakan yang Disarankan</span>
-            </div>
-            <p id="actionRecommendationText" class="action-text">
-              Kondisi aman. Tetap lakukan patroli pemeliharaan sensor berkala.
-            </p>
-            <div class="emergency-actions-row">
-              <a id="btnEmergencyCallCenter" href="tel:112" class="btn-emergency-call" title="Hubungi Layanan Darurat Terpadu 112">
-                <i data-lucide="phone-call" style="width: 14px; height: 14px;"></i>
-                <span id="labelBtnEmergencyCallCenter">Call Center Darurat 112</span>
-              </a>
-            </div>
-          </div>
-
           <!-- Cuplikan Cepat Sensor -->
           <div class="deck-quick-metrics">
             <div class="sensor-metric-card">
@@ -311,6 +303,23 @@
                   <span class="sensor-unit">°C</span>
                 </div>
               </div>
+            </div>
+          </div>
+
+          <!-- Kotak Rekomendasi Tindakan & Kontak Ganda -->
+          <div id="actionRecommendationBox" class="action-recommendation-box">
+            <div class="action-title">
+              <i data-lucide="shield-alert" style="width: 16px; height: 16px; color: var(--color-primary);"></i>
+              <span>Tindakan yang Disarankan</span>
+            </div>
+            <p id="actionRecommendationText" class="action-text">
+              Kondisi aman. Tetap lakukan patroli pemeliharaan sensor berkala.
+            </p>
+            <div class="emergency-actions-row">
+              <a id="btnEmergencyCallCenter" href="tel:112" class="btn-emergency-call" title="Hubungi Layanan Darurat Terpadu 112">
+                <i data-lucide="phone-call" style="width: 14px; height: 14px;"></i>
+                <span id="labelBtnEmergencyCallCenter">Call Center Darurat 112</span>
+              </a>
             </div>
           </div>
         </div>
@@ -656,10 +665,10 @@
   <script src="assets/vendor/firebase-database.js"></script>
 
   <!-- Konfigurasi Tunggal EWS TITEN -->
-  <script src="js/config.js?v=3.3.6"></script>
+  <script src="js/config.js?v=3.3.7"></script>
 
   <!-- Logika Aplikasi Peta & Telemetri -->
-  <script src="js/app.js?v=3.3.6"></script>
+  <script src="js/app.js?v=3.3.7"></script>
 
 </body>
 </html>
