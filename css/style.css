@@ -452,7 +452,7 @@ button, input, select {
 .bnpb-quick-actions {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   flex: 1;
   min-height: 0;
   justify-content: space-between;
@@ -463,46 +463,53 @@ button, input, select {
 }
 
 .bnpb-section-title {
-  font-size: 13.5px;
-  font-weight: 700;
+  font-size: 15px;
+  font-weight: 800;
   margin: 0;
-  color: var(--text-primary);
+  color: #0F172A;
+  letter-spacing: -0.2px;
 }
 
 .bnpb-section-desc {
-  font-size: 10px;
-  color: var(--text-muted);
+  font-size: 11px;
+  color: #64748B;
   margin: 2px 0 0 0;
 }
 
 .bnpb-action-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
+  flex: 1;
+  justify-content: space-between;
   overflow-y: auto;
 }
 
 .bnpb-action-item {
   background: var(--bg-surface-muted);
   border: 1px solid var(--border-medium);
+  border-left: 4px solid var(--color-primary);
   border-radius: var(--radius-md);
-  padding: 10px 12px;
+  padding: 13px 15px;
   display: flex;
-  gap: 10px;
-  align-items: flex-start;
-  transition: all 0.15s ease;
+  gap: 14px;
+  align-items: center;
+  flex: 1;
+  min-height: 0;
+  transition: all 0.18s ease;
 }
 
 .bnpb-action-item:hover {
   background: #FFFFFF;
   border-color: var(--color-primary-border);
-  box-shadow: 0 3px 8px rgba(0, 74, 173, 0.08);
+  box-shadow: 0 4px 14px rgba(0, 74, 173, 0.1);
+  transform: translateY(-1px);
 }
 
 .bnpb-action-icon {
-  width: 34px;
-  height: 34px;
-  border-radius: 8px;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -510,72 +517,87 @@ button, input, select {
 }
 
 .bnpb-action-icon svg, .bnpb-action-icon i {
-  width: 17px;
-  height: 17px;
+  width: 22px;
+  height: 22px;
 }
 
 .bnpb-action-icon.action-search {
-  background: var(--color-primary-soft);
+  background: rgba(0, 74, 173, 0.1);
   color: var(--color-primary);
+  border: 1px solid rgba(0, 74, 173, 0.2);
 }
 
 .bnpb-action-icon.action-bell {
   background: rgba(245, 158, 11, 0.14);
   color: #D97706;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.bnpb-action-item:nth-child(2) {
+  border-left-color: #D97706;
 }
 
 .bnpb-action-icon.action-radio {
   background: rgba(16, 185, 129, 0.14);
   color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.bnpb-action-item:nth-child(3) {
+  border-left-color: #059669;
 }
 
 .bnpb-action-body {
-  font-size: 10px;
-  line-height: 1.45;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
 }
 
 .bnpb-action-title {
   display: block;
-  font-weight: 700;
-  color: var(--text-primary);
-  font-size: 11.5px;
+  font-weight: 800;
+  color: #0F172A;
+  font-size: 14px;
+  letter-spacing: -0.2px;
   margin-bottom: 2px;
 }
 
 .bnpb-action-text {
-  color: var(--text-secondary);
+  color: #334155;
   margin: 0;
-  font-size: 10px;
-  line-height: 1.4;
+  font-size: 11.5px;
+  line-height: 1.45;
 }
 
 .bnpb-action-rec-box {
   background: #ECFDF5;
   border: 1px solid #A7F3D0;
   border-radius: var(--radius-sm);
-  padding: 9px 12px;
+  padding: 11px 14px;
   margin-top: 4px;
 }
 
 .bnpb-action-rec-text {
-  font-size: 10.5px;
+  font-size: 11.5px;
   color: #065F46;
   margin: 0;
-  line-height: 1.4;
-  font-weight: 500;
+  line-height: 1.45;
+  font-weight: 600;
 }
 
 .bnpb-btn-emergency {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 9px;
   background: #FEF2F2;
   border: 1px solid #FECACA;
   color: #DC2626;
-  padding: 9px 12px;
+  padding: 11px 14px;
   border-radius: var(--radius-sm);
-  font-size: 11.5px;
+  font-size: 12.5px;
   font-weight: 700;
   text-decoration: none;
   transition: all 0.2s ease;
@@ -588,8 +610,8 @@ button, input, select {
 }
 
 .bnpb-btn-emergency svg, .bnpb-btn-emergency i {
-  width: 15px;
-  height: 15px;
+  width: 16px;
+  height: 16px;
 }
 
 /* 2. Kolom Tengah: GIS Map Container (~46% lebar) */
