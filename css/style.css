@@ -464,14 +464,14 @@ button, input, select {
   position: absolute;
   top: calc(var(--topbar-height) + 18px);
   left: 24px;
-  width: 380px;
-  max-height: calc(100vh - var(--topbar-height) - 48px);
+  width: 440px;
+  max-height: min(520px, calc(100vh - var(--topbar-height) - 48px));
   z-index: 1000;
   background: var(--bg-backdrop);
   backdrop-filter: blur(14px);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.14), 0 2px 8px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -492,16 +492,16 @@ button, input, select {
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  padding: 10px 16px;
-  font-size: 13px;
-  font-weight: 600;
+  padding: 12px 18px;
+  font-size: 14px;
+  font-weight: 700;
   color: var(--text-primary);
   box-shadow: var(--shadow-md);
   display: none;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   cursor: pointer;
-  min-height: 42px;
+  min-height: 44px;
 }
 
 .btn-toggle-device-panel.visible {
@@ -509,11 +509,34 @@ button, input, select {
 }
 
 .device-panel-content {
-  padding: 14px 18px 20px 18px;
+  padding: 16px 20px 22px 20px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
+}
+
+.device-panel-content .sensor-metric-card {
+  padding: 16px 18px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.device-panel-content .sensor-header {
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.device-panel-content .sensor-big-value {
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.device-panel-content .sensor-unit {
+  font-size: 16px;
+  font-weight: 600;
 }
 
 /* 7B. Konsol Bencana Bawah (Command Deck: Ringkasan, Longsor, Karhutla, Riwayat) */
@@ -522,15 +545,15 @@ button, input, select {
   bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
-  width: min(1080px, calc(100vw - 80px));
-  max-height: 390px;
-  min-height: 270px;
+  width: min(1360px, calc(100vw - 80px));
+  max-height: 460px;
+  min-height: 320px;
   z-index: 1010;
   background: var(--bg-backdrop);
   backdrop-filter: blur(14px);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18), 0 4px 16px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -552,16 +575,16 @@ button, input, select {
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  padding: 10px 20px;
-  font-size: 13px;
-  font-weight: 600;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 700;
   color: var(--text-primary);
   box-shadow: var(--shadow-md);
   display: none;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   cursor: pointer;
-  min-height: 42px;
+  min-height: 44px;
 }
 
 .btn-toggle-deck.visible {
@@ -572,8 +595,8 @@ button, input, select {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding: 10px 20px;
+  gap: 20px;
+  padding: 12px 24px;
   border-bottom: 1px solid var(--border-subtle);
   background: var(--bg-surface-muted);
   flex-wrap: nowrap;
@@ -586,7 +609,7 @@ button, input, select {
 .deck-summary-pills {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   flex-shrink: 0;
   order: 1;
 }
@@ -594,12 +617,12 @@ button, input, select {
 .deck-summary-card {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 12px;
+  gap: 10px;
+  padding: 8px 16px;
   border-radius: var(--radius-sm);
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
 }
 
@@ -610,25 +633,25 @@ button, input, select {
 .deck-summary-card.status-offline { border-left: 3px solid var(--color-offline); }
 
 .deck-summary-label {
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 800;
   text-transform: uppercase;
   color: var(--text-muted);
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
 }
 
 .deck-summary-badge {
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 800;
   font-family: var(--font-mono);
-  padding: 2px 7px;
+  padding: 3px 8px;
   border-radius: 4px;
 }
 
 .deck-tabs {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   border-bottom: none;
   background: transparent;
   padding: 0;
@@ -636,10 +659,10 @@ button, input, select {
 }
 
 .deck-tabs .tab-btn {
-  padding: 8px 16px;
-  font-size: 13px;
-  font-weight: 600;
-  min-height: 38px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 700;
+  min-height: 42px;
 }
 
 .mobile-only-tab {
@@ -674,36 +697,51 @@ button, input, select {
 }
 
 .deck-content {
-  padding: 16px 20px;
+  padding: 20px 24px;
   overflow-y: auto;
   flex: 1;
 }
 
 .deck-ringkasan-grid {
   display: grid;
-  grid-template-columns: 1.3fr 1fr;
-  gap: 16px;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 20px;
   align-items: stretch;
 }
 
 .deck-quick-metrics {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 14px;
+}
+
+.deck-quick-metrics .sensor-metric-card {
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.deck-quick-metrics .sensor-header {
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .deck-quick-metrics .sensor-big-value {
-  font-size: 32px;
+  font-size: 42px;
+  font-weight: 800;
+  line-height: 1.1;
 }
 
 .deck-quick-metrics .sensor-unit {
-  font-size: 16px;
+  font-size: 20px;
+  font-weight: 600;
 }
 
 .deck-horizontal-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
   align-items: stretch;
 }
 
@@ -718,7 +756,7 @@ button, input, select {
 
 /* Kepala Panel */
 .panel-header {
-  padding: 14px 16px 10px 16px;
+  padding: 16px 20px 12px 20px;
   border-bottom: 1px solid var(--border-subtle);
   background: var(--bg-surface-muted);
 }
@@ -727,24 +765,24 @@ button, input, select {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 8px;
+  gap: 12px;
 }
 
 .panel-title {
   margin: 0;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
   color: var(--text-primary);
   letter-spacing: -0.01em;
 }
 
 .panel-subtitle {
-  margin: 2px 0 0 0;
-  font-size: 11px;
+  margin: 3px 0 0 0;
+  font-size: 12px;
   color: var(--text-muted);
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
 }
 
 .chip-data-status {

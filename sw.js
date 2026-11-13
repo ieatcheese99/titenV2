@@ -1,16 +1,16 @@
 /**
  * EWS TITEN - Service Worker
- * Versi Cache: v3.3.4 (Kunci Titik Marker Node Tower 2 ITS)
+ * Versi Cache: v3.3.5 (Pemberian Skala Ekstra Besar untuk PC Telemetri)
  */
 
-const CACHE_NAME = "ews-titen-v3.3.4";
+const CACHE_NAME = "ews-titen-v3.3.5";
 const ASSETS_TO_CACHE = [
   "./",
   "./index.html",
   "./qr.html",
-  "./css/style.css?v=3.3.4",
-  "./js/config.js?v=3.3.4",
-  "./js/app.js?v=3.3.4",
+  "./css/style.css?v=3.3.5",
+  "./js/config.js?v=3.3.5",
+  "./js/app.js?v=3.3.5",
   "./manifest.json",
   "./assets/vendor/leaflet.min.css",
   "./assets/vendor/leaflet.min.js",
