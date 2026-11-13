@@ -1734,67 +1734,181 @@ button, input, select {
    ========================================================================== */
 @media (max-width: 1024px) {
   html, body {
-    overflow-y: auto;
-    height: auto;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    height: auto !important;
+    width: 100%;
+    max-width: 100vw;
   }
+  
   .bnpb-app-container {
-    height: auto;
-    overflow-y: auto;
+    height: auto !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    width: 100%;
+    max-width: 100vw;
   }
+  
   .bnpb-dashboard {
-    height: auto;
-    overflow-y: visible;
-  }
-  .bnpb-row-top {
-    flex-direction: column;
-    height: auto;
-  }
-  .bnpb-col-info, .bnpb-col-map, .bnpb-col-devices {
+    height: auto !important;
+    overflow-y: visible !important;
+    overflow-x: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px;
+    padding: 8px;
     width: 100%;
-    height: auto;
+    max-width: 100%;
+    box-sizing: border-box;
   }
-  .bnpb-col-map {
-    height: 340px;
-  }
+
+  /* Hilangkan box pembungkus baris agar child elements bisa disusun ulang via flex order */
+  .bnpb-row-top,
   .bnpb-row-bottom {
-    flex-direction: column;
-    height: auto;
+    display: contents !important;
   }
+
+  /* 1. Kolom Info & Langkah Cepat di bagian atas */
+  .bnpb-col-info {
+    order: 1 !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    box-sizing: border-box;
+  }
+
+  .bnpb-action-item {
+    flex: initial !important;
+    min-height: 48px;
+  }
+
+  /* 2. Peta GIS Utama */
+  .bnpb-col-map {
+    order: 2 !important;
+    width: 100% !important;
+    height: 360px !important;
+    box-sizing: border-box;
+  }
+
+  /* 3. Sensor Tanah Longsor (Diletakkan DI ATAS Perangkat & Gateway) */
+  .bnpb-col-sensor.bnpb-col-sensor-longsor,
+  #colSensorLongsor,
+  .bnpb-col-sensor:nth-of-type(1) {
+    order: 3 !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    box-sizing: border-box;
+  }
+
+  /* 4. Sensor Karhutla (Diletakkan DI ATAS Perangkat & Gateway) */
+  .bnpb-col-sensor.bnpb-col-sensor-karhutla,
+  #colSensorKarhutla,
+  .bnpb-col-sensor:nth-of-type(2) {
+    order: 4 !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    box-sizing: border-box;
+  }
+
+  /* 5. Kondisi Perangkat & Gateway (Diletakkan DI BAWAH Sensor Tanah Longsor & Karhutla) */
+  .bnpb-col-devices,
+  #colDevices {
+    order: 5 !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    box-sizing: border-box;
+  }
+
   .bnpb-col-sensor {
-    width: 100%;
-    height: auto;
+    width: 100% !important;
+    height: auto !important;
+    box-sizing: border-box;
+    overflow-x: hidden;
   }
-  .bnpb-stations-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .bnpb-karhutla-stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-    height: auto;
-  }
+
   .bnpb-chart-wrapper {
     height: 180px;
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .topbar {
     padding: 0 10px;
   }
+  
   .brand-name {
     font-size: 12px;
   }
+  
   .link-indicators {
     display: none;
   }
+
+  /* 1 Kolom Penuh untuk Seluruh Sensor: Menghilangkan Scroll ke Samping */
   .bnpb-stations-grid,
-  .bnpb-karhutla-grid {
-    grid-template-columns: 1fr;
+  .bnpb-stations-grid.bnpb-longsor-grid,
+  .bnpb-stations-grid.bnpb-karhutla-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px;
+    height: auto !important;
+    overflow: visible !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
   }
+
+  .bnpb-station-col {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    padding: 10px 12px;
+  }
+
+  /* Status grid di dalam setiap sensor: 2 kolom presisi tanpa scroll ke samping */
+  .bnpb-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 6px 10px;
+    width: 100% !important;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+
+  .bnpb-grid-item {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .bnpb-grid-val {
+    min-width: 0;
+    font-size: 9.5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* 1 Kolom Penuh untuk Hardware Perangkat & Gateway */
   .bnpb-devices-grid {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto !important;
+    gap: 8px;
+    height: auto !important;
+    overflow: visible !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
   }
+
+  .bnpb-device-card {
+    width: 100% !important;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+
   .bnpb-device-card.bnpb-card-span-2 {
-    grid-column: span 1;
+    grid-column: span 1 !important;
   }
 }

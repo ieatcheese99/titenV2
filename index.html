@@ -31,7 +31,7 @@
   <link rel="stylesheet" href="assets/vendor/leaflet.min.css" />
 
   <!-- Stylesheet Utama EWS TITEN (Command Center Layout - Light Mode) -->
-  <link rel="stylesheet" href="css/style.css?v=4.8.7" />
+  <link rel="stylesheet" href="css/style.css?v=4.8.8" />
 </head>
 <body class="bnpb-app-container select-none">
 
@@ -165,7 +165,7 @@
               </div>
               <div class="bnpb-action-body">
                 <strong class="bnpb-action-title">Koordinasi</strong>
-                <p class="bnpb-action-text">Pastikan jalur komunikasi antara pos pantau TRILOGY, relawan, BPBD, dan layanan darurat tetap aktif.</p>
+                <p class="bnpb-action-text">Pastikan jalur BPBD dan layanan darurat tetap aktif.</p>
               </div>
             </div>
           </div>
@@ -219,7 +219,7 @@
       </div>
 
       <!-- 3. RIGHT COLUMN (~30% width): Hardware & Gateway Grid (5 Cards) -->
-      <div class="bnpb-col-devices">
+      <div id="colDevices" class="bnpb-col-devices">
         <div class="bnpb-devices-header">
           <div>
             <h3 class="bnpb-devices-title">Kondisi Perangkat &amp; Gateway</h3>
@@ -320,14 +320,11 @@
     <div class="bnpb-row-bottom">
 
       <!-- 1. SENSOR TANAH LONGSOR (WIDTH 50%) -->
-      <div class="bnpb-col-sensor">
+      <div id="colSensorLongsor" class="bnpb-col-sensor bnpb-col-sensor-longsor">
         <div class="bnpb-sensor-header">
           <div>
-            <h3 class="bnpb-sensor-title">Sensor Tanah Longsor (Geoteknik)</h3>
+            <h3 class="bnpb-sensor-title">Tanah Longsor</h3>
             <p class="bnpb-sensor-subtitle">Monitoring Sudut Kemiringan Lereng &amp; Saturasi Air Pori</p>
-          </div>
-          <div class="bnpb-sensor-actions">
-            <button title="Segarkan Data"><i data-lucide="rotate-cw"></i></button>
           </div>
         </div>
 
@@ -442,14 +439,11 @@
       </div>
 
       <!-- 2. SENSOR KARHUTLA & IKLIM MIKRO (WIDTH 50%) -->
-      <div class="bnpb-col-sensor">
+      <div id="colSensorKarhutla" class="bnpb-col-sensor bnpb-col-sensor-karhutla">
         <div class="bnpb-sensor-header">
           <div>
-            <h3 class="bnpb-sensor-title">Sensor Karhutla &amp; Iklim Mikro</h3>
+            <h3 class="bnpb-sensor-title">Karhutla</h3>
             <p class="bnpb-sensor-subtitle">Monitoring Suhu, Kelembapan Udara &amp; Indeks Bahaya Kebakaran</p>
-          </div>
-          <div class="bnpb-sensor-actions">
-            <button title="Segarkan Data"><i data-lucide="rotate-cw"></i></button>
           </div>
         </div>
 
@@ -459,7 +453,6 @@
           <div class="bnpb-station-col">
             <div class="bnpb-station-top">
               <span class="bnpb-station-name">Suhu Udara (DHT22)</span>
-              <i data-lucide="thermometer" style="width: 12px; height: 12px;"></i>
             </div>
             <div class="bnpb-station-alert">
               Monitoring Suhu Lingkungan &amp; Deteksi Dini Karhutla
@@ -519,7 +512,6 @@
           <div class="bnpb-station-col">
             <div class="bnpb-station-top">
               <span class="bnpb-station-name">Indeks Bahaya Multi-Bencana</span>
-              <i data-lucide="shield-check" style="width: 12px; height: 12px;"></i>
             </div>
             <div class="bnpb-station-alert">
               Sistem Analisis Risiko Otomatis Realtime
@@ -727,7 +719,7 @@
   <script src="js/config.js?v=4.1.0"></script>
 
   <!-- Logika Aplikasi Peta & Telemetri -->
-  <script src="js/app.js?v=4.8.6"></script>
+  <script src="js/app.js?v=4.8.8"></script>
 
 </body>
 </html>
