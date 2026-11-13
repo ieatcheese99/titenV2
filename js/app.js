@@ -1053,6 +1053,9 @@
       return;
     }
 
+    let isFirstNodesSnapshot = true;
+    let isFirstEwsSnapshot = true;
+
     try {
       firebase.initializeApp(CONFIG.FIREBASE);
       const db = firebase.database();
@@ -1087,12 +1090,15 @@
             renderOrUpdateNodeMarker(nodeObj);
           });
 
-          // Catat waktu paket terakhir (gunakan timestamp data jika valid, atau Date.now() jika tidak ada)
+          // Catat waktu paket terakhir (gunakan timestamp data jika valid, atau live update jika data baru masuk)
           if (latestPacketTs > 0) {
             state.lastFirebaseUpdate = latestPacketTs;
-          } else {
+          } else if (!isFirstNodesSnapshot) {
             state.lastFirebaseUpdate = Date.now();
+          } else {
+            state.lastFirebaseUpdate = 0;
           }
+          isFirstNodesSnapshot = false;
           evaluateNetworkStatus();
         }
       }, (err) => {
@@ -1103,29 +1109,37 @@
       db.ref("ews_data").on("value", (snapshot) => {
         const val = snapshot.val();
         if (val && !state.nodes.has("node-01")) {
-          const rawTs = val.timestamp ? Number(val.timestamp) : 0;
+          const rawTs = (val.timestamp || val.ts) ? Number(val.timestamp || val.ts) : 0;
           const normalizedTs = (rawTs < 1e11 && rawTs > 0) ? rawTs * 1000 : rawTs;
+
+          let packetTs = 0;
           if (normalizedTs > 0) {
+            packetTs = normalizedTs;
             state.lastFirebaseUpdate = normalizedTs;
-          } else {
+          } else if (!isFirstEwsSnapshot) {
+            packetTs = Date.now();
             state.lastFirebaseUpdate = Date.now();
+          } else {
+            packetTs = 0;
+            state.lastFirebaseUpdate = 0;
           }
+          isFirstEwsSnapshot = false;
 
           const fallbackNode = {
             id: CONFIG.DEFAULT_NODE.id,
-            nama: CONFIG.DEFAULT_NODE.nama,
+            nama: val.node_id || CONFIG.DEFAULT_NODE.nama,
             lokasi: CONFIG.DEFAULT_NODE.lokasi,
-            lat: CONFIG.DEFAULT_NODE.lat,
-            lng: CONFIG.DEFAULT_NODE.lng,
+            lat: val.latitude || CONFIG.DEFAULT_NODE.lat,
+            lng: val.longitude || CONFIG.DEFAULT_NODE.lng,
             latest: {
-              ts: val.timestamp || Date.now(),
+              ts: packetTs,
               suhu: val.suhu,
               kelembapan_udara: val.kelembapan_udara !== undefined ? val.kelembapan_udara : val.udara,
               kelembapan_tanah: val.kelembapan_tanah !== undefined ? val.kelembapan_tanah : val.tanah,
-              kemiringan_x: val.kemiringan_x !== undefined ? val.kemiringan_x : val.miring,
+              kemiringan_x: val.kemiringan_x !== undefined ? val.kemiringan_x : (val.kemiringan !== undefined ? val.kemiringan : val.miring),
               kemiringan_y: val.kemiringan_y || 0,
               getaran: val.getaran || 0,
-              baterai_persen: val.baterai_persen !== undefined ? val.baterai_persen : val.baterai,
+              baterai_persen: val.baterai_persen !== undefined ? val.baterai_persen : (val.persen_baterai !== undefined ? val.persen_baterai : val.baterai),
               baterai_voltase: val.baterai_voltase || 3.9,
               rssi: val.rssi || -78
             }
@@ -1540,7 +1554,7 @@
             syncEl.textContent = `Diperbarui ${Math.floor(diffSec / 3600)} jam lalu`;
           }
         } else {
-          syncEl.textContent = "Sinkronisasi: Memuat...";
+          syncEl.textContent = "Menunggu data perangkat...";
         }
       }
 
