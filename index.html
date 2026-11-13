@@ -31,7 +31,7 @@
   <link rel="stylesheet" href="assets/vendor/leaflet.min.css" />
 
   <!-- Stylesheet Utama EWS TITEN (Command Center Layout - Light Mode) -->
-  <link rel="stylesheet" href="css/style.css?v=4.4.0" />
+  <link rel="stylesheet" href="css/style.css?v=4.5.0" />
 </head>
 <body class="bnpb-app-container select-none">
 
@@ -381,25 +381,33 @@
         <!-- 4 Lidar-Style Columns -->
         <div class="bnpb-stations-grid">
 
-          <!-- Col 1: Kemiringan X (Pitch) -->
+          <!-- Col 1: Kemiringan Lereng (Pitch & Roll MPU6050) -->
           <div class="bnpb-station-col">
             <div>
               <div class="bnpb-station-top">
-                <span class="bnpb-station-name">Kemiringan X (Pitch)</span>
+                <span class="bnpb-station-name">Kemiringan Lereng (Pitch &amp; Roll)</span>
                 <i data-lucide="calendar" style="width: 12px; height: 12px;"></i>
               </div>
               <div class="bnpb-station-alert">
                 Status Operasional Sensor: Normal &amp; Terkalibrasi
               </div>
-              <div class="bnpb-station-sub">Sudut Kemiringan Lereng MPU6050</div>
+              <div class="bnpb-station-sub">Sensor Inersia 6-DOF Giroskop &amp; Akselerometer MPU6050</div>
 
-              <div class="bnpb-station-hero">
-                <svg class="bnpb-hero-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 20h18L12 4z"/></svg>
-                <div class="bnpb-hero-val-box">
-                  <div class="bnpb-hero-val">
-                    <span id="valMiring">--</span><span class="bnpb-hero-unit">°</span>
+              <div class="bnpb-station-hero" style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <svg class="bnpb-hero-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 20h18L12 4z"/></svg>
+                  <div class="bnpb-hero-val-box" style="text-align: left;">
+                    <div class="bnpb-hero-val">
+                      <span id="valMiring">--</span><span class="bnpb-hero-unit">°</span>
+                    </div>
+                    <div class="bnpb-hero-label">Pitch (Sumbu X)</div>
                   </div>
-                  <div class="bnpb-hero-label">Derajat Sudut</div>
+                </div>
+                <div class="bnpb-hero-val-box" style="text-align: right;">
+                  <div class="bnpb-hero-val" style="color: var(--color-primary);">
+                    <span id="subValMiringY">Y: --°</span>
+                  </div>
+                  <div class="bnpb-hero-label">Roll (Sumbu Y)</div>
                 </div>
               </div>
 
@@ -410,7 +418,7 @@
 
             <div class="bnpb-station-table">
               <div class="bnpb-tbl-row">
-                <span class="tbl-k">Status</span>
+                <span class="tbl-k">Status Kemiringan</span>
                 <span id="tagMiring" class="tbl-v text-emerald-600">NORMAL</span>
               </div>
               <div class="bnpb-tbl-row">
@@ -418,47 +426,8 @@
                 <span id="thresholdLabelMiring" class="tbl-v">Waspada: ≥12°</span>
               </div>
               <div class="bnpb-tbl-row">
-                <span class="tbl-k">Beban Kritis</span>
+                <span class="tbl-k">Beban Kritis Lereng</span>
                 <span id="pctMiring" class="tbl-v">0%</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Col 2: Kemiringan Y (Roll) -->
-          <div class="bnpb-station-col">
-            <div>
-              <div class="bnpb-station-top">
-                <span class="bnpb-station-name">Kemiringan Y (Roll)</span>
-                <i data-lucide="calendar" style="width: 12px; height: 12px;"></i>
-              </div>
-              <div class="bnpb-station-alert">
-                Akselerometer 6-DOF Giroskop Lateral
-              </div>
-              <div class="bnpb-station-sub">Stabilitas Sumbu Samping Lereng</div>
-
-              <div class="bnpb-station-hero">
-                <svg class="bnpb-hero-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                <div class="bnpb-hero-val-box">
-                  <div class="bnpb-hero-val">
-                    <span id="subValMiringY">--</span>
-                  </div>
-                  <div class="bnpb-hero-label">Roll Sumbu Y</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="bnpb-station-table">
-              <div class="bnpb-tbl-row">
-                <span class="tbl-k">Sumbu</span>
-                <span class="tbl-v">Lateral (Y)</span>
-              </div>
-              <div class="bnpb-tbl-row">
-                <span class="tbl-k">Stabilitas</span>
-                <span class="tbl-v text-emerald-600">Stabil</span>
-              </div>
-              <div class="bnpb-tbl-row">
-                <span class="tbl-k">Filter Drift</span>
-                <span class="tbl-v">Zero Offset</span>
               </div>
             </div>
           </div>

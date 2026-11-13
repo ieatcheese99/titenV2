@@ -906,10 +906,10 @@ button, input, select {
   height: 13px;
 }
 
-/* 4 Kolom Lidar Style untuk Longsor */
+/* 3 Kolom Lidar Style untuk Longsor (Kemiringan Pitch & Roll Digabung) */
 .bnpb-stations-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 7px;
   flex: 1;
   min-height: 0;
