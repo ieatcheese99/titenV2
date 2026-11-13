@@ -31,7 +31,7 @@
   <link rel="stylesheet" href="assets/vendor/leaflet.min.css" />
 
   <!-- Stylesheet Utama EWS TITEN (Command Center Layout - Light Mode) -->
-  <link rel="stylesheet" href="css/style.css?v=4.3.0" />
+  <link rel="stylesheet" href="css/style.css?v=4.4.0" />
 </head>
 <body class="bnpb-app-container select-none">
 
@@ -202,7 +202,7 @@
       <div class="bnpb-col-map">
         <!-- Floating Layer Control (Top-Left) -->
         <div class="bnpb-map-ctrl-topleft">
-          <button class="bnpb-map-btn" onclick="document.getElementById('btnToggleLayers').click()" title="Lapisan Peta (OSM / Satelit / InaRISK)">
+          <button class="bnpb-map-btn" onclick="document.getElementById('btnToggleLayers').click()" title="Pilihan Peta Dasar (OSM / Satelit)">
             <i data-lucide="layers"></i>
           </button>
         </div>
@@ -695,7 +695,7 @@
   <!-- ================================================================= -->
   <div id="layerPanel" class="floating-overlay-card layer-panel hidden">
     <div class="card-header-sm">
-      <h3 class="card-title-sm">Lapisan Peta &amp; Data</h3>
+      <h3 class="card-title-sm">Pilihan Peta Dasar</h3>
       <button id="btnCloseLayers" class="btn-close-panel" title="Tutup Panel Layer">
         <i data-lucide="x" style="width: 14px; height: 14px;"></i>
       </button>
@@ -714,34 +714,13 @@
       </label>
     </div>
 
-    <!-- Pilihan Lapisan Bahaya & Cuaca -->
-    <div style="border-top: 1px solid var(--border-subtle); padding-top: 6px;">
-      <span style="font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Lapisan Tambahan</span>
-      <label class="layer-item">
-        <span>Node Pemantau TITEN</span>
-        <input type="checkbox" id="layerCheckNodes" checked />
-      </label>
-      <label class="layer-item">
-        <span>Zona Rawan Longsor (InaRISK 30m)</span>
-        <input type="checkbox" id="layerCheckInarisk" />
-      </label>
-      <label class="layer-item">
-        <div>
-          <span>Radar Hujan (RainViewer)</span>
-          <span class="layer-subnote" style="display:block; font-size:9px; color:var(--text-muted);">Radar regional (zoom maks 7)</span>
-        </div>
-        <input type="checkbox" id="layerCheckRadar" />
-      </label>
-      <label class="layer-item">
-        <div>
-          <span>Titik Panas Satelit (NASA FIRMS)</span>
-          <span class="layer-subnote" style="display:block; font-size:9px; color:var(--text-muted);">Sensor VIIRS NOAA-20 NRT</span>
-        </div>
-        <input type="checkbox" id="layerCheckFirms" />
-      </label>
-      <div id="layerNoticeFirms" class="layer-notice" style="display: none; font-size: 10px; padding: 4px; margin-top: 4px; border-radius: 4px; background: var(--bg-surface-muted); color: var(--text-muted); border: 1px dashed var(--border-medium);">
-        Layer NASA FIRMS memerlukan MAP_KEY di Cloudflare Pages (Environment Variable: <code>FIRMS_MAP_KEY</code>).
-      </div>
+    <!-- Elemen Kompatibilitas Tersembunyi (Lapisan Tambahan Ditiadakan dari UI) -->
+    <div style="display: none;" aria-hidden="true">
+      <input type="checkbox" id="layerCheckNodes" checked />
+      <input type="checkbox" id="layerCheckInarisk" />
+      <input type="checkbox" id="layerCheckRadar" />
+      <input type="checkbox" id="layerCheckFirms" />
+      <div id="layerNoticeFirms"></div>
     </div>
   </div>
 
