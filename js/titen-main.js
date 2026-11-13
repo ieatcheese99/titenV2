@@ -1,6 +1,7 @@
 /**
- * EWS TITEN - Minimalist Modern IoT Early Warning System Telemetry
+ * EWS TITEN - Modern Minimalist IoT Early Warning System Telemetry
  * Tim TRILOGY - MAGE 12 (IoT)
+ * Menara Sains Tower 2 ITS Sukolilo Surabaya
  */
 
 (function () {
@@ -10,7 +11,6 @@
   const state = {
     map: null,
     marker: null,
-    markerEl: null,
     circle: null,
     chart: null,
     audioEnabled: false,
@@ -39,7 +39,7 @@
     function tick() {
       const now = new Date();
       const timeStr = now.toLocaleTimeString("id-ID", { hour12: false });
-      setText("clockWib", `Update: ${timeStr}`);
+      setText("clockWib", `Update: ${timeStr} WIB`);
     }
     setInterval(tick, 1000);
     tick();
@@ -107,27 +107,57 @@
     }
   }
 
-  // 3. Inisialisasi Peta Leaflet (Lokasi Statis Tower 2 ITS)
+  // 3. Inisialisasi Peta Leaflet (Lokasi Menara Sains Tower 2 ITS)
   function initMap() {
     if (typeof L === "undefined") {
       setTimeout(initMap, 200);
       return;
     }
 
-    const tower2Coords = [-7.2819, 112.7953];
+    // Koordinat Presisi Menara Sains Tower 2 ITS Sukolilo Surabaya
+    const tower2Coords = [-7.28197, 112.79532];
+    
+    // Cegah double initialization jika container sudah terpasang
+    const mapContainer = getEl("map");
+    if (!mapContainer || mapContainer._leaflet_id) {
+      return;
+    }
+
     state.map = L.map("map", {
       center: tower2Coords,
-      zoom: 16,
+      zoom: 17,
       minZoom: 13,
-      maxZoom: 19,
+      maxZoom: 20,
       zoomControl: true
     });
 
-    // Basemap: CartoDB Voyager (cepat, andal, tanpa blokir tile 403)
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
-      attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; OpenStreetMap contributors',
+    // Layer Peta Handal & Cepat (Google Maps Tiles API, CARTO, & Esri)
+    const baseGoogleRoad = L.tileLayer("https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", {
+      attribution: '&copy; Google Maps &mdash; Menara Sains Tower 2 ITS',
+      maxZoom: 20
+    });
+    const baseGoogleHybrid = L.tileLayer("https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}", {
+      attribution: '&copy; Google Maps Satelit &mdash; Kampus ITS',
+      maxZoom: 20
+    });
+    const baseCarto = L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
+      attribution: '&copy; CARTO &copy; OpenStreetMap',
       maxZoom: 19
-    }).addTo(state.map);
+    });
+    const baseEsri = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", {
+      attribution: 'Tiles &copy; Esri &mdash; Tower 2 ITS',
+      maxZoom: 19
+    });
+
+    // Default layer: Google Maps Road
+    baseGoogleRoad.addTo(state.map);
+
+    L.control.layers({
+      "Google Maps (Jalan)": baseGoogleRoad,
+      "Google Maps (Satelit)": baseGoogleHybrid,
+      "Peta Kota (CARTO)": baseCarto,
+      "Peta Kampus (Esri)": baseEsri
+    }, null, { position: "topright" }).addTo(state.map);
 
     // Marker Custom dengan Denyut Bouncing
     const customIcon = L.divIcon({
@@ -147,19 +177,30 @@
 
     state.marker = L.marker(tower2Coords, { icon: customIcon }).addTo(state.map);
     state.marker.bindPopup(`
-      <div style="font-family: var(--font-sans); font-size: 12px; line-height: 1.5; color: #ffffff;">
-        <b style="color: var(--color-gold); font-size: 13px;">EWS TITEN NODE-01</b><br/>
-        <b>Lokasi:</b> Gedung Tower 2 ITS, Kampus Sukolilo<br/>
-        <b>Koordinat:</b> -7.2819, 112.7953<br/>
-        <b>Status:</b> <span id="mapPopupStatus" style="color: var(--color-safe); font-weight: 700;">AMAN</span>
+      <div style="font-family:'Plus Jakarta Sans',sans-serif;min-width:210px;padding:4px 2px;">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+          <span style="background:#004aad;color:#ffffff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:4px;">NODE-01</span>
+          <b style="color:#004aad;font-size:13px;">Menara Sains Tower 2 ITS</b>
+        </div>
+        <p style="font-size:11px;color:#64748b;margin:0 0 6px 0;line-height:1.35;">
+          Institut Teknologi Sepuluh Nopember, Sukolilo, Surabaya<br>
+          Sensor Pemantauan Lereng &amp; Karhutla
+        </p>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#004aad;background:#eef4fc;padding:4px 8px;border-radius:4px;margin-bottom:8px;font-weight:600;">
+          📍 Lat: -7.28197 | Long: 112.79532
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+          <span style="font-size:11px;font-weight:700;">Status: <b id="mapPopupStatus" style="color:#108a00;">AMAN</b></span>
+          <a href="https://maps.google.com/?q=-7.28197,112.79532" target="_blank" rel="noopener" style="background:#004aad;color:#ffffff;text-decoration:none;font-size:10px;font-weight:700;padding:4px 8px;border-radius:4px;white-space:nowrap;">Buka Maps ↗</a>
+        </div>
       </div>
-    `);
+    `).openPopup();
 
-    // Radius Lingkaran Jangkauan Sensor (120m)
+    // Radius Lingkaran Jangkauan Sensor (120m di sekitar Tower 2 ITS)
     state.circle = L.circle(tower2Coords, {
       color: "#004aad",
       fillColor: "#004aad",
-      fillOpacity: 0.15,
+      fillOpacity: 0.12,
       radius: 120
     }).addTo(state.map);
   }
@@ -170,6 +211,12 @@
     if (!canvas || typeof Chart === "undefined") {
       setTimeout(initChart, 200);
       return;
+    }
+
+    // Hindari re-inisialisasi Chart jika sudah ada
+    if (state.chart) {
+      state.chart.destroy();
+      state.chart = null;
     }
 
     const now = Date.now();
@@ -189,8 +236,8 @@
           {
             label: "Kemiringan (°)",
             data: state.history.miring,
-            borderColor: "#ef4444",
-            backgroundColor: "rgba(239, 68, 68, 0.1)",
+            borderColor: "#de350b",
+            backgroundColor: "rgba(222, 53, 11, 0.08)",
             borderWidth: 2,
             tension: 0.35,
             pointRadius: 2.5
@@ -198,7 +245,7 @@
           {
             label: "Suhu (°C)",
             data: state.history.suhu,
-            borderColor: "#ffde59",
+            borderColor: "#b89300",
             backgroundColor: "transparent",
             borderWidth: 2,
             tension: 0.35,
@@ -207,7 +254,7 @@
           {
             label: "Kelembapan Tanah (%)",
             data: state.history.tanah,
-            borderColor: "#38bdf8",
+            borderColor: "#004aad",
             backgroundColor: "transparent",
             borderWidth: 1.8,
             borderDash: [4, 4],
@@ -224,42 +271,41 @@
           legend: {
             position: "top",
             labels: {
-              color: "#94a3b8",
               boxWidth: 12,
-              font: { size: 10.5, family: "Plus Jakarta Sans" }
+              font: { family: "'Plus Jakarta Sans', sans-serif", size: 11, weight: "700" },
+              color: "#475569"
             }
           },
           tooltip: {
-            padding: 8,
-            titleFont: { size: 11, family: "Plus Jakarta Sans" },
-            bodyFont: { size: 11, family: "JetBrains Mono" }
+            backgroundColor: "#0f172a",
+            titleFont: { family: "'JetBrains Mono', monospace", size: 12 },
+            bodyFont: { family: "'Plus Jakarta Sans', sans-serif", size: 11 },
+            padding: 10,
+            cornerRadius: 6
           }
         },
         scales: {
           x: {
-            grid: { color: "rgba(255, 255, 255, 0.05)" },
-            ticks: { color: "#64748b", font: { size: 9.5, family: "JetBrains Mono" } }
+            grid: { color: "rgba(226, 232, 240, 0.6)" },
+            ticks: { font: { family: "'JetBrains Mono', monospace", size: 10 }, color: "#64748b" }
           },
           y: {
-            grid: { color: "rgba(255, 255, 255, 0.05)" },
-            ticks: { color: "#64748b", font: { size: 9.5, family: "JetBrains Mono" } },
-            suggestedMin: 0,
-            suggestedMax: 60
+            grid: { color: "rgba(226, 232, 240, 0.6)" },
+            ticks: { font: { family: "'JetBrains Mono', monospace", size: 10 }, color: "#64748b" }
           }
         }
       }
     });
   }
 
-  function pushChartData(suhu, tanah, miring) {
+  function pushChartData(suhuVal, tanahVal, miringVal) {
     if (!state.chart) return;
-    const now = new Date();
-    const timeStr = now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+    const nowStr = new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
 
-    state.history.labels.push(timeStr);
-    state.history.suhu.push(suhu);
-    state.history.tanah.push(tanah);
-    state.history.miring.push(miring);
+    state.history.labels.push(nowStr);
+    state.history.suhu.push(suhuVal);
+    state.history.tanah.push(tanahVal);
+    state.history.miring.push(miringVal);
 
     if (state.history.labels.length > state.maxHistoryPoints) {
       state.history.labels.shift();
@@ -268,20 +314,24 @@
       state.history.miring.shift();
     }
 
+    state.chart.data.labels = state.history.labels;
+    state.chart.data.datasets[0].data = state.history.miring;
+    state.chart.data.datasets[1].data = state.history.suhu;
+    state.chart.data.datasets[2].data = state.history.tanah;
     state.chart.update("none");
   }
 
-  // 5. Update UI Telemetri dari Paket Data
+  // 5. Pembaharuan UI Telemetri
   function updateTelemetryUI(data) {
     if (!data) return;
 
-    // Nilai Sensor
-    const suhu = (data.suhu !== undefined) ? parseFloat(data.suhu) : 0;
-    const udara = (data.kelembapan_udara !== undefined) ? parseFloat(data.kelembapan_udara) : 0;
+    // Normalisasi Nilai Sensor
+    const suhu = (data.suhu !== undefined) ? parseFloat(data.suhu) : 0.0;
+    const udara = (data.kelembapan_udara !== undefined) ? parseFloat(data.kelembapan_udara) : (data.kelembapan !== undefined ? parseFloat(data.kelembapan) : 0.0);
     const tanah = (data.kelembapan_tanah !== undefined) ? parseInt(data.kelembapan_tanah) : 0;
-    const miring = (data.kemiringan !== undefined) ? parseFloat(data.kemiringan) : ((data.kemiringan_x !== undefined) ? parseFloat(data.kemiringan_x) : 0);
-    const persenBat = (data.persen_baterai !== undefined) ? parseInt(data.persen_baterai) : 85;
-    const voltBat = data.baterai_voltase ? parseFloat(data.baterai_voltase).toFixed(2) : (3.2 + (persenBat / 100) * 1.0).toFixed(2);
+    const miring = (data.kemiringan !== undefined) ? parseFloat(data.kemiringan) : (data.pitch !== undefined ? Math.abs(parseFloat(data.pitch)) : 0.0);
+    const voltBat = (data.tegangan_baterai !== undefined) ? parseFloat(data.tegangan_baterai).toFixed(2) : (data.baterai !== undefined ? (parseFloat(data.baterai) * 0.042).toFixed(2) : "4.12");
+    const persenBat = (data.baterai !== undefined) ? Math.min(100, Math.max(0, parseInt(data.baterai))) : 98;
     const rssi = (data.rssi !== undefined) ? parseInt(data.rssi) : -54;
 
     const rawStatus = (data.status_ews || "AMAN").toUpperCase();
@@ -298,33 +348,65 @@
     setText("subBaterai", `Kapasitas: ${persenBat}%`);
     setText("valRssi", rssi.toString());
 
-    // Evaluasi Status Ambang Batas Sensor Individual
+    // Evaluasi Status Ambang Batas Sensor Individual & Animasi Alert Kartu
+    const cardSuhu = getEl("cardSuhu");
     const tagSuhu = getEl("tagSuhu");
     if (tagSuhu) {
-      if (suhu >= 40) { tagSuhu.textContent = "Bahaya"; tagSuhu.className = "sensor-card-status status-danger"; }
-      else if (suhu >= 36) { tagSuhu.textContent = "Waspada"; tagSuhu.className = "sensor-card-status status-warn"; }
-      else { tagSuhu.textContent = "Normal"; tagSuhu.className = "sensor-card-status"; }
+      if (suhu >= 40) {
+        tagSuhu.textContent = "Bahaya"; tagSuhu.className = "sensor-card-status status-danger";
+        if (cardSuhu) cardSuhu.classList.add("card-alert");
+      } else if (suhu >= 36) {
+        tagSuhu.textContent = "Waspada"; tagSuhu.className = "sensor-card-status status-warn";
+        if (cardSuhu) cardSuhu.classList.remove("card-alert");
+      } else {
+        tagSuhu.textContent = "Normal"; tagSuhu.className = "sensor-card-status";
+        if (cardSuhu) cardSuhu.classList.remove("card-alert");
+      }
     }
 
+    const cardUdara = getEl("cardUdara");
     const tagUdara = getEl("tagUdara");
     if (tagUdara) {
-      if (udara <= 30) { tagUdara.textContent = "Kering Kritis"; tagUdara.className = "sensor-card-status status-danger"; }
-      else if (udara <= 45) { tagUdara.textContent = "Kering"; tagUdara.className = "sensor-card-status status-warn"; }
-      else { tagUdara.textContent = "Lembap"; tagUdara.className = "sensor-card-status"; }
+      if (udara <= 30) {
+        tagUdara.textContent = "Kering Kritis"; tagUdara.className = "sensor-card-status status-danger";
+        if (cardUdara) cardUdara.classList.add("card-alert");
+      } else if (udara <= 45) {
+        tagUdara.textContent = "Kering"; tagUdara.className = "sensor-card-status status-warn";
+        if (cardUdara) cardUdara.classList.remove("card-alert");
+      } else {
+        tagUdara.textContent = "Lembap"; tagUdara.className = "sensor-card-status";
+        if (cardUdara) cardUdara.classList.remove("card-alert");
+      }
     }
 
+    const cardTanah = getEl("cardTanah");
     const tagTanah = getEl("tagTanah");
     if (tagTanah) {
-      if (tanah >= 75) { tagTanah.textContent = "Jenuh Bahaya"; tagTanah.className = "sensor-card-status status-danger"; }
-      else if (tanah >= 60) { tagTanah.textContent = "Jenuh Air"; tagTanah.className = "sensor-card-status status-warn"; }
-      else { tagTanah.textContent = "Stabil"; tagTanah.className = "sensor-card-status"; }
+      if (tanah >= 75) {
+        tagTanah.textContent = "Jenuh Bahaya"; tagTanah.className = "sensor-card-status status-danger";
+        if (cardTanah) cardTanah.classList.add("card-alert");
+      } else if (tanah >= 60) {
+        tagTanah.textContent = "Jenuh Air"; tagTanah.className = "sensor-card-status status-warn";
+        if (cardTanah) cardTanah.classList.remove("card-alert");
+      } else {
+        tagTanah.textContent = "Stabil"; tagTanah.className = "sensor-card-status";
+        if (cardTanah) cardTanah.classList.remove("card-alert");
+      }
     }
 
+    const cardMiring = getEl("cardMiring");
     const tagMiring = getEl("tagMiring");
     if (tagMiring) {
-      if (miring >= 25) { tagMiring.textContent = "Kritis"; tagMiring.className = "sensor-card-status status-danger"; }
-      else if (miring >= 12) { tagMiring.textContent = "Miring"; tagMiring.className = "sensor-card-status status-warn"; }
-      else { tagMiring.textContent = "Tegak"; tagMiring.className = "sensor-card-status"; }
+      if (miring >= 25) {
+        tagMiring.textContent = "Kritis"; tagMiring.className = "sensor-card-status status-danger";
+        if (cardMiring) cardMiring.classList.add("card-alert");
+      } else if (miring >= 12) {
+        tagMiring.textContent = "Miring"; tagMiring.className = "sensor-card-status status-warn";
+        if (cardMiring) cardMiring.classList.remove("card-alert");
+      } else {
+        tagMiring.textContent = "Tegak"; tagMiring.className = "sensor-card-status";
+        if (cardMiring) cardMiring.classList.remove("card-alert");
+      }
     }
 
     // Evaluasi Status LoRa
@@ -364,20 +446,20 @@
 
     let displayStatus = "AMAN";
     let statusClass = "status-aman";
-    let statusColor = "var(--color-safe)";
+    let statusColor = "#108a00";
 
     if (isDanger) {
       displayStatus = rawStatus.includes("BAHAYA") ? rawStatus : "BAHAYA";
       statusClass = "status-bahaya";
-      statusColor = "var(--color-danger)";
+      statusColor = "#de350b";
     } else if (isSiaga) {
       displayStatus = "SIAGA";
       statusClass = "status-siaga";
-      statusColor = "var(--color-siaga)";
+      statusColor = "#e27d00";
     } else if (isWaspada) {
       displayStatus = "WASPADA";
       statusClass = "status-waspada";
-      statusColor = "var(--color-warn)";
+      statusColor = "#b8860b";
     }
 
     if (cardStatus && textStatus) {
@@ -403,10 +485,18 @@
       mapPopupStatus.style.color = statusColor;
     }
 
+    // Update posisi marker jika koordinat valid
+    if (data.latitude && data.longitude && !isNaN(parseFloat(data.latitude)) && !isNaN(parseFloat(data.longitude))) {
+      const lat = parseFloat(data.latitude);
+      const lng = parseFloat(data.longitude);
+      if (state.marker) state.marker.setLatLng([lat, lng]);
+      if (state.circle) state.circle.setLatLng([lat, lng]);
+    }
+
     if (state.circle) {
       state.circle.setStyle({
-        color: isDanger ? "#ef4444" : (isWaspada ? "#ffde59" : "#004aad"),
-        fillColor: isDanger ? "#ef4444" : (isWaspada ? "#ffde59" : "#004aad")
+        color: isDanger ? "#de350b" : (isWaspada ? "#ffde59" : "#004aad"),
+        fillColor: isDanger ? "#de350b" : (isWaspada ? "#ffde59" : "#004aad")
       });
     }
 
@@ -430,7 +520,11 @@
       const firebaseConfig = {
         databaseURL: "https://ews-titen-default-rtdb.asia-southeast1.firebasedatabase.app"
       };
-      firebase.initializeApp(firebaseConfig);
+
+      // Pastikan inisialisasi hanya sekali
+      if (!firebase.apps || !firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+      }
       const db = firebase.database();
 
       // Monitor Status Koneksi Cloud
@@ -475,4 +569,3 @@
   });
 
 })();
-

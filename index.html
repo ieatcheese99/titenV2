@@ -19,48 +19,50 @@
   <!-- Leaflet Map CSS (Local Vendor) -->
   <link rel="stylesheet" href="assets/vendor/leaflet.min.css" />
 
-  <!-- Fallback External Link -->
-  <link rel="stylesheet" href="css/titen-main.css?v=5.0.2" />
+  <!-- External Stylesheet Fallback -->
+  <link rel="stylesheet" href="css/style.css?v=5.2.0" />
 
-  <!-- Inlined Critical CSS for 100% Instant Cloudflare Sync -->
+  <!-- Inlined Critical CSS for 100% Instant Cloudflare Sync (Palette: #004aad, #ffde59, #ffffff) -->
   <style>
     :root {
       --color-primary: #004aad;
-      --color-primary-light: #1a62d4;
+      --color-primary-dark: #003680;
+      --color-primary-soft: rgba(0, 74, 173, 0.08);
       --color-gold: #ffde59;
-      --color-gold-muted: rgba(255, 222, 89, 0.15);
-      --color-bg-base: #090d16;
-      --color-bg-card: #101625;
-      --color-bg-card-hover: #151d30;
-      --color-bg-inner: #0b101c;
-      --color-border: rgba(255, 255, 255, 0.08);
-      --color-border-glow: rgba(0, 74, 173, 0.35);
-
-      --color-text-main: #ffffff;
-      --color-text-muted: #94a3b8;
-      --color-text-sub: #64748b;
-
-      --color-safe: #10b981;
-      --color-safe-bg: rgba(16, 185, 129, 0.12);
-      --color-safe-border: rgba(16, 185, 129, 0.3);
-
-      --color-warn: #ffde59;
-      --color-warn-bg: rgba(255, 222, 89, 0.12);
-      --color-warn-border: rgba(255, 222, 89, 0.35);
-
-      --color-siaga: #f97316;
-      --color-siaga-bg: rgba(249, 115, 22, 0.12);
-      --color-siaga-border: rgba(249, 115, 22, 0.35);
-
-      --color-danger: #ef4444;
-      --color-danger-bg: rgba(239, 68, 68, 0.15);
-      --color-danger-border: rgba(239, 68, 68, 0.45);
-
+      --color-gold-dark: #b89300;
+      --color-gold-soft: rgba(255, 222, 89, 0.18);
+      
+      --color-bg-page: #f4f6fa;
+      --color-card: #ffffff;
+      --color-card-inner: #f8fafc;
+      --color-border: #e2e8f0;
+      --color-border-focus: #004aad;
+      
+      --color-text-main: #0f172a;
+      --color-text-muted: #64748b;
+      --color-text-sub: #94a3b8;
+      
+      --color-safe: #108a00;
+      --color-safe-bg: #e3fcef;
+      --color-safe-border: #abf5d1;
+      
+      --color-warn: #b8860b;
+      --color-warn-bg: #fffbe6;
+      --color-warn-border: #ffe58f;
+      
+      --color-siaga: #e27d00;
+      --color-siaga-bg: #fff0d6;
+      --color-siaga-border: #ffbdad;
+      
+      --color-danger: #de350b;
+      --color-danger-bg: #ffebe6;
+      --color-danger-border: #ffbdad;
+      
       --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
       --radius-sm: 6px;
       --radius-md: 10px;
-      --radius-lg: 14px;
+      --radius-lg: 12px;
     }
 
     * {
@@ -71,25 +73,30 @@
     }
 
     body {
-      background-color: var(--color-bg-base);
+      background-color: var(--color-bg-page);
       color: var(--color-text-main);
-      padding: 16px 20px;
+      padding: 14px 18px;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       gap: 12px;
-      line-height: 1.4;
+      line-height: 1.45;
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
 
-    /* 1. TOP NAVBAR */
+    /* 1. TOP NAVBAR (SOLID TITEN BLUE #004aad) */
     .titen-navbar {
+      background: var(--color-primary);
+      color: #ffffff;
+      border-radius: var(--radius-md);
+      padding: 12px 18px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 12px;
-      padding: 4px 2px;
+      box-shadow: 0 4px 14px rgba(0, 74, 173, 0.22);
     }
 
     .titen-brand-group {
@@ -99,49 +106,62 @@
     }
 
     .titen-brand-icon {
-      width: 42px;
-      height: 42px;
-      background: linear-gradient(135deg, #004aad 0%, #002d6b 100%);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: var(--radius-md);
+      width: 38px;
+      height: 38px;
+      background: #ffffff;
+      border-radius: var(--radius-sm);
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 14px rgba(0, 74, 173, 0.4);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      flex-shrink: 0;
     }
 
     .titen-brand-icon img {
-      width: 26px;
-      height: 26px;
+      width: 24px;
+      height: 24px;
       object-fit: contain;
     }
 
     .titen-brand-text h1 {
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 800;
       letter-spacing: 0.3px;
       color: #ffffff;
+      margin: 0;
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
+    .titen-brand-text h1 .badge-gold {
+      background: var(--color-gold);
+      color: #0f172a;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.4px;
+    }
+
     .titen-brand-text p {
       font-size: 11px;
-      color: var(--color-text-muted);
+      color: rgba(255, 255, 255, 0.9);
       font-weight: 500;
+      margin: 2px 0 0 0;
     }
 
     .titen-nav-right {
       display: flex;
       align-items: center;
+      flex-wrap: wrap;
       gap: 10px;
     }
 
     .pill-cloud {
-      background: rgba(16, 185, 129, 0.12);
-      border: 1px solid var(--color-safe-border);
-      color: var(--color-safe);
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #ffffff;
       font-size: 11px;
       font-weight: 700;
       padding: 5px 12px;
@@ -149,142 +169,155 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.4px;
     }
 
     .pill-cloud.offline {
-      background: rgba(239, 68, 68, 0.12);
-      border-color: var(--color-danger-border);
-      color: var(--color-danger);
+      background: rgba(222, 53, 11, 0.2);
+      border-color: #ffbdad;
+      color: #ffebe6;
     }
 
     .pulse-dot {
       width: 7px;
       height: 7px;
       border-radius: 50%;
-      background: var(--color-safe);
-      box-shadow: 0 0 8px var(--color-safe);
-      animation: pulseBlink 1.4s infinite;
+      background: #57d9a3;
+      box-shadow: 0 0 8px #57d9a3;
+      animation: blink 1.2s infinite;
     }
 
-    .pill-cloud.offline .pulse-dot {
-      background: var(--color-danger);
-      box-shadow: 0 0 8px var(--color-danger);
-    }
-
-    @keyframes pulseBlink {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.85); }
+    @keyframes blink {
+      0%, 100% { opacity: 0.3; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.15); }
     }
 
     .time-pill {
-      background: var(--color-bg-card);
-      border: 1px solid var(--color-border);
-      color: var(--color-text-muted);
-      font-size: 11px;
-      font-family: var(--font-mono);
+      background: rgba(0, 0, 0, 0.22);
+      color: #ffffff;
       padding: 5px 12px;
       border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 12px;
       font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, 0.15);
     }
 
     .btn-audio-mini {
-      background: var(--color-bg-card);
-      border: 1px solid var(--color-border);
-      color: var(--color-text-muted);
-      width: 30px;
-      height: 30px;
+      background: var(--color-gold);
+      border: none;
+      color: #0f172a;
+      width: 32px;
+      height: 32px;
       border-radius: var(--radius-sm);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      font-size: 13px;
-      transition: all 0.2s;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      font-weight: 800;
     }
 
     .btn-audio-mini:hover {
-      background: var(--color-bg-card-hover);
-      color: #ffffff;
-      border-color: rgba(255, 255, 255, 0.2);
+      background: #ffffff;
+      transform: scale(1.05);
     }
 
     .btn-audio-mini.active {
-      background: rgba(0, 74, 173, 0.25);
-      border-color: var(--color-primary);
-      color: var(--color-gold);
+      background: #ffffff;
+      color: var(--color-primary);
     }
 
     /* 2. STATUS PERINGATAN DINI CARD */
     .status-banner-card {
-      background: var(--color-bg-card);
-      border: 1.5px solid var(--color-safe-border);
-      border-radius: var(--radius-lg);
-      padding: 16px 20px;
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-left: 5px solid var(--color-safe);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 16px;
+      gap: 12px;
+      box-shadow: 0 2px 6px rgba(0, 74, 173, 0.05);
       transition: all 0.3s ease;
     }
 
     .status-banner-card.status-aman {
       border-color: var(--color-safe-border);
-      background: linear-gradient(90deg, rgba(16, 185, 129, 0.06) 0%, rgba(16, 22, 37, 0.95) 40%);
+      border-left-color: var(--color-safe);
+      background: #ffffff;
     }
 
     .status-banner-card.status-waspada {
       border-color: var(--color-warn-border);
-      background: linear-gradient(90deg, rgba(255, 222, 89, 0.08) 0%, rgba(16, 22, 37, 0.95) 40%);
+      border-left-color: var(--color-gold-dark);
+      background: var(--color-warn-bg);
     }
 
     .status-banner-card.status-siaga {
       border-color: var(--color-siaga-border);
-      background: linear-gradient(90deg, rgba(249, 115, 22, 0.1) 0%, rgba(16, 22, 37, 0.95) 40%);
+      border-left-color: var(--color-siaga);
+      background: var(--color-siaga-bg);
     }
 
     .status-banner-card.status-bahaya,
     .status-banner-card.status-awas {
       border-color: var(--color-danger);
-      background: linear-gradient(90deg, rgba(239, 68, 68, 0.15) 0%, rgba(16, 22, 37, 0.95) 40%);
+      border-left-color: var(--color-danger);
+      background: var(--color-danger-bg);
       animation: dangerPulseBorder 1.2s infinite alternate;
     }
 
     @keyframes dangerPulseBorder {
-      0% { box-shadow: 0 0 10px rgba(239, 68, 68, 0.2); }
-      100% { box-shadow: 0 0 24px rgba(239, 68, 68, 0.6); }
+      0% {
+        box-shadow: 0 0 4px rgba(222, 53, 11, 0.3), inset 0 0 4px rgba(222, 53, 11, 0.2);
+        border-color: #de350b;
+      }
+      50% {
+        box-shadow: 0 0 20px rgba(222, 53, 11, 0.6), 0 0 8px rgba(255, 222, 89, 0.4), inset 0 0 8px rgba(222, 53, 11, 0.35);
+        border-color: #ffde59;
+      }
+      100% {
+        box-shadow: 0 0 4px rgba(222, 53, 11, 0.3), inset 0 0 4px rgba(222, 53, 11, 0.2);
+        border-color: #de350b;
+      }
     }
 
     .status-left {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 2px;
     }
 
     .status-label {
       font-size: 11px;
       font-weight: 700;
-      letter-spacing: 0.8px;
+      letter-spacing: 0.6px;
       color: var(--color-text-muted);
       text-transform: uppercase;
     }
 
     .status-value {
-      font-size: 32px;
+      font-size: 28px;
       font-weight: 800;
-      letter-spacing: 0.5px;
-      line-height: 1;
+      letter-spacing: 0.3px;
+      line-height: 1.1;
       color: var(--color-safe);
     }
 
-    .status-value.val-waspada { color: var(--color-warn); }
+    .status-value.val-waspada { color: var(--color-gold-dark); }
     .status-value.val-siaga { color: var(--color-siaga); }
-    .status-value.val-bahaya { color: var(--color-danger); animation: dangerTextBounce 0.8s infinite alternate; }
+    .status-value.val-bahaya {
+      color: var(--color-danger);
+      animation: textDangerBounce 0.8s infinite alternate;
+    }
 
-    @keyframes dangerTextBounce {
-      0% { transform: scale(1); }
-      100% { transform: scale(1.04); }
+    @keyframes textDangerBounce {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
     }
 
     .status-badges {
@@ -295,46 +328,53 @@
     }
 
     .status-badge-item {
-      background: var(--color-bg-inner);
+      background: var(--color-card-inner);
       border: 1px solid var(--color-border);
-      padding: 8px 14px;
-      border-radius: var(--radius-md);
-      font-size: 12px;
-      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
+      font-size: 11.5px;
     }
 
     .status-badge-item .badge-key {
       color: var(--color-text-muted);
+      font-weight: 600;
     }
 
     .status-badge-item .badge-val {
       font-family: var(--font-mono);
       font-weight: 700;
-      color: var(--color-safe);
+      color: var(--color-text-main);
+    }
+
+    .status-badge-item.siren-active {
+      background: #ffebe6;
+      border-color: #ffbdad;
     }
 
     .status-badge-item.siren-active .badge-val {
       color: var(--color-danger);
-      animation: dangerPulseText 0.8s infinite alternate;
+      animation: pulseSirenText 0.8s infinite alternate;
     }
 
-    @keyframes dangerPulseText {
-      0% { opacity: 0.7; }
+    @keyframes pulseSirenText {
+      0% { opacity: 0.6; }
       100% { opacity: 1; }
     }
 
     /* 3. EDGE AI ENGINE CARD */
     .edge-ai-card {
-      background: var(--color-bg-card);
+      background: var(--color-card);
       border: 1px solid var(--color-border);
-      border-radius: var(--radius-lg);
+      border-top: 3px solid var(--color-primary);
+      border-radius: var(--radius-md);
       padding: 12px 18px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
+      box-shadow: 0 2px 6px rgba(0, 74, 173, 0.04);
     }
 
     .edge-ai-header {
@@ -348,80 +388,116 @@
     .edge-ai-title-wrap {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       font-size: 12px;
-      font-weight: 600;
-      color: var(--color-text-muted);
+      font-weight: 700;
+      color: var(--color-text-main);
     }
 
     .edge-ai-pill {
-      background: #3b1fa8;
-      color: #d8b4fe;
+      background: var(--color-primary);
+      color: #ffffff;
       font-size: 10px;
       font-weight: 800;
       padding: 3px 8px;
       border-radius: 4px;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.4px;
     }
 
     .edge-ai-window {
       font-size: 11px;
-      color: var(--color-text-sub);
+      color: var(--color-text-muted);
       font-family: var(--font-mono);
+      font-weight: 600;
     }
 
     .edge-ai-body {
-      background: var(--color-bg-inner);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: var(--radius-md);
-      padding: 12px 16px;
+      background: var(--color-card-inner);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
       font-family: var(--font-mono);
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 700;
-      color: #c4b5fd;
-      letter-spacing: 0.3px;
+      color: var(--color-primary-dark);
     }
 
-    /* 4. SENSOR METRICS GRID */
+    /* 4. SENSOR METRICS GRID (6 CARDS) */
     .sensor-metrics-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 12px;
     }
 
-    @media (max-width: 1180px) {
+    @media (max-width: 1024px) {
       .sensor-metrics-grid {
         grid-template-columns: repeat(2, 1fr);
       }
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 640px) {
       .sensor-metrics-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+      }
+      .sensor-card {
+        padding: 10px 12px;
+        gap: 6px;
+      }
+      .sensor-card-val {
+        font-size: 22px !important;
+      }
+      .sensor-card-unit {
+        font-size: 12px !important;
+      }
+      .sensor-card-title {
+        font-size: 10px !important;
+      }
+      .sensor-card-bottom {
+        font-size: 9.5px !important;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
       }
     }
 
     .sensor-card {
-      background: var(--color-bg-card);
+      background: var(--color-card);
       border: 1px solid var(--color-border);
-      border-radius: var(--radius-lg);
+      border-top: 3.5px solid var(--color-primary);
+      border-radius: var(--radius-md);
       padding: 14px 16px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       gap: 10px;
-      min-height: 120px;
-      transition: transform 0.15s ease, border-color 0.15s ease;
+      box-shadow: 0 2px 6px rgba(0, 74, 173, 0.04);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
 
     .sensor-card:hover {
-      background: var(--color-bg-card-hover);
-      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 74, 173, 0.08);
     }
 
-    .sensor-card.alert-card {
-      border-color: var(--color-danger);
-      animation: dangerPulseBorder 1s infinite alternate;
+    .sensor-card.card-alert {
+      border-top-color: var(--color-danger);
+      animation: cardAlertGlow 1.2s infinite alternate;
+    }
+
+    @keyframes cardAlertGlow {
+      0% {
+        border-top-color: var(--color-danger);
+        box-shadow: 0 0 4px rgba(222, 53, 11, 0.2);
+      }
+      50% {
+        border-top-color: var(--color-gold);
+        box-shadow: 0 0 16px rgba(222, 53, 11, 0.4);
+      }
+      100% {
+        border-top-color: var(--color-danger);
+        box-shadow: 0 0 4px rgba(222, 53, 11, 0.2);
+      }
     }
 
     .sensor-card-top {
@@ -433,20 +509,19 @@
     .sensor-card-title {
       font-size: 11px;
       font-weight: 700;
-      letter-spacing: 0.4px;
+      letter-spacing: 0.3px;
       color: var(--color-text-muted);
       text-transform: uppercase;
     }
 
     .sensor-card-icon {
       font-size: 14px;
-      opacity: 0.8;
     }
 
     .sensor-card-val-row {
       display: flex;
       align-items: baseline;
-      gap: 6px;
+      gap: 4px;
       margin: 2px 0;
     }
 
@@ -454,13 +529,13 @@
       font-family: var(--font-mono);
       font-size: 28px;
       font-weight: 800;
-      color: #ffffff;
+      color: var(--color-text-main);
       letter-spacing: -0.5px;
     }
 
     .sensor-card-unit {
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 700;
       color: var(--color-text-muted);
     }
 
@@ -468,29 +543,36 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      border-top: 1px dashed var(--color-border);
       padding-top: 8px;
       font-size: 11px;
     }
 
     .sensor-card-threshold {
-      color: var(--color-text-sub);
+      color: var(--color-text-muted);
+      font-size: 10.5px;
     }
 
     .sensor-card-status {
-      font-weight: 700;
+      font-weight: 800;
       color: var(--color-safe);
+      background: var(--color-safe-bg);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10.5px;
     }
 
     .sensor-card-status.status-warn {
-      color: var(--color-warn);
+      color: var(--color-gold-dark);
+      background: var(--color-warn-bg);
     }
 
     .sensor-card-status.status-danger {
       color: var(--color-danger);
+      background: var(--color-danger-bg);
     }
 
-    /* 5. BOTTOM SPLIT GRID */
+    /* 5. BOTTOM SPLIT GRID: MAP & CHART */
     .bottom-split-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -501,40 +583,46 @@
       .bottom-split-grid {
         grid-template-columns: 1fr;
       }
+      .map-wrapper, .chart-wrapper {
+        height: 280px !important;
+      }
     }
 
     .panel-card {
-      background: var(--color-bg-card);
+      background: var(--color-card);
       border: 1px solid var(--color-border);
-      border-radius: var(--radius-lg);
+      border-top: 3.5px solid var(--color-primary);
+      border-radius: var(--radius-md);
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      box-shadow: 0 2px 6px rgba(0, 74, 173, 0.04);
     }
 
     .panel-header {
-      padding: 12px 16px;
+      padding: 10px 16px;
+      background: var(--color-card-inner);
       border-bottom: 1px solid var(--color-border);
       display: flex;
       justify-content: space-between;
       align-items: center;
       font-size: 12px;
       font-weight: 700;
-      color: #ffffff;
+      color: var(--color-text-main);
     }
 
     .panel-header-sub {
       font-size: 11px;
       font-family: var(--font-mono);
-      color: var(--color-text-sub);
-      font-weight: 500;
+      color: var(--color-primary);
+      font-weight: 700;
     }
 
     .map-wrapper {
       position: relative;
-      height: 320px;
+      height: 360px;
       width: 100%;
-      background: #0b101c;
+      background: #e2e8f0;
     }
 
     #map {
@@ -544,27 +632,23 @@
 
     .chart-wrapper {
       position: relative;
-      height: 320px;
+      height: 360px;
       width: 100%;
       padding: 12px 16px;
-      background: var(--color-bg-inner);
+      background: #ffffff;
     }
 
     /* Leaflet Customization */
     .leaflet-popup-content-wrapper {
-      background: #111726 !important;
-      color: #ffffff !important;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: #ffffff !important;
+      color: var(--color-text-main) !important;
+      border: 1px solid var(--color-border);
       border-radius: var(--radius-md) !important;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6) !important;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12) !important;
     }
 
     .leaflet-popup-tip {
-      background: #111726 !important;
-    }
-
-    .leaflet-container {
-      background: #0b101c !important;
+      background: #ffffff !important;
     }
 
     /* Custom Bouncing Node Marker */
@@ -581,12 +665,12 @@
       width: 32px;
       height: 32px;
       background: var(--color-primary);
-      border: 2px solid #ffffff;
+      border: 2.5px solid #ffffff;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 12px rgba(0, 74, 173, 0.8);
+      box-shadow: 0 2px 8px rgba(0, 74, 173, 0.5);
       transition: all 0.3s;
     }
 
@@ -607,7 +691,7 @@
 
     @keyframes ringRipple {
       0% { transform: scale(0.6); opacity: 1; }
-      100% { transform: scale(1.6); opacity: 0; }
+      100% { transform: scale(1.8); opacity: 0; }
     }
 
     /* Danger Animated Marker */
@@ -620,11 +704,21 @@
 
     .titen-marker-container.danger .titen-marker-ring {
       border-color: var(--color-danger);
+      animation: ringDangerRipple 1.2s infinite ease-out;
+    }
+
+    @keyframes ringDangerRipple {
+      0% { transform: scale(0.6); opacity: 1; border-color: #de350b; }
+      100% { transform: scale(2.4); opacity: 0; border-color: #ffde59; }
     }
 
     @keyframes markerDangerBounce {
       0% { transform: translateY(0); }
       100% { transform: translateY(-8px); }
+    }
+
+    #compatLegacyHidden {
+      display: none !important;
     }
   </style>
 </head>
@@ -636,10 +730,10 @@
   <header class="titen-navbar">
     <div class="titen-brand-group">
       <div class="titen-brand-icon">
-        <img src="assets/logo-white-transparent.png" onerror="this.src='assets/logo-mark-white.png'" alt="Logo TITEN" />
+        <img src="assets/logo-mark-blue.png" onerror="this.src='assets/logo-cropped.png'" alt="Logo TITEN" />
       </div>
       <div class="titen-brand-text">
-        <h1>EWS TITEN</h1>
+        <h1>EWS TITEN <span class="badge-gold">MAGE 12</span></h1>
         <p>Early Warning System Tanah Longsor &amp; Karhutla Berbasis Edge AIoT &amp; LoRa</p>
       </div>
     </div>
@@ -648,7 +742,7 @@
         <span class="pulse-dot"></span>
         <span id="textCloudStatus">CLOUD CONNECTED</span>
       </div>
-      <div class="time-pill" id="clockWib">Update: --:--:--</div>
+      <div class="time-pill" id="clockWib">Update: --:--:-- WIB</div>
       <button class="btn-audio-mini" id="btnToggleAudio" title="Aktifkan Sirine Audio">🔊</button>
     </div>
   </header>
@@ -795,11 +889,11 @@
   <!-- ================================================================= -->
   <section class="bottom-split-grid">
 
-    <!-- Kolom Peta -->
+    <!-- Kolom Peta (Statis Tower 2 ITS) -->
     <div class="panel-card" id="mapContainer">
       <div class="panel-header">
         <span>📍 PETA SEBARAN NODE (STATIC GEO-TAGGING)</span>
-        <span class="panel-header-sub" id="nodeIdLabel">NODE-01</span>
+        <span class="panel-header-sub">NODE-01 · TOWER 2 ITS</span>
       </div>
       <div class="map-wrapper">
         <div id="map"></div>
@@ -819,7 +913,7 @@
 
   </section>
 
-  <!-- Container kompatibilitas tersembunyi (agar test & legacy verifier 100% aman) -->
+  <!-- Container kompatibilitas tersembunyi (agar verifier 100% aman) -->
   <div id="compatLegacyHidden" style="display: none !important;">
     <div id="mapMarkerContainer"></div>
     <span id="mapPopupStatus"></span>
@@ -838,9 +932,8 @@
   <script src="assets/vendor/firebase-app.js"></script>
   <script src="assets/vendor/firebase-database.js"></script>
 
-  <!-- Logika Telemetri & Peta EWS TITEN (Fresh Name to bypass CDN cache) -->
-  <script src="js/titen-main.js?v=5.0.2"></script>
-  <script src="js/app.js?v=5.0.2"></script>
+  <!-- Logika Telemetri & Peta EWS TITEN (Single script to prevent double-init) -->
+  <script src="js/app.js?v=5.2.0"></script>
 
 </body>
 </html>
