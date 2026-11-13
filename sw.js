@@ -1,6 +1,6 @@
 /**
  * EWS TITEN - Service Worker
- * Versi Cache: v3.3.3 (Pembaruan Tata Letak PC & Penyesuaian Ukuran Panel)
+ * Versi Cache: v3.3.3 (Pembaruan Tata Letak PC Terpusat & Pembesaran Panel)
  */
 
 const CACHE_NAME = "ews-titen-v3.3.3";
