@@ -16,7 +16,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://titenv2.pages.dev/" />
   <meta property="og:title" content="EWS TITEN — Dashboard Pemantauan Aktivitas Multi-Bencana" />
-  <meta property="og:description" content="Sistem Peringatan Dini IoT Tanah Longsor dan Karhutla Berbasis LoRa SX1278 & Peta Interaktif BNPB Layout (MAGE 12)" />
+  <meta property="og:description" content="Sistem Peringatan Dini IoT Tanah Longsor dan Karhutla Berbasis LoRa SX1278 & Peta Interaktif (MAGE 12)" />
   <meta property="og:image" content="https://titenv2.pages.dev/assets/og-image.png" />
 
   <!-- PWA Manifest -->
@@ -30,7 +30,7 @@
   <!-- Leaflet 1.9.4 CSS (Local Vendor) -->
   <link rel="stylesheet" href="assets/vendor/leaflet.min.css" />
 
-  <!-- Stylesheet Utama EWS TITEN (BNPB Command Center Layout - Light Mode) -->
+  <!-- Stylesheet Utama EWS TITEN (Command Center Layout - Light Mode) -->
   <link rel="stylesheet" href="css/style.css?v=4.1.0" />
 </head>
 <body class="bnpb-app-container select-none">
@@ -41,12 +41,10 @@
   <header class="topbar">
     <div class="topbar-left">
       <a href="#" class="brand-badge" title="EWS TITEN - Tim TRILOGY MAGE 12">
-        <div class="brand-icon-box">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg>
-        </div>
+        <img src="assets/titen-logo.png" alt="Logo TITEN" class="brand-logo-img" />
         <div class="brand-text-group">
           <h1 class="brand-name">EWS TITEN Pemantauan Bencana</h1>
-          <span class="brand-tag">MHEWS Live</span>
+          <span class="brand-tag">TITEN Live</span>
         </div>
       </a>
 
@@ -687,7 +685,7 @@
 
   <!-- Banner Animasi Zoom Pembuka (FlyTo) di Sudut Layar -->
   <div id="openingZoomBanner" class="opening-zoom-banner hidden" role="status">
-    <img src="assets/logo-mark-blue.png" alt="TITEN" class="opening-zoom-logo" />
+    <img src="assets/titen-logo.png" alt="TITEN" class="opening-zoom-logo" style="border-radius: 3px;" />
     <span id="openingZoomText">Menuju Node-01 · Tower 2 ITS...</span>
     <button id="btnSkipZoom" class="btn-skip-zoom" title="Lewati animasi kamera">Lewati</button>
   </div>
@@ -724,7 +722,7 @@
         <input type="checkbox" id="layerCheckNodes" checked />
       </label>
       <label class="layer-item">
-        <span>Zona Rawan Longsor (BNPB 30m)</span>
+        <span>Zona Rawan Longsor (InaRISK 30m)</span>
         <input type="checkbox" id="layerCheckInarisk" />
       </label>
       <label class="layer-item">

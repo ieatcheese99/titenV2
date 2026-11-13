@@ -154,6 +154,15 @@ button, input, select {
   text-decoration: none;
 }
 
+.brand-logo-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  object-fit: cover;
+  display: block;
+  box-shadow: 0 2px 6px rgba(0, 74, 173, 0.25);
+}
+
 .brand-icon-box {
   width: 32px;
   height: 32px;
@@ -169,6 +178,13 @@ button, input, select {
 .brand-icon-box svg {
   width: 18px;
   height: 18px;
+}
+
+.brand-logo-mark {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  display: block;
 }
 
 .brand-text-group {

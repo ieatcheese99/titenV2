@@ -76,7 +76,7 @@ const CONFIG = {
     // Layanan publik sah dari analisis reverse engineering BNPB InaRISK (30m raster tile)
     INARISK_LONGSOR: {
       url: "https://inarisk2.bnpb.go.id/api-portal/layer/tile/1/INDEKS_BAHAYA_TANAHLONGSOR_30/{z}/{x}/{y}.png?style=bahaya",
-      attribution: '&copy; <a href="https://inarisk.bnpb.go.id" target="_blank" rel="noopener">BNPB inaRISK</a> Indeks Bahaya 30m',
+      attribution: '&copy; <a href="https://inarisk.bnpb.go.id" target="_blank" rel="noopener">inaRISK</a> Indeks Bahaya 30m',
       minZoom: 5,
       maxZoom: 15,
       opacity: 0.65
