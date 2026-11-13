@@ -31,7 +31,7 @@
   <link rel="stylesheet" href="assets/vendor/leaflet.min.css" />
 
   <!-- Stylesheet Utama EWS TITEN (Command Center Layout - Light Mode) -->
-  <link rel="stylesheet" href="css/style.css?v=4.8.3" />
+  <link rel="stylesheet" href="css/style.css?v=4.8.4" />
 </head>
 <body class="bnpb-app-container select-none">
 
@@ -510,18 +510,18 @@
           </div>
         </div>
 
-        <div class="bnpb-stations-grid">
+        <div class="bnpb-stations-grid bnpb-karhutla-grid">
 
-          <!-- Col 1: Suhu Udara (DHT22) -->
+          <!-- Col 1: Sensor DHT22 (Suhu Udara & RH Karhutla) -->
           <div class="bnpb-station-col">
             <div class="bnpb-station-top">
               <span class="bnpb-station-name">Suhu Udara (DHT22)</span>
-              <i data-lucide="calendar" style="width: 12px; height: 12px;"></i>
+              <i data-lucide="thermometer" style="width: 12px; height: 12px;"></i>
             </div>
             <div class="bnpb-station-alert">
-              Monitoring Suhu Lingkungan Node TRILOGY
+              Monitoring Suhu Lingkungan &amp; Deteksi Dini Karhutla
             </div>
-            <div class="bnpb-station-sub">Termometer Digital Akurasi ±0.5°C</div>
+            <div class="bnpb-station-sub">Sensor DHT22 Digital · Termometer &amp; Higrometer Terintegrasi</div>
 
             <div class="bnpb-station-hero">
               <svg class="bnpb-hero-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>
@@ -529,7 +529,7 @@
                 <div class="bnpb-hero-val">
                   <span id="valSuhu">0.0</span><span class="bnpb-hero-unit">°C</span>
                 </div>
-                <div class="bnpb-hero-label">Termometer Suhu</div>
+                <div class="bnpb-hero-label">Suhu Udara · <span style="font-weight: 700; color: var(--text-secondary);">RH: <span id="valUdara">0</span>%</span></div>
               </div>
             </div>
 
@@ -544,81 +544,35 @@
               </div>
               <div class="bnpb-grid-item">
                 <span class="bnpb-grid-val">DHT22 Digital</span>
-                <span class="bnpb-grid-lbl">Sensor Suhu</span>
+                <span class="bnpb-grid-lbl">Sensor Fisik</span>
               </div>
               <div class="bnpb-grid-item">
                 <span id="thresholdLabelSuhu" class="bnpb-grid-val">Waspada: ≥34°C</span>
-                <span class="bnpb-grid-lbl">Ambang Batas</span>
+                <span class="bnpb-grid-lbl">Ambang Suhu</span>
               </div>
               <div class="bnpb-grid-item">
-                <span id="pctSuhu" class="bnpb-grid-val">0%</span>
-                <span class="bnpb-grid-lbl">Beban Termal</span>
-              </div>
-              <div class="bnpb-grid-item">
-                <span class="bnpb-grid-val">±0.5°C</span>
-                <span class="bnpb-grid-lbl">Toleransi</span>
-              </div>
-              <div class="bnpb-grid-item">
-                <span class="bnpb-grid-val sync-clockWib">--:--:-- WIB</span>
-                <span class="bnpb-grid-lbl">Waktu Update</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Col 2: Kelembapan Udara (RH) -->
-          <div class="bnpb-station-col">
-            <div class="bnpb-station-top">
-              <span class="bnpb-station-name">Kelembapan Udara (RH)</span>
-              <i data-lucide="calendar" style="width: 12px; height: 12px;"></i>
-            </div>
-            <div class="bnpb-station-alert">
-              Higrometer Relatif RH Ruang Terbuka
-            </div>
-            <div class="bnpb-station-sub">Sensor RH Deteksi Udara Kering Karhutla</div>
-
-            <div class="bnpb-station-hero">
-              <svg class="bnpb-hero-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
-              <div class="bnpb-hero-val-box">
-                <div class="bnpb-hero-val">
-                  <span id="valUdara">0</span><span class="bnpb-hero-unit">%</span>
-                </div>
-                <div class="bnpb-hero-label">Higrometer Udara</div>
-              </div>
-            </div>
-
-            <div class="progress-container">
-              <div id="barUdara" class="progress-bar-fill" style="width: 0%; background-color: var(--color-offline);"></div>
-            </div>
-
-            <div class="bnpb-card-grid">
-              <div class="bnpb-grid-item">
-                <span id="tagUdara" class="bnpb-grid-val" style="color: var(--color-offline);">OFFLINE</span>
-                <span class="bnpb-grid-lbl">Status</span>
-              </div>
-              <div class="bnpb-grid-item">
-                <span class="bnpb-grid-val">45% - 80%</span>
-                <span class="bnpb-grid-lbl">Rentang Aman</span>
+                <span id="pctUdara" class="bnpb-grid-val">0% RH</span>
+                <span class="bnpb-grid-lbl">Kelembapan Udara</span>
               </div>
               <div class="bnpb-grid-item">
                 <span id="thresholdLabelUdara" class="bnpb-grid-val">Waspada: ≤45%</span>
-                <span class="bnpb-grid-lbl">Ambang Batas</span>
-              </div>
-              <div class="bnpb-grid-item">
-                <span id="pctUdara" class="bnpb-grid-val">0%</span>
-                <span class="bnpb-grid-lbl">Saturasi RH</span>
-              </div>
-              <div class="bnpb-grid-item">
-                <span class="bnpb-grid-val">±2% RH</span>
-                <span class="bnpb-grid-lbl">Akurasi RH</span>
+                <span class="bnpb-grid-lbl">Ambang RH</span>
               </div>
               <div class="bnpb-grid-item">
                 <span class="bnpb-grid-val sync-clockWib">--:--:-- WIB</span>
                 <span class="bnpb-grid-lbl">Waktu Update</span>
               </div>
             </div>
+
+            <!-- Kompatibilitas ID Telemetri -->
+            <div style="display: none;" aria-hidden="true">
+              <span id="tagUdara"></span>
+              <div id="barUdara"></div>
+              <span id="pctSuhu"></span>
+            </div>
           </div>
 
-          <!-- Col 3: Status Indeks Bahaya Multi-Bencana (Karhutla & Longsor) -->
+          <!-- Col 2: Status Indeks Bahaya Multi-Bencana (Karhutla & Longsor) -->
           <div class="bnpb-station-col">
             <div class="bnpb-station-top">
               <span class="bnpb-station-name">Indeks Bahaya Multi-Bencana</span>
@@ -829,7 +783,7 @@
   <script src="js/config.js?v=4.1.0"></script>
 
   <!-- Logika Aplikasi Peta & Telemetri -->
-  <script src="js/app.js?v=4.8.3"></script>
+  <script src="js/app.js?v=4.8.4"></script>
 
 </body>
 </html>
