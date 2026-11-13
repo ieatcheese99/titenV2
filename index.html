@@ -31,7 +31,7 @@
   <link rel="stylesheet" href="assets/vendor/leaflet.min.css" />
 
   <!-- Stylesheet Utama EWS TITEN (Command Center Layout - Light Mode) -->
-  <link rel="stylesheet" href="css/style.css?v=4.5.0" />
+  <link rel="stylesheet" href="css/style.css?v=4.6.0" />
 </head>
 <body class="bnpb-app-container select-none">
 
@@ -378,138 +378,164 @@
           </div>
         </div>
 
-        <!-- 4 Lidar-Style Columns -->
+        <!-- 3 Lidar-Style Columns: Sensor Tanah Longsor -->
         <div class="bnpb-stations-grid">
 
           <!-- Col 1: Kemiringan Lereng (Pitch & Roll MPU6050) -->
           <div class="bnpb-station-col">
-            <div>
-              <div class="bnpb-station-top">
-                <span class="bnpb-station-name">Kemiringan Lereng (Pitch &amp; Roll)</span>
-                <i data-lucide="calendar" style="width: 12px; height: 12px;"></i>
-              </div>
-              <div class="bnpb-station-alert">
-                Status Operasional Sensor: Normal &amp; Terkalibrasi
-              </div>
-              <div class="bnpb-station-sub">Sensor Inersia 6-DOF Giroskop &amp; Akselerometer MPU6050</div>
+            <div class="bnpb-station-top">
+              <span class="bnpb-station-name">Kemiringan Lereng</span>
+              <i data-lucide="calendar" style="width: 12px; height: 12px;"></i>
+            </div>
+            <div class="bnpb-station-alert">
+              Status Operasional: Normal &amp; Terkalibrasi
+            </div>
+            <div class="bnpb-station-sub">Sensor MPU6050 · Pitch &amp; Roll 6-DOF</div>
 
-              <div class="bnpb-station-hero" style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                  <svg class="bnpb-hero-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 20h18L12 4z"/></svg>
-                  <div class="bnpb-hero-val-box" style="text-align: left;">
-                    <div class="bnpb-hero-val">
-                      <span id="valMiring">--</span><span class="bnpb-hero-unit">°</span>
-                    </div>
-                    <div class="bnpb-hero-label">Pitch (Sumbu X)</div>
-                  </div>
+            <div class="bnpb-station-hero">
+              <svg class="bnpb-hero-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 20h18L12 4z"/></svg>
+              <div class="bnpb-hero-val-box">
+                <div class="bnpb-hero-val">
+                  <span id="valMiring">--</span><span class="bnpb-hero-unit">°</span>
                 </div>
-                <div class="bnpb-hero-val-box" style="text-align: right;">
-                  <div class="bnpb-hero-val" style="color: var(--color-primary);">
-                    <span id="subValMiringY">Y: --°</span>
-                  </div>
-                  <div class="bnpb-hero-label">Roll (Sumbu Y)</div>
-                </div>
-              </div>
-
-              <div class="progress-container">
-                <div id="barMiring" class="progress-bar-fill" style="width: 0%;"></div>
+                <div class="bnpb-hero-label">Pitch X · <span id="subValMiringY" style="color: var(--color-primary); font-weight: 700;">Y: --°</span></div>
               </div>
             </div>
 
-            <div class="bnpb-station-table">
-              <div class="bnpb-tbl-row">
-                <span class="tbl-k">Status Kemiringan</span>
-                <span id="tagMiring" class="tbl-v text-emerald-600">NORMAL</span>
+            <div class="progress-container">
+              <div id="barMiring" class="progress-bar-fill" style="width: 0%;"></div>
+            </div>
+
+            <div class="bnpb-card-grid">
+              <div class="bnpb-grid-item">
+                <span id="tagMiring" class="bnpb-grid-val text-emerald-600">NORMAL</span>
+                <span class="bnpb-grid-lbl">Status</span>
               </div>
-              <div class="bnpb-tbl-row">
-                <span class="tbl-k">Ambang Batas</span>
-                <span id="thresholdLabelMiring" class="tbl-v">Waspada: ≥12°</span>
+              <div class="bnpb-grid-item">
+                <span class="bnpb-grid-val">MPU6050 I2C</span>
+                <span class="bnpb-grid-lbl">Sensor Inersia</span>
               </div>
-              <div class="bnpb-tbl-row">
-                <span class="tbl-k">Beban Kritis Lereng</span>
-                <span id="pctMiring" class="tbl-v">0%</span>
+              <div class="bnpb-grid-item">
+                <span id="thresholdLabelMiring" class="bnpb-grid-val">Waspada: ≥12°</span>
+                <span class="bnpb-grid-lbl">Ambang Batas</span>
+              </div>
+              <div class="bnpb-grid-item">
+                <span id="pctMiring" class="bnpb-grid-val">0%</span>
+                <span class="bnpb-grid-lbl">Beban Kritis</span>
+              </div>
+              <div class="bnpb-grid-item">
+                <span class="bnpb-grid-val">Offset Nol</span>
+                <span class="bnpb-grid-lbl">Kalibrasi Drift</span>
+              </div>
+              <div class="bnpb-grid-item">
+                <span class="bnpb-grid-val sync-clockWib">--:--:-- WIB</span>
+                <span class="bnpb-grid-lbl">Waktu Update</span>
               </div>
             </div>
           </div>
 
-          <!-- Col 3: Kelembapan Tanah -->
+          <!-- Col 2: Kelembapan Tanah (Air Pori) -->
           <div class="bnpb-station-col">
-            <div>
-              <div class="bnpb-station-top">
-                <span class="bnpb-station-name">Kelembapan Tanah</span>
-                <i data-lucide="calendar" style="width: 12px; height: 12px;"></i>
-              </div>
-              <div class="bnpb-station-alert">
-                Sensor Kapasitif VWC Air Pori
-              </div>
-              <div class="bnpb-station-sub">Saturasi Air Pori &amp; Tekanan Tanah</div>
+            <div class="bnpb-station-top">
+              <span class="bnpb-station-name">Kelembapan Tanah</span>
+              <i data-lucide="calendar" style="width: 12px; height: 12px;"></i>
+            </div>
+            <div class="bnpb-station-alert">
+              Sensor Kapasitif VWC Air Pori
+            </div>
+            <div class="bnpb-station-sub">Saturasi Air Pori &amp; Tekanan Tanah</div>
 
-              <div class="bnpb-station-hero">
-                <svg class="bnpb-hero-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg>
-                <div class="bnpb-hero-val-box">
-                  <div class="bnpb-hero-val">
-                    <span id="valTanah">--</span><span class="bnpb-hero-unit">%</span>
-                  </div>
-                  <div class="bnpb-hero-label">Saturasi VWC</div>
+            <div class="bnpb-station-hero">
+              <svg class="bnpb-hero-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg>
+              <div class="bnpb-hero-val-box">
+                <div class="bnpb-hero-val">
+                  <span id="valTanah">--</span><span class="bnpb-hero-unit">%</span>
                 </div>
-              </div>
-
-              <div class="progress-container">
-                <div id="barTanah" class="progress-bar-fill" style="width: 0%;"></div>
+                <div class="bnpb-hero-label">Saturasi VWC</div>
               </div>
             </div>
 
-            <div class="bnpb-station-table">
-              <div class="bnpb-tbl-row">
-                <span class="tbl-k">Status</span>
-                <span id="tagTanah" class="tbl-v text-emerald-600">NORMAL</span>
+            <div class="progress-container">
+              <div id="barTanah" class="progress-bar-fill" style="width: 0%;"></div>
+            </div>
+
+            <div class="bnpb-card-grid">
+              <div class="bnpb-grid-item">
+                <span id="tagTanah" class="bnpb-grid-val text-emerald-600">NORMAL</span>
+                <span class="bnpb-grid-lbl">Status</span>
               </div>
-              <div class="bnpb-tbl-row">
-                <span class="tbl-k">Ambang Batas</span>
-                <span id="thresholdLabelTanah" class="tbl-v">Waspada: ≥60%</span>
+              <div class="bnpb-grid-item">
+                <span class="bnpb-grid-val">Kapasitif v1.2</span>
+                <span class="bnpb-grid-lbl">Tipe Sensor</span>
               </div>
-              <div class="bnpb-tbl-row">
-                <span class="tbl-k">Tingkat Saturasi</span>
-                <span id="pctTanah" class="tbl-v">0%</span>
+              <div class="bnpb-grid-item">
+                <span id="thresholdLabelTanah" class="bnpb-grid-val">Waspada: ≥60%</span>
+                <span class="bnpb-grid-lbl">Ambang Batas</span>
+              </div>
+              <div class="bnpb-grid-item">
+                <span id="pctTanah" class="bnpb-grid-val">0%</span>
+                <span class="bnpb-grid-lbl">Tingkat Saturasi</span>
+              </div>
+              <div class="bnpb-grid-item">
+                <span class="bnpb-grid-val">Kedalaman 30cm</span>
+                <span class="bnpb-grid-lbl">Posisi Probe</span>
+              </div>
+              <div class="bnpb-grid-item">
+                <span class="bnpb-grid-val sync-clockWib">--:--:-- WIB</span>
+                <span class="bnpb-grid-lbl">Waktu Update</span>
               </div>
             </div>
           </div>
 
-          <!-- Col 4: Getaran Tanah -->
+          <!-- Col 3: Getaran Seismik (Micro-vibe) -->
           <div class="bnpb-station-col" id="cardGetaran">
-            <div>
-              <div class="bnpb-station-top">
-                <span class="bnpb-station-name">Getaran Seismik</span>
-                <i data-lucide="calendar" style="width: 12px; height: 12px;"></i>
-              </div>
-              <div class="bnpb-station-alert">
-                Deteksi Dini Pergerakan Tanah Lereng
-              </div>
-              <div class="bnpb-station-sub">Akselerasi Getaran / Micro-vibe</div>
+            <div class="bnpb-station-top">
+              <span class="bnpb-station-name">Getaran Seismik</span>
+              <i data-lucide="calendar" style="width: 12px; height: 12px;"></i>
+            </div>
+            <div class="bnpb-station-alert">
+              Deteksi Dini Pergerakan Tanah Lereng
+            </div>
+            <div class="bnpb-station-sub">Akselerasi Getaran / RMS Micro-vibe</div>
 
-              <div class="bnpb-station-hero">
-                <svg class="bnpb-hero-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-                <div class="bnpb-hero-val-box">
-                  <div class="bnpb-hero-val">
-                    <span id="valGetaran">--</span><span class="bnpb-hero-unit">g</span>
-                  </div>
-                  <div class="bnpb-hero-label">RMS Micro-vibe</div>
+            <div class="bnpb-station-hero">
+              <svg class="bnpb-hero-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+              <div class="bnpb-hero-val-box">
+                <div class="bnpb-hero-val">
+                  <span id="valGetaran">--</span><span class="bnpb-hero-unit">g</span>
                 </div>
+                <div class="bnpb-hero-label">RMS Micro-vibe</div>
               </div>
             </div>
 
-            <div class="bnpb-station-table">
-              <div class="bnpb-tbl-row">
-                <span class="tbl-k">Status</span>
-                <span id="tagGetaran" class="tbl-v text-emerald-600">STABIL</span>
+            <div class="progress-container">
+              <div id="barGetaran" class="progress-bar-fill" style="width: 0%;"></div>
+            </div>
+
+            <div class="bnpb-card-grid">
+              <div class="bnpb-grid-item">
+                <span id="tagGetaran" class="bnpb-grid-val text-emerald-600">STABIL</span>
+                <span class="bnpb-grid-lbl">Status</span>
               </div>
-              <div class="bnpb-tbl-row">
-                <span class="tbl-k">Sensitivitas</span>
-                <span class="tbl-v">16-bit ADC</span>
+              <div class="bnpb-grid-item">
+                <span class="bnpb-grid-val">16-bit ADC</span>
+                <span class="bnpb-grid-lbl">Sensitivitas</span>
               </div>
-              <div class="bnpb-tbl-row">
-                <span class="tbl-k">Ambang Bahaya</span>
-                <span class="tbl-v">>0.25 g</span>
+              <div class="bnpb-grid-item">
+                <span class="bnpb-grid-val">&gt;0.25 g</span>
+                <span class="bnpb-grid-lbl">Ambang Bahaya</span>
+              </div>
+              <div class="bnpb-grid-item">
+                <span class="bnpb-grid-val">433 MHz LoRa</span>
+                <span class="bnpb-grid-lbl">Transmisi</span>
+              </div>
+              <div class="bnpb-grid-item">
+                <span class="bnpb-grid-val">Zero Drift</span>
+                <span class="bnpb-grid-lbl">Filter Gangguan</span>
+              </div>
+              <div class="bnpb-grid-item">
+                <span class="bnpb-grid-val sync-clockWib">--:--:-- WIB</span>
+                <span class="bnpb-grid-lbl">Waktu Update</span>
               </div>
             </div>
           </div>
@@ -517,112 +543,184 @@
         </div>
       </div>
 
-      <!-- 2. SENSOR KARHUTLA & SEISMOGRAM (WIDTH 50%) -->
+      <!-- 2. SENSOR KARHUTLA & IKLIM MIKRO (WIDTH 50%) -->
       <div class="bnpb-col-sensor">
         <div class="bnpb-sensor-header">
           <div>
-            <h3 class="bnpb-sensor-title">Sensor Karhutla &amp; Seismogram</h3>
-            <p class="bnpb-sensor-subtitle">Monitoring Suhu, Kelembapan Udara &amp; Gelombang Telemetri</p>
+            <h3 class="bnpb-sensor-title">Sensor Karhutla &amp; Iklim Mikro</h3>
+            <p class="bnpb-sensor-subtitle">Monitoring Suhu, Kelembapan Udara &amp; Indeks Bahaya Kebakaran</p>
           </div>
           <div class="bnpb-sensor-actions">
             <button title="Segarkan Data"><i data-lucide="rotate-cw"></i></button>
           </div>
         </div>
 
-        <div class="bnpb-karhutla-container">
-          <!-- 4 Top Stat Cards -->
-          <div class="bnpb-karhutla-stats-grid">
+        <div class="bnpb-stations-grid">
 
-            <!-- Stat 1: Suhu Udara -->
-            <div class="bnpb-karhutla-card">
-              <div class="bnpb-card-top">
-                <span class="bnpb-card-name">Suhu Udara (DHT22)</span>
-                <span id="tagSuhu" class="sensor-status-tag">NORMAL</span>
-              </div>
-              <div class="bnpb-card-body">
-                <div class="bnpb-val-large">
-                  <span id="valSuhu">--</span>
-                  <span class="bnpb-val-unit">°C</span>
+          <!-- Col 1: Suhu Udara (DHT22) -->
+          <div class="bnpb-station-col">
+            <div class="bnpb-station-top">
+              <span class="bnpb-station-name">Suhu Udara (DHT22)</span>
+              <i data-lucide="calendar" style="width: 12px; height: 12px;"></i>
+            </div>
+            <div class="bnpb-station-alert">
+              Monitoring Suhu Lingkungan Node TRILOGY
+            </div>
+            <div class="bnpb-station-sub">Termometer Digital Akurasi ±0.5°C</div>
+
+            <div class="bnpb-station-hero">
+              <svg class="bnpb-hero-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>
+              <div class="bnpb-hero-val-box">
+                <div class="bnpb-hero-val">
+                  <span id="valSuhu">--</span><span class="bnpb-hero-unit">°C</span>
                 </div>
-                <span class="bnpb-val-sub">Termometer</span>
-              </div>
-              <div class="progress-container">
-                <div id="barSuhu" class="progress-bar-fill" style="width: 0%;"></div>
-              </div>
-              <div class="bnpb-card-foot">
-                <span id="thresholdLabelSuhu">Waspada: ≥34°C</span>
-                <span id="pctSuhu">0%</span>
+                <div class="bnpb-hero-label">Termometer Suhu</div>
               </div>
             </div>
 
-            <!-- Stat 2: Kelembapan Udara -->
-            <div class="bnpb-karhutla-card">
-              <div class="bnpb-card-top">
-                <span class="bnpb-card-name">Kelembapan Udara (RH)</span>
-                <span id="tagUdara" class="sensor-status-tag">NORMAL</span>
-              </div>
-              <div class="bnpb-card-body">
-                <div class="bnpb-val-large">
-                  <span id="valUdara">--</span>
-                  <span class="bnpb-val-unit">%</span>
-                </div>
-                <span class="bnpb-val-sub">Higrometer</span>
-              </div>
-              <div class="progress-container">
-                <div id="barUdara" class="progress-bar-fill" style="width: 0%;"></div>
-              </div>
-              <div class="bnpb-card-foot">
-                <span id="thresholdLabelUdara">Waspada: ≤45%</span>
-                <span id="pctUdara">0%</span>
-              </div>
+            <div class="progress-container">
+              <div id="barSuhu" class="progress-bar-fill" style="width: 0%;"></div>
             </div>
 
-            <!-- Stat 3: Indeks Bahaya Karhutla -->
-            <div id="cardSummaryKarhutla" class="bnpb-karhutla-card deck-summary-card status-normal">
-              <div class="bnpb-card-top">
-                <span class="bnpb-card-name">Status Bahaya Karhutla</span>
-                <i data-lucide="flame" style="width: 14px; height: 14px; color: var(--color-siaga);"></i>
+            <div class="bnpb-card-grid">
+              <div class="bnpb-grid-item">
+                <span id="tagSuhu" class="bnpb-grid-val text-emerald-600">NORMAL</span>
+                <span class="bnpb-grid-lbl">Status</span>
               </div>
-              <div class="bnpb-card-body">
-                <span id="badgeSummaryKarhutla" class="bnpb-status-pill-big">NORMAL</span>
+              <div class="bnpb-grid-item">
+                <span class="bnpb-grid-val">DHT22 Digital</span>
+                <span class="bnpb-grid-lbl">Sensor Suhu</span>
               </div>
-              <div class="bnpb-card-foot">
-                <span>Evaluasi Suhu &amp; RH</span>
+              <div class="bnpb-grid-item">
+                <span id="thresholdLabelSuhu" class="bnpb-grid-val">Waspada: ≥34°C</span>
+                <span class="bnpb-grid-lbl">Ambang Batas</span>
+              </div>
+              <div class="bnpb-grid-item">
+                <span id="pctSuhu" class="bnpb-grid-val">0%</span>
+                <span class="bnpb-grid-lbl">Beban Termal</span>
+              </div>
+              <div class="bnpb-grid-item">
+                <span class="bnpb-grid-val">±0.5°C</span>
+                <span class="bnpb-grid-lbl">Toleransi</span>
+              </div>
+              <div class="bnpb-grid-item">
+                <span class="bnpb-grid-val sync-clockWib">--:--:-- WIB</span>
+                <span class="bnpb-grid-lbl">Waktu Update</span>
               </div>
             </div>
-
-            <!-- Stat 4: Indeks Bahaya Longsor -->
-            <div id="cardSummaryLongsor" class="bnpb-karhutla-card deck-summary-card status-normal">
-              <div class="bnpb-card-top">
-                <span class="bnpb-card-name">Status Bahaya Longsor</span>
-                <i data-lucide="mountain" style="width: 14px; height: 14px; color: var(--color-normal);"></i>
-              </div>
-              <div class="bnpb-card-body">
-                <span id="badgeSummaryLongsor" class="bnpb-status-pill-big">NORMAL</span>
-              </div>
-              <div class="bnpb-card-foot">
-                <span>Evaluasi Sudut &amp; Air Pori</span>
-              </div>
-            </div>
-
           </div>
 
-          <!-- Seismogram Waveform Chart Section -->
-          <div class="bnpb-seismo-box">
-            <div class="bnpb-seismo-header">
-              <span class="bnpb-seismo-title">Gelombang Seismogram &amp; Riwayat Telemetri</span>
-              <div class="history-controls">
-                <button class="btn-range-filter active" data-range="6h">6 Jam</button>
-                <button class="btn-range-filter" data-range="24h">24 Jam</button>
-                <button class="btn-range-filter" data-range="7d">7 Hari</button>
+          <!-- Col 2: Kelembapan Udara (RH) -->
+          <div class="bnpb-station-col">
+            <div class="bnpb-station-top">
+              <span class="bnpb-station-name">Kelembapan Udara (RH)</span>
+              <i data-lucide="calendar" style="width: 12px; height: 12px;"></i>
+            </div>
+            <div class="bnpb-station-alert">
+              Higrometer Relatif RH Ruang Terbuka
+            </div>
+            <div class="bnpb-station-sub">Sensor RH Deteksi Udara Kering Karhutla</div>
+
+            <div class="bnpb-station-hero">
+              <svg class="bnpb-hero-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+              <div class="bnpb-hero-val-box">
+                <div class="bnpb-hero-val">
+                  <span id="valUdara">--</span><span class="bnpb-hero-unit">%</span>
+                </div>
+                <div class="bnpb-hero-label">Higrometer Udara</div>
               </div>
             </div>
-            <div class="chart-wrapper bnpb-chart-wrapper">
-              <canvas id="telemetryChart"></canvas>
+
+            <div class="progress-container">
+              <div id="barUdara" class="progress-bar-fill" style="width: 0%;"></div>
+            </div>
+
+            <div class="bnpb-card-grid">
+              <div class="bnpb-grid-item">
+                <span id="tagUdara" class="bnpb-grid-val text-emerald-600">NORMAL</span>
+                <span class="bnpb-grid-lbl">Status</span>
+              </div>
+              <div class="bnpb-grid-item">
+                <span class="bnpb-grid-val">45% - 80%</span>
+                <span class="bnpb-grid-lbl">Rentang Aman</span>
+              </div>
+              <div class="bnpb-grid-item">
+                <span id="thresholdLabelUdara" class="bnpb-grid-val">Waspada: ≤45%</span>
+                <span class="bnpb-grid-lbl">Ambang Batas</span>
+              </div>
+              <div class="bnpb-grid-item">
+                <span id="pctUdara" class="bnpb-grid-val">0%</span>
+                <span class="bnpb-grid-lbl">Saturasi RH</span>
+              </div>
+              <div class="bnpb-grid-item">
+                <span class="bnpb-grid-val">±2% RH</span>
+                <span class="bnpb-grid-lbl">Akurasi RH</span>
+              </div>
+              <div class="bnpb-grid-item">
+                <span class="bnpb-grid-val sync-clockWib">--:--:-- WIB</span>
+                <span class="bnpb-grid-lbl">Waktu Update</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Col 3: Status Indeks Bahaya Multi-Bencana (Karhutla & Longsor) -->
+          <div class="bnpb-station-col">
+            <div class="bnpb-station-top">
+              <span class="bnpb-station-name">Indeks Bahaya Multi-Bencana</span>
+              <i data-lucide="shield-check" style="width: 12px; height: 12px;"></i>
+            </div>
+            <div class="bnpb-station-alert">
+              Sistem Analisis Risiko Otomatis Realtime
+            </div>
+            <div class="bnpb-station-sub">Kompilasi Bahaya Karhutla &amp; Tanah Longsor</div>
+
+            <div class="bnpb-station-hero" style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+              <div id="cardSummaryKarhutla" style="flex: 1; text-align: left;">
+                <span id="badgeSummaryKarhutla" class="bnpb-status-pill-big">NORMAL</span>
+                <div class="bnpb-hero-label" style="margin-top: 4px;">Bahaya Karhutla</div>
+              </div>
+              <div id="cardSummaryLongsor" style="flex: 1; text-align: right;">
+                <span id="badgeSummaryLongsor" class="bnpb-status-pill-big">NORMAL</span>
+                <div class="bnpb-hero-label" style="margin-top: 4px;">Bahaya Longsor</div>
+              </div>
+            </div>
+
+            <div class="progress-container">
+              <div class="progress-bar-fill" style="width: 100%; background-color: var(--color-normal);"></div>
+            </div>
+
+            <div class="bnpb-card-grid">
+              <div class="bnpb-grid-item">
+                <span class="bnpb-grid-val">Suhu &amp; RH</span>
+                <span class="bnpb-grid-lbl">Indikator Karhutla</span>
+              </div>
+              <div class="bnpb-grid-item">
+                <span class="bnpb-grid-val">Pitch &amp; Pori</span>
+                <span class="bnpb-grid-lbl">Indikator Longsor</span>
+              </div>
+              <div class="bnpb-grid-item">
+                <span class="bnpb-grid-val">Terpadu</span>
+                <span class="bnpb-grid-lbl">Protokol Siaga</span>
+              </div>
+              <div class="bnpb-grid-item">
+                <span class="bnpb-grid-val">Sirine Standby</span>
+                <span class="bnpb-grid-lbl">Alarm Lapangan</span>
+              </div>
+              <div class="bnpb-grid-item">
+                <span class="bnpb-grid-val">TRILOGY IoT</span>
+                <span class="bnpb-grid-lbl">Engine EWS</span>
+              </div>
+              <div class="bnpb-grid-item">
+                <span class="bnpb-grid-val sync-clockWib">--:--:-- WIB</span>
+                <span class="bnpb-grid-lbl">Waktu Update</span>
+              </div>
             </div>
           </div>
 
         </div>
+
+        <!-- Canvas Tersembunyi (Kompatibilitas app.js Chart.js Instance) -->
+        <canvas id="telemetryChart" style="display: none;"></canvas>
       </div>
 
     </div>

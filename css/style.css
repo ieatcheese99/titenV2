@@ -351,10 +351,10 @@ button, input, select {
   overflow: hidden;
 }
 
-/* BARIS ATAS: TINGGI ~52% */
+/* BARIS ATAS: TINGGI ~57% */
 .bnpb-row-top {
   display: flex;
-  height: 52%;
+  height: 57%;
   gap: 8px;
   min-height: 0;
 }
@@ -833,11 +833,11 @@ button, input, select {
 }
 
 /* ==========================================================================
-   5. BARIS BAWAH: TINGGI ~48% (SENSOR LONGSOR & KARHUTLA)
+   5. BARIS BAWAH: TINGGI ~43% (SENSOR LONGSOR & KARHUTLA)
    ========================================================================== */
 .bnpb-row-bottom {
   display: flex;
-  height: 48%;
+  height: 43%;
   gap: 8px;
   min-height: 0;
 }
@@ -920,10 +920,11 @@ button, input, select {
   background-color: var(--bg-surface-muted);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  padding: 7px;
+  padding: 8px 10px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 4px;
   font-size: 9.5px;
 }
 
@@ -933,7 +934,7 @@ button, input, select {
   justify-content: space-between;
   padding-bottom: 3px;
   border-bottom: 1px solid var(--border-subtle);
-  margin-bottom: 5px;
+  margin-bottom: 4px;
 }
 
 .bnpb-station-name {
@@ -946,17 +947,17 @@ button, input, select {
   background: #FFFBEB;
   border: 1px solid #FDE68A;
   color: #92400E;
-  padding: 3px 5px;
+  padding: 2.5px 5px;
   border-radius: 4px;
   font-size: 8px;
   line-height: 1.2;
-  margin-bottom: 5px;
+  margin-bottom: 2px;
 }
 
 .bnpb-station-sub {
   font-size: 8.5px;
   color: var(--text-muted);
-  margin-bottom: 5px;
+  margin-bottom: 4px;
 }
 
 .bnpb-station-hero {
@@ -968,9 +969,10 @@ button, input, select {
 }
 
 .bnpb-hero-svg {
-  width: 26px;
-  height: 26px;
+  width: 44px;
+  height: 44px;
   color: var(--color-primary);
+  flex-shrink: 0;
 }
 
 .bnpb-hero-val-box {
@@ -978,48 +980,56 @@ button, input, select {
 }
 
 .bnpb-hero-val {
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 24px;
+  font-weight: 800;
   color: var(--text-primary);
   font-family: var(--font-mono);
   line-height: 1;
 }
 
 .bnpb-hero-unit {
-  font-size: 10px;
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 600;
   color: var(--text-muted);
   margin-left: 2px;
 }
 
 .bnpb-hero-label {
-  font-size: 8px;
+  font-size: 8.5px;
   color: var(--text-muted);
-  margin-top: 1px;
+  margin-top: 2px;
+  font-weight: 600;
 }
 
-.bnpb-station-table {
+.bnpb-card-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 8px;
   border-top: 1px solid var(--border-subtle);
-  padding-top: 4px;
-  margin-top: 4px;
+  padding-top: 5px;
+  margin-top: 5px;
+}
+
+.bnpb-grid-item {
   display: flex;
   flex-direction: column;
-  gap: 2.5px;
-  font-size: 8px;
+  gap: 1px;
 }
 
-.bnpb-tbl-row {
-  display: flex;
-  justify-content: space-between;
-}
-
-.tbl-k {
-  color: var(--text-muted);
-}
-
-.tbl-v {
+.bnpb-grid-val {
+  font-size: 9.5px;
+  font-weight: 700;
   color: var(--text-secondary);
-  font-weight: 500;
+  font-family: var(--font-mono);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bnpb-grid-lbl {
+  font-size: 8px;
+  color: var(--text-muted);
+  text-transform: capitalize;
 }
 
 /* Panel Kanan: Karhutla 4 Card + Seismogram Waveform */
