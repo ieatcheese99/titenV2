@@ -350,13 +350,7 @@
     const html = `
       <div class="custom-node-marker" title="${escapeHtml(node.nama)} · ${worstLevel}">
         ${pulseRingHtml}
-        <div class="marker-pin" style="background-color: ${color};">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path>
-            <path d="M12 12v9"></path>
-            <path d="m8 17 4 4 4-4"></path>
-          </svg>
-        </div>
+        <div class="marker-pin" style="background-color: ${color};"></div>
         <div class="marker-label">${escapeHtml(node.nama)}</div>
       </div>
     `;
@@ -364,9 +358,9 @@
     return L.divIcon({
       className: "node-leaflet-div-icon",
       html: html,
-      iconSize: [28, 28],
-      iconAnchor: [14, 14],
-      popupAnchor: [0, -16]
+      iconSize: [24, 24],
+      iconAnchor: [12, 12],
+      popupAnchor: [0, -14]
     });
   }
 

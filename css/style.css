@@ -1495,25 +1495,23 @@ button, input, select {
 }
 
 .marker-pin {
-  width: 26px;
-  height: 26px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  border: 2px solid #FFFFFF;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #FFFFFF;
-  box-shadow: 0 2px 8px rgba(0, 74, 173, 0.4);
-  transition: transform 0.2s ease;
+  border: 2.5px solid #FFFFFF;
+  display: block;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .custom-node-marker:hover .marker-pin {
-  transform: scale(1.15);
+  transform: scale(1.18);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.45);
 }
 
 .marker-label {
   position: absolute;
-  top: 30px;
+  top: 28px;
   left: 50%;
   transform: translateX(-50%);
   background: rgba(255, 255, 255, 0.95);
@@ -1533,8 +1531,8 @@ button, input, select {
   position: absolute;
   top: -6px;
   left: -6px;
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: var(--color-awas);
   opacity: 0.75;
