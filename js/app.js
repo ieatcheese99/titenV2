@@ -24,6 +24,7 @@
     hysteresisCounters: new Map(), // Map<nodeId, { count: number, targetLevel: string }>
     isGatewayOnline: false,
     isNodeOnline: false,
+    isBrowserConnected: false,
     lastFirebaseUpdate: 0,
     isDemoMode: false,
     simulatedOverride: null
@@ -723,9 +724,8 @@
       dataTanah.push(Number((curTanah + (Math.sin(i * 0.5) * 3)).toFixed(0)));
     }
 
-    const isDark = document.documentElement.getAttribute("data-theme") === "dark";
-    const gridColor = isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)";
-    const textColor = isDark ? "#94A3B8" : "#64748B";
+    const gridColor = "rgba(0, 0, 0, 0.06)";
+    const textColor = "#64748B";
 
     state.chartInstance = new Chart(canvas, {
       type: "line",
@@ -796,8 +796,93 @@
   // =========================================================================
   function isDataStale(ts) {
     if (!ts) return true;
-    const diffSec = (Date.now() - Number(ts)) / 1000;
+    let numTs = Number(ts);
+    if (numTs < 1e11 && numTs > 0) numTs = numTs * 1000;
+    const diffSec = (Date.now() - numTs) / 1000;
     return diffSec > CONFIG.NETWORK.STALE_DATA_TIMEOUT_SEC;
+  }
+
+  function evaluateNetworkStatus() {
+    const now = Date.now();
+    const textGw = getEl("textGateway");
+    const dotGw = getEl("dotGateway");
+    const textNode = getEl("textNode");
+    const dotNode = getEl("dotNode");
+
+    // Jika koneksi internet browser terputus
+    if (!state.isBrowserConnected) {
+      state.isGatewayOnline = false;
+      state.isNodeOnline = false;
+      if (textGw) textGw.textContent = "Gateway: Terputus";
+      if (dotGw) {
+        dotGw.style.backgroundColor = "var(--color-offline)";
+        dotGw.style.boxShadow = "none";
+      }
+      if (textNode) textNode.textContent = "Node: Offline";
+      if (dotNode) {
+        dotNode.style.backgroundColor = "var(--color-offline)";
+        dotNode.style.boxShadow = "none";
+      }
+      updateSystemIssueBanner();
+      updateGlobalStatusSummary();
+      return;
+    }
+
+    // Cari timestamp paket data terbaru dari seluruh node
+    let latestTs = 0;
+    state.nodes.forEach(node => {
+      if (node.latest && node.latest.ts) {
+        let t = Number(node.latest.ts);
+        if (t < 1e11 && t > 0) t = t * 1000;
+        if (t > latestTs) latestTs = t;
+      }
+    });
+
+    if (latestTs === 0 && state.lastFirebaseUpdate > 0) {
+      latestTs = state.lastFirebaseUpdate;
+    }
+
+    const staleTimeoutMs = (CONFIG.NETWORK.STALE_DATA_TIMEOUT_SEC || 180) * 1000;
+    const isOnline = latestTs > 0 && (now - latestTs <= staleTimeoutMs);
+
+    state.isGatewayOnline = isOnline;
+    state.isNodeOnline = isOnline;
+
+    if (isOnline) {
+      if (textGw) textGw.textContent = "Gateway: Online";
+      if (dotGw) {
+        dotGw.style.backgroundColor = "var(--color-normal)";
+        dotGw.style.boxShadow = "0 0 6px var(--color-normal)";
+      }
+      if (textNode) textNode.textContent = "Node: Terhubung";
+      if (dotNode) {
+        dotNode.style.backgroundColor = "var(--color-normal)";
+        dotNode.style.boxShadow = "0 0 6px var(--color-normal)";
+      }
+    } else {
+      if (textGw) textGw.textContent = "Gateway: Offline";
+      if (dotGw) {
+        dotGw.style.backgroundColor = "var(--color-offline)";
+        dotGw.style.boxShadow = "none";
+      }
+      if (textNode) textNode.textContent = "Node: Offline";
+      if (dotNode) {
+        dotNode.style.backgroundColor = "var(--color-offline)";
+        dotNode.style.boxShadow = "none";
+      }
+    }
+
+    // Refresh marker jika status stale berubah
+    state.nodes.forEach(node => {
+      const isStale = isDataStale(node.latest ? node.latest.ts : null);
+      if (node._lastStaleState !== isStale) {
+        node._lastStaleState = isStale;
+        renderOrUpdateNodeMarker(node);
+      }
+    });
+
+    updateSystemIssueBanner();
+    updateGlobalStatusSummary();
   }
 
   function updateSystemIssueBanner() {
@@ -974,34 +1059,21 @@
 
       // Monitor status koneksi browser ke Firebase
       db.ref(".info/connected").on("value", (snap) => {
-        state.isGatewayOnline = snap.val() === true;
-        const textGw = getEl("textGateway");
-        const dotGw = getEl("dotGateway");
-
-        if (state.isGatewayOnline) {
-          if (textGw) textGw.textContent = "Gateway: Online";
-          if (dotGw) dotGw.style.backgroundColor = "var(--color-normal)";
-        } else {
-          if (textGw) textGw.textContent = "Gateway: Offline";
-          if (dotGw) dotGw.style.backgroundColor = "var(--color-offline)";
-        }
-        updateSystemIssueBanner();
+        state.isBrowserConnected = snap.val() === true;
+        evaluateNetworkStatus();
       });
 
       // 1. Dengarkan schema modern: nodes/
       db.ref("nodes").on("value", (snapshot) => {
         const data = snapshot.val();
-        state.lastFirebaseUpdate = Date.now();
-        state.isNodeOnline = true;
-
-        const textNode = getEl("textNode");
-        const dotNode = getEl("dotNode");
-        if (textNode) textNode.textContent = "Node: Terhubung";
-        if (dotNode) dotNode.style.backgroundColor = "var(--color-normal)";
-
         if (data && typeof data === "object") {
+          let latestPacketTs = 0;
           Object.keys(data).forEach(nodeKey => {
             const raw = data[nodeKey];
+            const rawTs = (raw.latest && raw.latest.ts) ? Number(raw.latest.ts) : 0;
+            const normalizedTs = (rawTs < 1e11 && rawTs > 0) ? rawTs * 1000 : rawTs;
+            if (normalizedTs > latestPacketTs) latestPacketTs = normalizedTs;
+
             const nodeObj = {
               id: nodeKey,
               nama: (raw.meta && raw.meta.nama) ? raw.meta.nama : (raw.nama || nodeKey),
@@ -1014,6 +1086,14 @@
             state.nodes.set(nodeKey, nodeObj);
             renderOrUpdateNodeMarker(nodeObj);
           });
+
+          // Catat waktu paket terakhir (gunakan timestamp data jika valid, atau Date.now() jika tidak ada)
+          if (latestPacketTs > 0) {
+            state.lastFirebaseUpdate = latestPacketTs;
+          } else {
+            state.lastFirebaseUpdate = Date.now();
+          }
+          evaluateNetworkStatus();
         }
       }, (err) => {
         console.warn("Firebase nodes/ listener notice:", err);
@@ -1023,7 +1103,14 @@
       db.ref("ews_data").on("value", (snapshot) => {
         const val = snapshot.val();
         if (val && !state.nodes.has("node-01")) {
-          state.lastFirebaseUpdate = Date.now();
+          const rawTs = val.timestamp ? Number(val.timestamp) : 0;
+          const normalizedTs = (rawTs < 1e11 && rawTs > 0) ? rawTs * 1000 : rawTs;
+          if (normalizedTs > 0) {
+            state.lastFirebaseUpdate = normalizedTs;
+          } else {
+            state.lastFirebaseUpdate = Date.now();
+          }
+
           const fallbackNode = {
             id: CONFIG.DEFAULT_NODE.id,
             nama: CONFIG.DEFAULT_NODE.nama,
@@ -1045,6 +1132,7 @@
           };
           state.nodes.set(fallbackNode.id, fallbackNode);
           renderOrUpdateNodeMarker(fallbackNode);
+          evaluateNetworkStatus();
         }
       }, (err) => {
         console.warn("Firebase ews_data fallback notice:", err);
@@ -1190,6 +1278,7 @@
 
     activeNode.latest = mockData;
     renderOrUpdateNodeMarker(activeNode);
+    evaluateNetworkStatus();
   }
 
   // =========================================================================
@@ -1410,27 +1499,6 @@
       };
     }
 
-    // 9. Toggle Tema Terang/Gelap
-    const btnTheme = getEl("btnToggleTheme");
-    const iconTheme = getEl("iconTheme");
-    if (btnTheme) {
-      btnTheme.onclick = () => {
-        const currentTheme = document.documentElement.getAttribute("data-theme") || "light";
-        const newTheme = currentTheme === "dark" ? "light" : "dark";
-        document.documentElement.setAttribute("data-theme", newTheme);
-        localStorage.setItem("titen_theme", newTheme);
-
-        if (iconTheme) {
-          iconTheme.setAttribute("data-lucide", newTheme === "dark" ? "sun" : "moon");
-          if (window.lucide) window.lucide.createIcons();
-        }
-
-        // Re-render chart jika terbuka
-        const activeNode = state.nodes.get(state.activeNodeId);
-        if (activeNode) renderHistoryChart(activeNode);
-      };
-    }
-
     // Tutup banner peringatan
     const btnCloseBanner = getEl("btnCloseBanner");
     const banner = getEl("systemIssueBanner");
@@ -1450,16 +1518,34 @@
 
       const syncEl = getEl("syncLatency");
       if (syncEl) {
-        if (state.lastFirebaseUpdate > 0) {
-          const diffSec = Math.floor((Date.now() - state.lastFirebaseUpdate) / 1000);
-          syncEl.textContent = `Diperbarui ${diffSec} detik lalu`;
+        let latestTs = 0;
+        state.nodes.forEach(node => {
+          if (node.latest && node.latest.ts) {
+            let t = Number(node.latest.ts);
+            if (t < 1e11 && t > 0) t = t * 1000;
+            if (t > latestTs) latestTs = t;
+          }
+        });
+        if (latestTs === 0 && state.lastFirebaseUpdate > 0) {
+          latestTs = state.lastFirebaseUpdate;
+        }
+
+        if (latestTs > 0) {
+          const diffSec = Math.floor((now.getTime() - latestTs) / 1000);
+          if (diffSec < 60) {
+            syncEl.textContent = `Diperbarui ${Math.max(0, diffSec)} detik lalu`;
+          } else if (diffSec < 3600) {
+            syncEl.textContent = `Diperbarui ${Math.floor(diffSec / 60)} menit lalu`;
+          } else {
+            syncEl.textContent = `Diperbarui ${Math.floor(diffSec / 3600)} jam lalu`;
+          }
         } else {
           syncEl.textContent = "Sinkronisasi: Memuat...";
         }
       }
 
-      // Evaluasi data lama secara periodik
-      updateSystemIssueBanner();
+      // Evaluasi data lama & status koneksi secara aktif setiap detik
+      evaluateNetworkStatus();
     }, 1000);
   }
 
@@ -1467,14 +1553,11 @@
   // 14. INIT ENTRY POINT
   // =========================================================================
   document.addEventListener("DOMContentLoaded", () => {
-    // 1. Terapkan preferensi tema tersimpan
+    // 1. Terapkan tema terang secara permanen
     try {
-      const savedTheme = localStorage.getItem("titen_theme");
-      if (savedTheme) {
-        document.documentElement.setAttribute("data-theme", savedTheme);
-        const iconTheme = getEl("iconTheme");
-        if (iconTheme) iconTheme.setAttribute("data-lucide", savedTheme === "dark" ? "sun" : "moon");
-      }
+      document.documentElement.setAttribute("data-theme", "light");
+      localStorage.removeItem("titen_theme");
+      localStorage.setItem("titen_theme", "light");
     } catch (e) {
       console.warn("Theme init notice:", e);
     }

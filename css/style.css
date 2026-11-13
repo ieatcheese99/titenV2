@@ -47,9 +47,9 @@
   --radius-lg: 14px;
 }
 
-/* Tema Terang (Default) */
-[data-theme="light"],
-:root:not([data-theme="dark"]) {
+/* Tema Terang Permanen (Clean Industrial Light Mode) */
+:root,
+[data-theme="light"] {
   --bg-canvas: #F4F6F9;
   --bg-surface: #FFFFFF;
   --bg-surface-elevated: #FFFFFF;
@@ -70,67 +70,6 @@
   --shadow-lg: 0 10px 25px -4px rgba(15, 23, 42, 0.12), 0 4px 10px -2px rgba(15, 23, 42, 0.06);
 
   --map-filter: none;
-}
-
-/* Tema Gelap */
-[data-theme="dark"] {
-  --bg-canvas: #0A0F19;
-  --bg-surface: #131B2A;
-  --bg-surface-elevated: #1A2436;
-  --bg-surface-muted: #0F1624;
-  --bg-backdrop: rgba(19, 27, 42, 0.92);
-
-  --text-primary: #F1F5F9;
-  --text-secondary: #CBD5E1;
-  --text-muted: #94A3B8;
-  --text-subtle: #64748B;
-
-  --border-subtle: #243044;
-  --border-medium: #334155;
-  --border-strong: #475569;
-
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.45);
-  --shadow-lg: 0 12px 30px rgba(0, 0, 0, 0.55);
-
-  --color-primary-soft: rgba(0, 74, 173, 0.25);
-  --color-normal-soft: rgba(16, 185, 129, 0.16);
-  --color-waspada-soft: rgba(255, 184, 0, 0.16);
-  --color-siaga-soft: rgba(249, 115, 22, 0.16);
-  --color-awas-soft: rgba(220, 38, 38, 0.2);
-  --color-offline-soft: rgba(100, 116, 139, 0.2);
-
-  --map-filter: brightness(0.85) contrast(1.1);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]):not([data-theme="dark"]) {
-    --bg-canvas: #0A0F19;
-    --bg-surface: #131B2A;
-    --bg-surface-elevated: #1A2436;
-    --bg-surface-muted: #0F1624;
-    --bg-backdrop: rgba(19, 27, 42, 0.92);
-
-    --text-primary: #F1F5F9;
-    --text-secondary: #CBD5E1;
-    --text-muted: #94A3B8;
-    --text-subtle: #64748B;
-
-    --border-subtle: #243044;
-    --border-medium: #334155;
-    --border-strong: #475569;
-
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-    --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.45);
-    --shadow-lg: 0 12px 30px rgba(0, 0, 0, 0.55);
-
-    --color-primary-soft: rgba(0, 74, 173, 0.25);
-    --color-normal-soft: rgba(16, 185, 129, 0.16);
-    --color-waspada-soft: rgba(255, 184, 0, 0.16);
-    --color-siaga-soft: rgba(249, 115, 22, 0.16);
-    --color-awas-soft: rgba(220, 38, 38, 0.2);
-    --color-offline-soft: rgba(100, 116, 139, 0.2);
-  }
 }
 
 /* ==========================================================================
@@ -176,11 +115,6 @@ button, input, select {
   height: 100vh;
   z-index: 1;
   background-color: var(--bg-canvas);
-}
-
-/* Penyesuaian tema gelap pada tile OSM */
-[data-theme="dark"] .leaflet-tile-pane {
-  filter: brightness(0.8) contrast(1.15) saturate(0.9);
 }
 
 /* Pastikan atribusi Leaflet rapi di sudut bawah dan tidak tertutup */
@@ -237,17 +171,10 @@ button, input, select {
 }
 
 .opening-zoom-logo.logo-dark-mode {
-  display: none;
+  display: none !important;
 }
 .opening-zoom-logo.logo-light-mode {
-  display: block;
-}
-
-[data-theme="dark"] .opening-zoom-logo.logo-dark-mode {
-  display: block;
-}
-[data-theme="dark"] .opening-zoom-logo.logo-light-mode {
-  display: none;
+  display: block !important;
 }
 
 .btn-skip-zoom {
@@ -317,17 +244,10 @@ button, input, select {
 }
 
 .brand-logo-img.logo-dark-mode {
-  display: none;
+  display: none !important;
 }
 .brand-logo-img.logo-light-mode {
-  display: block;
-}
-
-[data-theme="dark"] .brand-logo-img.logo-dark-mode {
-  display: block;
-}
-[data-theme="dark"] .brand-logo-img.logo-light-mode {
-  display: none;
+  display: block !important;
 }
 
 .brand-text-group {
@@ -1421,9 +1341,18 @@ button, input, select {
   }
 
   .brand-tag,
-  .link-indicators,
   .topbar-time {
     display: none;
+  }
+
+  .link-indicators {
+    display: flex;
+    gap: 4px;
+  }
+
+  .link-pill {
+    padding: 2px 6px;
+    font-size: 10px;
   }
 
   .opening-zoom-banner {
