@@ -152,14 +152,22 @@ button, input, select {
   align-items: center;
   gap: 10px;
   text-decoration: none;
+  max-height: 40px;
+  overflow: hidden;
+  flex-shrink: 0;
 }
 
 .brand-logo-img {
-  width: 32px;
-  height: 32px;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  max-width: 32px !important;
+  max-height: 32px !important;
   border-radius: 6px;
   object-fit: cover;
   display: block;
+  flex-shrink: 0;
   box-shadow: 0 2px 6px rgba(0, 74, 173, 0.25);
 }
 
@@ -1377,9 +1385,16 @@ button, input, select {
 }
 
 .opening-zoom-logo {
-  width: 18px;
-  height: 18px;
-  object-fit: contain;
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  min-height: 18px !important;
+  max-width: 18px !important;
+  max-height: 18px !important;
+  border-radius: 4px;
+  object-fit: cover;
+  flex-shrink: 0;
+  display: block;
 }
 
 .btn-skip-zoom {
