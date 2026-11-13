@@ -1463,10 +1463,13 @@ button, input, select {
   padding: 8px 14px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
   box-shadow: var(--shadow-lg);
   color: var(--text-primary);
   font-size: 11.5px;
+  max-width: 600px;
+  box-sizing: border-box;
 }
 
 .system-issue-banner.hidden {
@@ -1477,6 +1480,8 @@ button, input, select {
   display: flex;
   align-items: center;
   gap: 8px;
+  flex: 1;
+  min-width: 0;
 }
 
 .banner-close {
@@ -1485,6 +1490,10 @@ button, input, select {
   color: var(--text-muted);
   cursor: pointer;
   display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 4px;
 }
 
 .banner-close:hover {
@@ -1504,10 +1513,13 @@ button, input, select {
   padding: 8px 14px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
   box-shadow: var(--shadow-lg);
   font-size: 11.5px;
   color: var(--text-primary);
+  max-width: 520px;
+  box-sizing: border-box;
 }
 
 .audio-prompt-banner.hidden {
@@ -1519,10 +1531,12 @@ button, input, select {
   color: #FFFFFF;
   border: none;
   border-radius: 4px;
-  padding: 4px 10px;
-  font-size: 11px;
+  padding: 5px 12px;
+  font-size: 11.5px;
   font-weight: 600;
   cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .btn-enable-audio:hover {
@@ -1945,14 +1959,126 @@ button, input, select {
 @media (max-width: 768px) {
   .topbar {
     padding: 0 10px;
+    height: 44px;
+    justify-content: space-between;
   }
   
+  .topbar-left {
+    min-width: 0;
+    flex-shrink: 1;
+    overflow: hidden;
+    gap: 8px;
+  }
+
+  .brand-badge {
+    gap: 8px;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .brand-logo-img {
+    height: 24px !important;
+    max-width: 55px !important;
+  }
+
   .brand-name {
-    font-size: 12px;
+    font-size: 13px !important;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .brand-name-sub {
+    display: none !important;
+  }
+
+  .brand-tag {
+    display: none !important;
+  }
+
+  .topbar-summary-chip {
+    display: none !important;
   }
   
+  .topbar-right {
+    flex-shrink: 0;
+    margin-left: auto;
+    gap: 6px;
+  }
+
   .link-indicators {
-    display: none;
+    display: none !important;
+  }
+
+  .time-latency,
+  #syncLatency {
+    display: none !important;
+  }
+
+  .topbar-time {
+    padding: 3px 8px !important;
+    font-size: 11px !important;
+    white-space: nowrap !important;
+  }
+
+  .topbar-time .time-sep,
+  .topbar-time .time-date {
+    display: none !important;
+  }
+
+  /* Banner Sistem & Audio Prompt di Mobile: Bentuk Bar Horizontal Lebar */
+  .system-issue-banner {
+    width: calc(100% - 20px) !important;
+    left: 10px !important;
+    right: 10px !important;
+    top: 50px !important;
+    transform: none !important;
+    padding: 8px 12px !important;
+    box-sizing: border-box !important;
+    border-radius: var(--radius-sm) !important;
+    max-width: none !important;
+    gap: 8px !important;
+  }
+
+  .banner-content {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+  }
+
+  .banner-content div {
+    min-width: 0 !important;
+    flex: 1 !important;
+    font-size: 11px !important;
+    line-height: 1.35 !important;
+  }
+
+  .audio-prompt-banner {
+    width: calc(100% - 20px) !important;
+    left: 10px !important;
+    right: 10px !important;
+    bottom: 12px !important;
+    transform: none !important;
+    padding: 9px 12px !important;
+    box-sizing: border-box !important;
+    border-radius: var(--radius-sm) !important;
+    gap: 8px !important;
+    max-width: none !important;
+  }
+
+  .audio-prompt-banner span {
+    font-size: 11px !important;
+    line-height: 1.3 !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+  }
+
+  .btn-enable-audio {
+    padding: 6px 12px !important;
+    font-size: 11px !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
   }
 
   /* Penyesuaian Indeks Bahaya di Mobile */

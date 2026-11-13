@@ -31,7 +31,7 @@
   <link rel="stylesheet" href="assets/vendor/leaflet.min.css" />
 
   <!-- Stylesheet Utama EWS TITEN (Command Center Layout - Light Mode) -->
-  <link rel="stylesheet" href="css/style.css?v=4.9.4" />
+  <link rel="stylesheet" href="css/style.css?v=4.9.7" />
 </head>
 <body class="bnpb-app-container select-none">
 
@@ -43,7 +43,7 @@
       <a href="#" class="brand-badge" title="EWS TITEN - Tim TRILOGY MAGE 12" style="display: flex; align-items: center; gap: 10px; max-height: 42px; overflow: hidden; text-decoration: none;">
         <img src="assets/logo-white-transparent.png" alt="Logo TITEN" class="brand-logo-img" width="60" height="30" style="height: 30px !important; width: auto !important; max-width: 75px !important; object-fit: contain; flex-shrink: 0; display: block; background: transparent !important;" />
         <div class="brand-text-group">
-          <h1 class="brand-name">EWS TITEN Pemantauan Bencana</h1>
+          <h1 class="brand-name">EWS TITEN <span class="brand-name-sub">Pemantauan Bencana</span></h1>
           <span class="brand-tag">TITEN Live</span>
         </div>
       </a>
@@ -234,7 +234,6 @@
                 <span id="valBaterai">0</span>
                 <span class="bnpb-val-unit">%</span>
               </div>
-              <span id="valBateraiVolt" class="bnpb-val-sub">0.00 V</span>
             </div>
             <div class="progress-container">
               <div id="barBaterai" class="progress-bar-fill" style="width: 0%; background-color: var(--color-offline);"></div>
@@ -252,7 +251,6 @@
                 <span id="valRssi">0</span>
                 <span class="bnpb-val-unit">dBm</span>
               </div>
-              <span class="bnpb-val-sub">RSSI Paket</span>
             </div>
           </div>
 
@@ -266,7 +264,6 @@
               <div class="bnpb-val-large" style="font-size: 18px;">
                 <span id="valRelay">Nonaktif (Standby)</span>
               </div>
-              <span class="bnpb-val-sub">Aktuator</span>
             </div>
           </div>
 
@@ -280,7 +277,6 @@
               <div class="bnpb-val-large" style="font-size: 20px;">
                 <span id="chipDeviceDataStatus" style="color: var(--color-offline);">OFFLINE</span>
               </div>
-              <span class="bnpb-val-sub">Firebase RTDB</span>
             </div>
           </div>
 
@@ -624,6 +620,7 @@
     </div>
     <button id="btnToggleAudio"><i id="iconAudio"></i></button>
     <button id="btnToggleLayers"></button>
+    <span id="valBateraiVolt"></span>
   </div>
 
   <!-- ================================================================= -->
@@ -646,7 +643,7 @@
   <script src="js/config.js?v=4.1.0"></script>
 
   <!-- Logika Aplikasi Peta & Telemetri -->
-  <script src="js/app.js?v=4.9.4"></script>
+  <script src="js/app.js?v=4.9.7"></script>
 
 </body>
 </html>
