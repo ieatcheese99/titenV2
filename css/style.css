@@ -1493,6 +1493,7 @@ button, input, select {
   cursor: pointer;
 }
 
+/* Standar Pin (Normal / Offline): Titik warna solid tanpa logo */
 .marker-pin {
   width: 24px;
   height: 24px;
@@ -1503,16 +1504,156 @@ button, input, select {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.custom-node-marker:hover .marker-pin {
-  transform: scale(1.18);
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.45);
+.custom-node-marker:hover .marker-pin,
+.custom-node-marker:hover .marker-pin-alert {
+  transform: scale(1.15);
+}
+
+/* Alert Pin (WASPADA / SIAGA / AWAS): Lingkaran Status Berisi Logo TITEN 1.png */
+.marker-pin-alert {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 3px solid #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--alert-color, #FFB800);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+
+.marker-alert-logo {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45));
+  pointer-events: none;
+}
+
+/* Animasi Bouncy & Glow: WASPADA (Kuning, tempo teratur ~1.3s) */
+.marker-bouncy-waspada {
+  animation: bounceWaspada 1.3s cubic-bezier(0.28, 0.84, 0.42, 1) infinite;
+}
+
+@keyframes bounceWaspada {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    box-shadow: 0 0 12px rgba(255, 184, 0, 0.8), 0 3px 8px rgba(0, 0, 0, 0.3);
+  }
+  30% {
+    transform: translateY(-9px) scale(1.08, 0.96);
+    box-shadow: 0 0 22px rgba(255, 184, 0, 1), 0 8px 16px rgba(0, 0, 0, 0.35);
+  }
+  50% {
+    transform: translateY(0) scale(0.96, 1.04);
+  }
+  70% {
+    transform: translateY(-3px) scale(1.02);
+  }
+}
+
+/* Animasi Bouncy & Glow: SIAGA (Oranye, tempo sedang ~0.85s) */
+.marker-bouncy-siaga {
+  animation: bounceSiaga 0.85s cubic-bezier(0.28, 0.84, 0.42, 1) infinite;
+}
+
+@keyframes bounceSiaga {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    box-shadow: 0 0 14px rgba(249, 115, 22, 0.8), 0 3px 8px rgba(0, 0, 0, 0.3);
+  }
+  30% {
+    transform: translateY(-11px) scale(1.1, 0.95);
+    box-shadow: 0 0 26px rgba(249, 115, 22, 1), 0 10px 18px rgba(0, 0, 0, 0.35);
+  }
+  50% {
+    transform: translateY(0) scale(0.94, 1.05);
+  }
+  70% {
+    transform: translateY(-4px) scale(1.03);
+  }
+}
+
+/* Animasi Bouncy & Glow: BAHAYA / AWAS (Merah, tempo cepat & intensif ~0.52s) */
+.marker-bouncy-awas {
+  animation: bounceAwas 0.52s cubic-bezier(0.28, 0.84, 0.42, 1) infinite;
+}
+
+@keyframes bounceAwas {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    box-shadow: 0 0 16px rgba(220, 38, 38, 0.9), 0 3px 8px rgba(0, 0, 0, 0.35);
+  }
+  30% {
+    transform: translateY(-13px) scale(1.15, 0.92);
+    box-shadow: 0 0 32px rgba(220, 38, 38, 1), 0 12px 22px rgba(0, 0, 0, 0.45);
+  }
+  50% {
+    transform: translateY(0) scale(0.92, 1.08);
+  }
+  70% {
+    transform: translateY(-5px) scale(1.05);
+  }
+}
+
+/* Cincin Pulse (Nyala-Nyala Meluas / Shockwave Glow) */
+.marker-pulse-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 56px;
+  height: 56px;
+  margin-top: -28px;
+  margin-left: -28px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.marker-pulse-ring.waspada {
+  background: radial-gradient(circle, rgba(255, 184, 0, 0.65) 0%, rgba(255, 184, 0, 0) 70%);
+  animation: pulseWaspada 1.4s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+}
+
+.marker-pulse-ring.siaga {
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.75) 0%, rgba(249, 115, 22, 0) 70%);
+  animation: pulseSiaga 0.95s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+}
+
+.marker-pulse-ring.awas {
+  background: radial-gradient(circle, rgba(220, 38, 38, 0.85) 0%, rgba(220, 38, 38, 0) 70%);
+  animation: pulseAwas 0.6s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+}
+
+@keyframes pulseWaspada {
+  0% { transform: scale(0.4); opacity: 0.95; }
+  70% { transform: scale(1.6); opacity: 0.2; }
+  100% { transform: scale(1.9); opacity: 0; }
+}
+
+@keyframes pulseSiaga {
+  0% { transform: scale(0.4); opacity: 1; }
+  70% { transform: scale(1.8); opacity: 0.25; }
+  100% { transform: scale(2.1); opacity: 0; }
+}
+
+@keyframes pulseAwas {
+  0% { transform: scale(0.4); opacity: 1; }
+  70% { transform: scale(2.0); opacity: 0.3; }
+  100% { transform: scale(2.4); opacity: 0; }
 }
 
 .marker-label {
   position: absolute;
-  top: 28px;
+  top: 100%;
   left: 50%;
   transform: translateX(-50%);
+  margin-top: 4px;
   background: rgba(255, 255, 255, 0.95);
   border: 1px solid var(--border-subtle);
   border-radius: 4px;
@@ -1524,25 +1665,7 @@ button, input, select {
   box-shadow: var(--shadow-sm);
   color: var(--text-primary);
   pointer-events: none;
-}
-
-.marker-pulse-ring {
-  position: absolute;
-  top: -6px;
-  left: -6px;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: var(--color-awas);
-  opacity: 0.75;
-  animation: markerPulse 1.8s cubic-bezier(0.24, 0, 0.38, 1) infinite;
-  pointer-events: none;
-}
-
-@keyframes markerPulse {
-  0% { transform: scale(0.6); opacity: 0.9; }
-  70% { transform: scale(1.6); opacity: 0; }
-  100% { transform: scale(1.8); opacity: 0; }
+  z-index: 5;
 }
 
 /* Compatibility classes */

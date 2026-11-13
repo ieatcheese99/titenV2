@@ -344,23 +344,53 @@
   // =========================================================================
   function createNodeMarkerIcon(node, worstLevel) {
     const color = getLevelColor(worstLevel);
-    const isAwas = worstLevel === "AWAS";
-    const pulseRingHtml = isAwas ? '<div class="marker-pulse-ring"></div>' : "";
+    const isAlert = worstLevel === "WASPADA" || worstLevel === "SIAGA" || worstLevel === "AWAS";
 
-    const html = `
-      <div class="custom-node-marker" title="${escapeHtml(node.nama)} · ${worstLevel}">
-        ${pulseRingHtml}
-        <div class="marker-pin" style="background-color: ${color};"></div>
-        <div class="marker-label">${escapeHtml(node.nama)}</div>
-      </div>
-    `;
+    let html = "";
+    let iconSize = [24, 24];
+    let iconAnchor = [12, 12];
+    let popupAnchor = [0, -14];
+
+    if (isAlert) {
+      iconSize = [36, 36];
+      iconAnchor = [18, 18];
+      popupAnchor = [0, -20];
+
+      let bounceClass = "marker-bouncy-waspada";
+      let ringClass = "waspada";
+
+      if (worstLevel === "SIAGA") {
+        bounceClass = "marker-bouncy-siaga";
+        ringClass = "siaga";
+      } else if (worstLevel === "AWAS") {
+        bounceClass = "marker-bouncy-awas";
+        ringClass = "awas";
+      }
+
+      html = `
+        <div class="custom-node-marker alert" title="${escapeHtml(node.nama)} · ${worstLevel}">
+          <div class="marker-pulse-ring ${ringClass}"></div>
+          <div class="marker-pin-alert ${bounceClass}" style="--alert-color: ${color};">
+            <img src="assets/titen-alert-icon.png" onerror="this.onerror=null; this.src='1.png';" alt="TITEN" class="marker-alert-logo" />
+          </div>
+          <div class="marker-label">${escapeHtml(node.nama)}</div>
+        </div>
+      `;
+    } else {
+      html = `
+        <div class="custom-node-marker" title="${escapeHtml(node.nama)} · ${worstLevel}">
+          <div class="marker-pin" style="background-color: ${color};"></div>
+          <div class="marker-label">${escapeHtml(node.nama)}</div>
+        </div>
+      `;
+    }
 
     return L.divIcon({
       className: "node-leaflet-div-icon",
       html: html,
-      iconSize: [24, 24],
-      iconAnchor: [12, 12],
-      popupAnchor: [0, -14]
+      iconSize: iconSize,
+      iconAnchor: iconAnchor,
+      popupAnchor: popupAnchor
     });
   }
 
