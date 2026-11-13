@@ -386,11 +386,12 @@
 
     // Evaluasi status node
     const isStale = isDataStale(node.latest ? node.latest.ts : null);
+    const isOnline = state.isNodeOnline && !isStale && !!node.latest;
     let worstLevel = "OFFLINE";
     let longsorStatus = { level: "OFFLINE", ringkasan: "Offline" };
     let karhutlaStatus = { level: "OFFLINE", ringkasan: "Offline" };
 
-    if (!isStale && node.latest) {
+    if (isOnline) {
       longsorStatus = evaluateLongsor(node.latest.kemiringan_x, node.latest.kelembapan_tanah);
       karhutlaStatus = evaluateKarhutla(node.latest.suhu, node.latest.kelembapan_udara);
       worstLevel = getWorstLevel(longsorStatus.level, karhutlaStatus.level);
@@ -430,11 +431,12 @@
     if (!node) return;
 
     const isStale = isDataStale(node.latest ? node.latest.ts : null);
+    const isOnline = state.isNodeOnline && !isStale && !!node.latest;
     let worstLevel = "OFFLINE";
     let longsorStatus = { level: "OFFLINE" };
     let karhutlaStatus = { level: "OFFLINE" };
 
-    if (!isStale && node.latest) {
+    if (isOnline) {
       longsorStatus = evaluateLongsor(node.latest.kemiringan_x, node.latest.kelembapan_tanah);
       karhutlaStatus = evaluateKarhutla(node.latest.suhu, node.latest.kelembapan_udara);
       worstLevel = getWorstLevel(longsorStatus.level, karhutlaStatus.level);
@@ -464,6 +466,8 @@
   // 6. PANEL DETAIL NODE TERSEGMENTASI (DETAIL METRICS, TABS & ACTION)
   // =========================================================================
   function renderActiveNodeDetailPanel(node, longsor, karhutla, worstLevel, isStale) {
+    const isDisconnected = !state.isNodeOnline || isStale || worstLevel === "OFFLINE";
+
     // 0. Update Identitas Node di Panel Perangkat (Kiri Atas)
     setText("devicePanelNodeTitle", node.nama || "Node Pemantau");
     setText("devicePanelNodeLocation", node.lokasi || "Lokasi tidak tersedia");
@@ -471,20 +475,39 @@
     // Chip status data di panel perangkat
     const chipDevice = getEl("chipDeviceDataStatus");
     if (chipDevice) {
-      if (isStale || worstLevel === "OFFLINE") {
-        chipDevice.textContent = "DATA LAMA";
+      if (isDisconnected) {
+        chipDevice.textContent = "OFFLINE";
         chipDevice.className = "chip-data-status stale";
+        chipDevice.style.color = "var(--color-offline)";
       } else {
         chipDevice.textContent = "LIVE";
         chipDevice.className = "chip-data-status live";
+        chipDevice.style.color = "var(--color-normal)";
       }
+    }
+
+    // Dot Gateway Card & Subtext di Card 4
+    const dotGwCard = getEl("dotGatewayCard");
+    if (dotGwCard) {
+      if (isDisconnected) {
+        dotGwCard.className = "status-dot";
+        dotGwCard.style.backgroundColor = "var(--color-offline)";
+        dotGwCard.style.boxShadow = "none";
+      } else {
+        dotGwCard.className = "status-dot status-dot-pulse";
+        dotGwCard.style.backgroundColor = "var(--color-normal)";
+      }
+    }
+    const subGw = getEl("subGatewayStatus");
+    if (subGw) {
+      subGw.textContent = isDisconnected ? "Uplink Cloud Terputus" : "Uplink Cloud Terhubung";
     }
 
     // Chip status data di konsol bencana (Bawah)
     const chip = getEl("chipDataStatus");
     if (chip) {
-      if (isStale || worstLevel === "OFFLINE") {
-        chip.textContent = "DATA LAMA";
+      if (isDisconnected) {
+        chip.textContent = "OFFLINE";
         chip.className = "chip-data-status stale";
       } else {
         chip.textContent = "LIVE";
@@ -496,20 +519,34 @@
     const cardL = getEl("cardSummaryLongsor");
     const badgeL = getEl("badgeSummaryLongsor");
     if (cardL && badgeL) {
-      cardL.className = `deck-summary-card status-${longsor.level.toLowerCase()}`;
-      badgeL.textContent = longsor.level;
-      badgeL.style.backgroundColor = `${getLevelColor(longsor.level)}22`;
-      badgeL.style.color = getLevelColor(longsor.level);
+      const lvlL = isDisconnected ? "OFFLINE" : longsor.level;
+      cardL.className = `deck-summary-card status-${lvlL.toLowerCase()}`;
+      badgeL.textContent = lvlL;
+      badgeL.style.backgroundColor = isDisconnected ? "rgba(100, 116, 139, 0.15)" : `${getLevelColor(lvlL)}22`;
+      badgeL.style.color = isDisconnected ? "var(--color-offline)" : getLevelColor(lvlL);
     }
 
     // 2. Ringkasan Ganda: KARHUTLA
     const cardK = getEl("cardSummaryKarhutla");
     const badgeK = getEl("badgeSummaryKarhutla");
     if (cardK && badgeK) {
-      cardK.className = `deck-summary-card status-${karhutla.level.toLowerCase()}`;
-      badgeK.textContent = karhutla.level;
-      badgeK.style.backgroundColor = `${getLevelColor(karhutla.level)}22`;
-      badgeK.style.color = getLevelColor(karhutla.level);
+      const lvlK = isDisconnected ? "OFFLINE" : karhutla.level;
+      cardK.className = `deck-summary-card status-${lvlK.toLowerCase()}`;
+      badgeK.textContent = lvlK;
+      badgeK.style.backgroundColor = isDisconnected ? "rgba(100, 116, 139, 0.15)" : `${getLevelColor(lvlK)}22`;
+      badgeK.style.color = isDisconnected ? "var(--color-offline)" : getLevelColor(lvlK);
+    }
+
+    // Bar Bahaya
+    const barBahaya = getEl("barBahaya");
+    if (barBahaya) {
+      if (isDisconnected) {
+        barBahaya.style.width = "0%";
+        barBahaya.style.backgroundColor = "var(--color-offline)";
+      } else {
+        barBahaya.style.width = "100%";
+        barBahaya.style.backgroundColor = getLevelColor(worstLevel);
+      }
     }
 
     // 3. Kotak Tindakan yang Disarankan & Layanan Kontak Darurat 112
@@ -518,12 +555,16 @@
     const btnCallCenter = getEl("btnEmergencyCallCenter");
     const lblCallCenter = getEl("labelBtnEmergencyCallCenter");
 
-    const dominantDisaster = (LEVEL_WEIGHT[longsor.level] >= LEVEL_WEIGHT[karhutla.level]) ? longsor : karhutla;
     if (actionText) {
-      actionText.textContent = dominantDisaster.tindakan || "Tetap waspada dan pantau perkembangan telemetri.";
+      if (isDisconnected) {
+        actionText.textContent = "Perangkat pemantau sedang offline. Pastikan gateway ESP32 dan daya node aktif.";
+      } else {
+        const dominantDisaster = (LEVEL_WEIGHT[longsor.level] >= LEVEL_WEIGHT[karhutla.level]) ? longsor : karhutla;
+        actionText.textContent = dominantDisaster.tindakan || "Tetap waspada dan pantau perkembangan telemetri.";
+      }
     }
     if (actionBox) {
-      if (worstLevel === "AWAS") actionBox.classList.add("critical");
+      if (!isDisconnected && worstLevel === "AWAS") actionBox.classList.add("critical");
       else actionBox.classList.remove("critical");
     }
     if (btnCallCenter) {
@@ -531,162 +572,356 @@
       if (lblCallCenter) lblCallCenter.textContent = CONFIG.EMERGENCY.CALL_CENTER_LABEL;
     }
 
-    const latest = node.latest || {};
-
-    // TAB 1 (Cuplikan Cepat)
-    setText("quickValMiring", formatNumber(latest.kemiringan_x, 1));
-    setText("quickValSuhu", formatNumber(latest.suhu, 1));
-    const quickTagM = getEl("quickTagMiring");
-    if (quickTagM) {
-      quickTagM.textContent = longsor.level;
-      quickTagM.style.color = getLevelColor(longsor.level);
-      quickTagM.style.background = `${getLevelColor(longsor.level)}20`;
-    }
-    const quickTagS = getEl("quickTagSuhu");
-    if (quickTagS) {
-      quickTagS.textContent = karhutla.level;
-      quickTagS.style.color = getLevelColor(karhutla.level);
-      quickTagS.style.background = `${getLevelColor(karhutla.level)}20`;
-    }
-
-    // TAB 2 (Longsor)
-    setText("valMiring", formatNumber(latest.kemiringan_x, 1));
-    setText("subValMiringY", `Y: ${formatNumber(latest.kemiringan_y, 1)}°`);
-    setText("tagMiring", longsor.level);
-    const tagM = getEl("tagMiring");
-    if (tagM) {
-      tagM.style.color = getLevelColor(longsor.level);
-      tagM.style.background = `${getLevelColor(longsor.level)}20`;
-    }
-    const barM = getEl("barMiring");
-    if (barM) {
-      const pctM = Math.min(Math.max((Math.abs(parseFloat(latest.kemiringan_x) || 0) / 45) * 100, 0), 100);
-      barM.style.width = `${pctM}%`;
-      barM.style.backgroundColor = getLevelColor(longsor.level);
-      setText("pctMiring", `${pctM.toFixed(0)}%`);
-    }
-
-    setText("valTanah", formatNumber(latest.kelembapan_tanah, 0));
-    setText("tagTanah", longsor.level);
-    const tagT = getEl("tagTanah");
-    if (tagT) {
-      tagT.style.color = getLevelColor(longsor.level);
-      tagT.style.background = `${getLevelColor(longsor.level)}20`;
-    }
-    const barT = getEl("barTanah");
-    if (barT) {
-      const pctT = Math.min(Math.max(parseFloat(latest.kelembapan_tanah) || 0, 0), 100);
-      barT.style.width = `${pctT}%`;
-      barT.style.backgroundColor = getLevelColor(longsor.level);
-      setText("pctTanah", `${pctT.toFixed(0)}%`);
-    }
-
-    setText("valGetaran", formatNumber(latest.getaran, 2));
-
-    // TAB 3 (Karhutla)
-    setText("valSuhu", formatNumber(latest.suhu, 1));
-    setText("tagSuhu", karhutla.level);
-    const tagS = getEl("tagSuhu");
-    if (tagS) {
-      tagS.style.color = getLevelColor(karhutla.level);
-      tagS.style.background = `${getLevelColor(karhutla.level)}20`;
-    }
-    const barS = getEl("barSuhu");
-    if (barS) {
-      const pctS = Math.min(Math.max(((parseFloat(latest.suhu) || 20) / 55) * 100, 0), 100);
-      barS.style.width = `${pctS}%`;
-      barS.style.backgroundColor = getLevelColor(karhutla.level);
-      setText("pctSuhu", `${pctS.toFixed(0)}%`);
-    }
-
-    setText("valUdara", formatNumber(latest.kelembapan_udara, 0));
-    setText("tagUdara", karhutla.level);
-    const tagU = getEl("tagUdara");
-    if (tagU) {
-      tagU.style.color = getLevelColor(karhutla.level);
-      tagU.style.background = `${getLevelColor(karhutla.level)}20`;
-    }
-    const barU = getEl("barUdara");
-    if (barU) {
-      const pctU = Math.min(Math.max(parseFloat(latest.kelembapan_udara) || 0, 0), 100);
-      barU.style.width = `${pctU}%`;
-      barU.style.backgroundColor = getLevelColor(karhutla.level);
-      setText("pctUdara", `${pctU.toFixed(0)}%`);
-    }
-
-    // Sensor Gas opsional: sembunyikan jika tidak ada data
-    const cardGas = getEl("cardGas");
-    if (cardGas) {
-      if (latest.gas !== undefined && latest.gas !== null && !isNaN(latest.gas) && latest.gas > 0) {
-        cardGas.style.display = "flex";
-        setText("valGas", formatNumber(latest.gas, 0));
+    // Alert Banner Miring (Kemiringan Lereng)
+    const alertMiring = getEl("alertBannerMiring");
+    if (alertMiring) {
+      if (isDisconnected) {
+        alertMiring.textContent = "Status: Sensor Belum Terhubung (Offline)";
+        alertMiring.style.background = "rgba(100, 116, 139, 0.08)";
+        alertMiring.style.color = "var(--color-offline)";
       } else {
-        cardGas.style.display = "none";
+        alertMiring.textContent = "Status Operasional: Normal & Terkalibrasi";
+        alertMiring.style.background = "";
+        alertMiring.style.color = "";
       }
     }
 
-    // TAB 4 (Perangkat & Hardware - Sinkronisasi Desktop & Mobile)
-    setText("valBaterai", formatNumber(latest.baterai_persen, 0));
-    setText("valBateraiVolt", latest.baterai_voltase ? `${formatNumber(latest.baterai_voltase, 2)} V` : "-- V");
-    const pctBat = Math.min(Math.max(parseFloat(latest.baterai_persen) || 0, 0), 100);
-    const batColor = pctBat > 20 ? "var(--color-normal)" : "var(--color-awas)";
-    const barBat = getEl("barBaterai");
-    if (barBat) {
-      barBat.style.width = `${pctBat}%`;
-      barBat.style.backgroundColor = batColor;
-    }
-    const syncBarBat = document.querySelector(".sync-barBaterai");
-    if (syncBarBat) {
-      syncBarBat.style.width = `${pctBat}%`;
-      syncBarBat.style.backgroundColor = batColor;
-    }
+    const latest = node.latest || {};
 
-    const batTagText = pctBat > 20 ? "NORMAL" : "KRITIS";
-    const batTagColor = pctBat > 20 ? "var(--color-normal)" : "var(--color-awas)";
-    const tagB = getEl("tagBaterai");
-    if (tagB) {
-      tagB.textContent = batTagText;
-      tagB.style.color = batTagColor;
-      tagB.style.background = `${batTagColor}20`;
-    }
-    const syncTagB = document.querySelector(".sync-tagBaterai");
-    if (syncTagB) {
-      syncTagB.textContent = batTagText;
-      syncTagB.style.color = batTagColor;
-      syncTagB.style.background = `${batTagColor}20`;
-    }
+    if (isDisconnected) {
+      // TAB 1 (Cuplikan Cepat)
+      setText("quickValMiring", "0.0");
+      setText("quickValSuhu", "0.0");
+      const quickTagM = getEl("quickTagMiring");
+      if (quickTagM) {
+        quickTagM.textContent = "OFFLINE";
+        quickTagM.style.color = "var(--color-offline)";
+        quickTagM.style.background = "rgba(100, 116, 139, 0.12)";
+      }
+      const quickTagS = getEl("quickTagSuhu");
+      if (quickTagS) {
+        quickTagS.textContent = "OFFLINE";
+        quickTagS.style.color = "var(--color-offline)";
+        quickTagS.style.background = "rgba(100, 116, 139, 0.12)";
+      }
 
-    setText("valRssi", latest.rssi ? `${latest.rssi}` : "--");
-    const rssiTagText = latest.rssi ? "TERHUBUNG" : "TERPUTUS";
-    const rssiTagColor = latest.rssi ? "var(--color-normal)" : "var(--color-offline)";
-    const tagR = getEl("tagRssi");
-    if (tagR) {
-      tagR.textContent = rssiTagText;
-      tagR.style.color = rssiTagColor;
-      tagR.style.background = `${rssiTagColor}20`;
-    }
-    const syncTagR = document.querySelector(".sync-tagRssi");
-    if (syncTagR) {
-      syncTagR.textContent = rssiTagText;
-      syncTagR.style.color = rssiTagColor;
-      syncTagR.style.background = `${rssiTagColor}20`;
-    }
+      // TAB 2 (Longsor: Kemiringan, Kelembapan Tanah, Getaran)
+      setText("valMiring", "0.0");
+      setText("subValMiringY", "Y: 0.0°");
+      const subValMiringY = getEl("subValMiringY");
+      if (subValMiringY) subValMiringY.style.color = "var(--color-offline)";
 
-    const relayText = worstLevel === "AWAS" ? "AKTIF (Sirine Berbunyi)" : "Nonaktif (Standby)";
-    const relayTagText = worstLevel === "AWAS" ? "AKTIF" : "STANDBY";
-    const relayTagColor = worstLevel === "AWAS" ? "var(--color-awas)" : "var(--color-offline)";
-    setText("valRelay", relayText);
-    const tagRelay = getEl("tagRelay");
-    if (tagRelay) {
-      tagRelay.textContent = relayTagText;
-      tagRelay.style.color = relayTagColor;
-      tagRelay.style.background = `${relayTagColor}20`;
-    }
-    const syncTagRelay = document.querySelector(".sync-tagRelay");
-    if (syncTagRelay) {
-      syncTagRelay.textContent = relayTagText;
-      syncTagRelay.style.color = relayTagColor;
-      syncTagRelay.style.background = `${relayTagColor}20`;
+      setText("tagMiring", "OFFLINE");
+      const tagM = getEl("tagMiring");
+      if (tagM) {
+        tagM.style.color = "var(--color-offline)";
+        tagM.style.background = "rgba(100, 116, 139, 0.12)";
+      }
+      const barM = getEl("barMiring");
+      if (barM) {
+        barM.style.width = "0%";
+        barM.style.backgroundColor = "var(--color-offline)";
+        setText("pctMiring", "0%");
+      }
+
+      setText("valTanah", "0");
+      setText("tagTanah", "OFFLINE");
+      const tagT = getEl("tagTanah");
+      if (tagT) {
+        tagT.style.color = "var(--color-offline)";
+        tagT.style.background = "rgba(100, 116, 139, 0.12)";
+      }
+      const barT = getEl("barTanah");
+      if (barT) {
+        barT.style.width = "0%";
+        barT.style.backgroundColor = "var(--color-offline)";
+        setText("pctTanah", "0%");
+      }
+
+      setText("valGetaran", "0.00");
+      const tagG = getEl("tagGetaran");
+      if (tagG) {
+        tagG.textContent = "OFFLINE";
+        tagG.style.color = "var(--color-offline)";
+        tagG.style.background = "rgba(100, 116, 139, 0.12)";
+      }
+      const barG = getEl("barGetaran");
+      if (barG) {
+        barG.style.width = "0%";
+        barG.style.backgroundColor = "var(--color-offline)";
+      }
+
+      // TAB 3 (Karhutla: Suhu, Kelembapan Udara)
+      setText("valSuhu", "0.0");
+      setText("tagSuhu", "OFFLINE");
+      const tagS = getEl("tagSuhu");
+      if (tagS) {
+        tagS.style.color = "var(--color-offline)";
+        tagS.style.background = "rgba(100, 116, 139, 0.12)";
+      }
+      const barS = getEl("barSuhu");
+      if (barS) {
+        barS.style.width = "0%";
+        barS.style.backgroundColor = "var(--color-offline)";
+        setText("pctSuhu", "0%");
+      }
+
+      setText("valUdara", "0");
+      setText("tagUdara", "OFFLINE");
+      const tagU = getEl("tagUdara");
+      if (tagU) {
+        tagU.style.color = "var(--color-offline)";
+        tagU.style.background = "rgba(100, 116, 139, 0.12)";
+      }
+      const barU = getEl("barUdara");
+      if (barU) {
+        barU.style.width = "0%";
+        barU.style.backgroundColor = "var(--color-offline)";
+        setText("pctUdara", "0%");
+      }
+
+      const cardGas = getEl("cardGas");
+      if (cardGas) cardGas.style.display = "none";
+
+      // TAB 4 (Perangkat & Hardware)
+      setText("valBaterai", "0");
+      setText("valBateraiVolt", "0.00 V");
+      const barBat = getEl("barBaterai");
+      if (barBat) {
+        barBat.style.width = "0%";
+        barBat.style.backgroundColor = "var(--color-offline)";
+      }
+      const syncBarBat = document.querySelector(".sync-barBaterai");
+      if (syncBarBat) {
+        syncBarBat.style.width = "0%";
+        syncBarBat.style.backgroundColor = "var(--color-offline)";
+      }
+
+      const tagB = getEl("tagBaterai");
+      if (tagB) {
+        tagB.textContent = "OFFLINE";
+        tagB.style.color = "var(--color-offline)";
+        tagB.style.background = "rgba(100, 116, 139, 0.12)";
+      }
+      const syncTagB = document.querySelector(".sync-tagBaterai");
+      if (syncTagB) {
+        syncTagB.textContent = "OFFLINE";
+        syncTagB.style.color = "var(--color-offline)";
+        syncTagB.style.background = "rgba(100, 116, 139, 0.12)";
+      }
+
+      setText("valRssi", "0");
+      const tagR = getEl("tagRssi");
+      if (tagR) {
+        tagR.textContent = "TERPUTUS";
+        tagR.style.color = "var(--color-offline)";
+        tagR.style.background = "rgba(100, 116, 139, 0.12)";
+      }
+      const syncTagR = document.querySelector(".sync-tagRssi");
+      if (syncTagR) {
+        syncTagR.textContent = "TERPUTUS";
+        syncTagR.style.color = "var(--color-offline)";
+        syncTagR.style.background = "rgba(100, 116, 139, 0.12)";
+      }
+
+      const subRssi = getEl("subRssiStatus");
+      if (subRssi) subRssi.textContent = "Sinyal Terputus";
+
+      const subBat = getEl("subBateraiStatus");
+      if (subBat) subBat.textContent = "Solar Standby";
+
+      setText("valRelay", "Nonaktif (Standby)");
+      const tagRelay = getEl("tagRelay");
+      if (tagRelay) {
+        tagRelay.textContent = "STANDBY";
+        tagRelay.style.color = "var(--color-offline)";
+        tagRelay.style.background = "rgba(100, 116, 139, 0.12)";
+      }
+      const syncTagRelay = document.querySelector(".sync-tagRelay");
+      if (syncTagRelay) {
+        syncTagRelay.textContent = "STANDBY";
+        syncTagRelay.style.color = "var(--color-offline)";
+        syncTagRelay.style.background = "rgba(100, 116, 139, 0.12)";
+      }
+
+    } else {
+      // LIVE DATA BRANCH (when connected)
+      // TAB 1 (Cuplikan Cepat)
+      setText("quickValMiring", formatNumber(latest.kemiringan_x, 1));
+      setText("quickValSuhu", formatNumber(latest.suhu, 1));
+      const quickTagM = getEl("quickTagMiring");
+      if (quickTagM) {
+        quickTagM.textContent = longsor.level;
+        quickTagM.style.color = getLevelColor(longsor.level);
+        quickTagM.style.background = `${getLevelColor(longsor.level)}20`;
+      }
+      const quickTagS = getEl("quickTagSuhu");
+      if (quickTagS) {
+        quickTagS.textContent = karhutla.level;
+        quickTagS.style.color = getLevelColor(karhutla.level);
+        quickTagS.style.background = `${getLevelColor(karhutla.level)}20`;
+      }
+
+      // TAB 2 (Longsor)
+      setText("valMiring", formatNumber(latest.kemiringan_x, 1));
+      setText("subValMiringY", `Y: ${formatNumber(latest.kemiringan_y, 1)}°`);
+      const subValMiringY = getEl("subValMiringY");
+      if (subValMiringY) subValMiringY.style.color = "var(--color-primary)";
+
+      setText("tagMiring", longsor.level);
+      const tagM = getEl("tagMiring");
+      if (tagM) {
+        tagM.style.color = getLevelColor(longsor.level);
+        tagM.style.background = `${getLevelColor(longsor.level)}20`;
+      }
+      const barM = getEl("barMiring");
+      if (barM) {
+        const pctM = Math.min(Math.max((Math.abs(parseFloat(latest.kemiringan_x) || 0) / 45) * 100, 0), 100);
+        barM.style.width = `${pctM}%`;
+        barM.style.backgroundColor = getLevelColor(longsor.level);
+        setText("pctMiring", `${pctM.toFixed(0)}%`);
+      }
+
+      setText("valTanah", formatNumber(latest.kelembapan_tanah, 0));
+      setText("tagTanah", longsor.level);
+      const tagT = getEl("tagTanah");
+      if (tagT) {
+        tagT.style.color = getLevelColor(longsor.level);
+        tagT.style.background = `${getLevelColor(longsor.level)}20`;
+      }
+      const barT = getEl("barTanah");
+      if (barT) {
+        const pctT = Math.min(Math.max(parseFloat(latest.kelembapan_tanah) || 0, 0), 100);
+        barT.style.width = `${pctT}%`;
+        barT.style.backgroundColor = getLevelColor(longsor.level);
+        setText("pctTanah", `${pctT.toFixed(0)}%`);
+      }
+
+      setText("valGetaran", formatNumber(latest.getaran, 2));
+      const tagG = getEl("tagGetaran");
+      if (tagG) {
+        tagG.textContent = worstLevel === "AWAS" ? "BAHAYA" : "STABIL";
+        tagG.style.color = getLevelColor(longsor.level);
+        tagG.style.background = `${getLevelColor(longsor.level)}20`;
+      }
+      const barG = getEl("barGetaran");
+      if (barG) {
+        const pctG = Math.min(Math.max(((parseFloat(latest.getaran) || 0) / 1.0) * 100, 0), 100);
+        barG.style.width = `${pctG}%`;
+        barG.style.backgroundColor = getLevelColor(longsor.level);
+      }
+
+      // TAB 3 (Karhutla)
+      setText("valSuhu", formatNumber(latest.suhu, 1));
+      setText("tagSuhu", karhutla.level);
+      const tagS = getEl("tagSuhu");
+      if (tagS) {
+        tagS.style.color = getLevelColor(karhutla.level);
+        tagS.style.background = `${getLevelColor(karhutla.level)}20`;
+      }
+      const barS = getEl("barSuhu");
+      if (barS) {
+        const pctS = Math.min(Math.max(((parseFloat(latest.suhu) || 20) / 55) * 100, 0), 100);
+        barS.style.width = `${pctS}%`;
+        barS.style.backgroundColor = getLevelColor(karhutla.level);
+        setText("pctSuhu", `${pctS.toFixed(0)}%`);
+      }
+
+      setText("valUdara", formatNumber(latest.kelembapan_udara, 0));
+      setText("tagUdara", karhutla.level);
+      const tagU = getEl("tagUdara");
+      if (tagU) {
+        tagU.style.color = getLevelColor(karhutla.level);
+        tagU.style.background = `${getLevelColor(karhutla.level)}20`;
+      }
+      const barU = getEl("barUdara");
+      if (barU) {
+        const pctU = Math.min(Math.max(parseFloat(latest.kelembapan_udara) || 0, 0), 100);
+        barU.style.width = `${pctU}%`;
+        barU.style.backgroundColor = getLevelColor(karhutla.level);
+        setText("pctUdara", `${pctU.toFixed(0)}%`);
+      }
+
+      // Sensor Gas opsional: sembunyikan jika tidak ada data
+      const cardGas = getEl("cardGas");
+      if (cardGas) {
+        if (latest.gas !== undefined && latest.gas !== null && !isNaN(latest.gas) && latest.gas > 0) {
+          cardGas.style.display = "flex";
+          setText("valGas", formatNumber(latest.gas, 0));
+        } else {
+          cardGas.style.display = "none";
+        }
+      }
+
+      // TAB 4 (Perangkat & Hardware - Sinkronisasi Desktop & Mobile)
+      setText("valBaterai", formatNumber(latest.baterai_persen, 0));
+      setText("valBateraiVolt", latest.baterai_voltase ? `${formatNumber(latest.baterai_voltase, 2)} V` : "-- V");
+      const pctBat = Math.min(Math.max(parseFloat(latest.baterai_persen) || 0, 0), 100);
+      const batColor = pctBat > 20 ? "var(--color-normal)" : "var(--color-awas)";
+      const barBat = getEl("barBaterai");
+      if (barBat) {
+        barBat.style.width = `${pctBat}%`;
+        barBat.style.backgroundColor = batColor;
+      }
+      const syncBarBat = document.querySelector(".sync-barBaterai");
+      if (syncBarBat) {
+        syncBarBat.style.width = `${pctBat}%`;
+        syncBarBat.style.backgroundColor = batColor;
+      }
+
+      const batTagText = pctBat > 20 ? "NORMAL" : "KRITIS";
+      const batTagColor = pctBat > 20 ? "var(--color-normal)" : "var(--color-awas)";
+      const tagB = getEl("tagBaterai");
+      if (tagB) {
+        tagB.textContent = batTagText;
+        tagB.style.color = batTagColor;
+        tagB.style.background = `${batTagColor}20`;
+      }
+      const syncTagB = document.querySelector(".sync-tagBaterai");
+      if (syncTagB) {
+        syncTagB.textContent = batTagText;
+        syncTagB.style.color = batTagColor;
+        syncTagB.style.background = `${batTagColor}20`;
+      }
+
+      const subBat = getEl("subBateraiStatus");
+      if (subBat) subBat.textContent = "Solar Active";
+
+      setText("valRssi", latest.rssi ? `${latest.rssi}` : "--");
+      const rssiTagText = latest.rssi ? "TERHUBUNG" : "TERPUTUS";
+      const rssiTagColor = latest.rssi ? "var(--color-normal)" : "var(--color-offline)";
+      const tagR = getEl("tagRssi");
+      if (tagR) {
+        tagR.textContent = rssiTagText;
+        tagR.style.color = rssiTagColor;
+        tagR.style.background = `${rssiTagColor}20`;
+      }
+      const syncTagR = document.querySelector(".sync-tagRssi");
+      if (syncTagR) {
+        syncTagR.textContent = rssiTagText;
+        syncTagR.style.color = rssiTagColor;
+        syncTagR.style.background = `${rssiTagColor}20`;
+      }
+
+      const subRssi = getEl("subRssiStatus");
+      if (subRssi) subRssi.textContent = "Long-Range RF";
+
+      const relayText = worstLevel === "AWAS" ? "AKTIF (Sirine Berbunyi)" : "Nonaktif (Standby)";
+      const relayTagText = worstLevel === "AWAS" ? "AKTIF" : "STANDBY";
+      const relayTagColor = worstLevel === "AWAS" ? "var(--color-awas)" : "var(--color-offline)";
+      setText("valRelay", relayText);
+      const tagRelay = getEl("tagRelay");
+      if (tagRelay) {
+        tagRelay.textContent = relayTagText;
+        tagRelay.style.color = relayTagColor;
+        tagRelay.style.background = `${relayTagColor}20`;
+      }
+      const syncTagRelay = document.querySelector(".sync-tagRelay");
+      if (syncTagRelay) {
+        syncTagRelay.textContent = relayTagText;
+        syncTagRelay.style.color = relayTagColor;
+        syncTagRelay.style.background = `${relayTagColor}20`;
+      }
     }
 
     // Refresh Lucide icons untuk elemen yang baru dirender
@@ -823,6 +1058,9 @@
     const dotGw = getEl("dotGateway");
     const textNode = getEl("textNode");
     const dotNode = getEl("dotNode");
+    const dotGwCard = getEl("dotGatewayCard");
+    const chipDevice = getEl("chipDeviceDataStatus");
+    const subGw = getEl("subGatewayStatus");
 
     // Jika koneksi internet browser ke Firebase terputus total
     if (!state.isBrowserConnected) {
@@ -832,6 +1070,9 @@
       if (dotGw) { dotGw.style.backgroundColor = "var(--color-offline)"; dotGw.style.boxShadow = "none"; }
       if (textNode) textNode.textContent = "Node: Offline";
       if (dotNode) { dotNode.style.backgroundColor = "var(--color-offline)"; dotNode.style.boxShadow = "none"; }
+      if (dotGwCard) { dotGwCard.className = "status-dot"; dotGwCard.style.backgroundColor = "var(--color-offline)"; dotGwCard.style.boxShadow = "none"; }
+      if (chipDevice) { chipDevice.textContent = "OFFLINE"; chipDevice.className = "chip-data-status stale"; chipDevice.style.color = "var(--color-offline)"; }
+      if (subGw) subGw.textContent = "Uplink Cloud Terputus";
       updateSystemIssueBanner();
       updateGlobalStatusSummary();
       return;
@@ -855,21 +1096,45 @@
       if (dotGw) { dotGw.style.backgroundColor = "var(--color-normal)"; dotGw.style.boxShadow = "0 0 6px var(--color-normal)"; }
       if (textNode) textNode.textContent = "Node: Terhubung";
       if (dotNode) { dotNode.style.backgroundColor = "var(--color-normal)"; dotNode.style.boxShadow = "0 0 6px var(--color-normal)"; }
+      if (dotGwCard) { dotGwCard.className = "status-dot status-dot-pulse"; dotGwCard.style.backgroundColor = "var(--color-normal)"; }
+      if (chipDevice) { chipDevice.textContent = "LIVE"; chipDevice.className = "chip-data-status live"; chipDevice.style.color = "var(--color-normal)"; }
+      if (subGw) subGw.textContent = "Uplink Cloud Terhubung";
     } else {
       if (textGw) textGw.textContent = "Gateway: Offline";
       if (dotGw) { dotGw.style.backgroundColor = "var(--color-offline)"; dotGw.style.boxShadow = "none"; }
       if (textNode) textNode.textContent = "Node: Offline";
       if (dotNode) { dotNode.style.backgroundColor = "var(--color-offline)"; dotNode.style.boxShadow = "none"; }
+      if (dotGwCard) { dotGwCard.className = "status-dot"; dotGwCard.style.backgroundColor = "var(--color-offline)"; dotGwCard.style.boxShadow = "none"; }
+      if (chipDevice) { chipDevice.textContent = "OFFLINE"; chipDevice.className = "chip-data-status stale"; chipDevice.style.color = "var(--color-offline)"; }
+      if (subGw) subGw.textContent = "Uplink Cloud Terputus";
     }
 
-    // Refresh marker jika status stale berubah
+    // Refresh marker jika status stale atau online berubah
     state.nodes.forEach(node => {
       const isStale = isDataStale(node.latest ? node.latest.ts : null);
-      if (node._lastStaleState !== isStale) {
-        node._lastStaleState = isStale;
+      const onlineState = isOnline && !isStale;
+      if (node._lastOnlineState !== onlineState) {
+        node._lastOnlineState = onlineState;
         renderOrUpdateNodeMarker(node);
       }
     });
+
+    // Jika node aktif sedang terbuka, re-render panel jika status online berubah
+    if (state.activeNodeId && state.nodes.has(state.activeNodeId)) {
+      const activeNode = state.nodes.get(state.activeNodeId);
+      const isStale = isDataStale(activeNode.latest ? activeNode.latest.ts : null);
+      const nodeOnline = isOnline && !isStale && !!activeNode.latest;
+      let worstLevel = "OFFLINE";
+      let longsorStatus = { level: "OFFLINE", ringkasan: "Offline" };
+      let karhutlaStatus = { level: "OFFLINE", ringkasan: "Offline" };
+
+      if (nodeOnline) {
+        longsorStatus = evaluateLongsor(activeNode.latest.kemiringan_x, activeNode.latest.kelembapan_tanah);
+        karhutlaStatus = evaluateKarhutla(activeNode.latest.suhu, activeNode.latest.kelembapan_udara);
+        worstLevel = getWorstLevel(longsorStatus.level, karhutlaStatus.level);
+      }
+      renderActiveNodeDetailPanel(activeNode, longsorStatus, karhutlaStatus, worstLevel, isStale);
+    }
 
     updateSystemIssueBanner();
     updateGlobalStatusSummary();
@@ -933,7 +1198,7 @@
 
     state.nodes.forEach(node => {
       const isStale = isDataStale(node.latest ? node.latest.ts : null);
-      if (!isStale && node.latest) {
+      if (!isStale && node.latest && state.isNodeOnline) {
         activeCount++;
         const l = evaluateLongsor(node.latest.kemiringan_x, node.latest.kelembapan_tanah).level;
         const k = evaluateKarhutla(node.latest.suhu, node.latest.kelembapan_udara).level;

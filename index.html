@@ -31,7 +31,7 @@
   <link rel="stylesheet" href="assets/vendor/leaflet.min.css" />
 
   <!-- Stylesheet Utama EWS TITEN (Command Center Layout - Light Mode) -->
-  <link rel="stylesheet" href="css/style.css?v=4.7.0" />
+  <link rel="stylesheet" href="css/style.css?v=4.8.0" />
 </head>
 <body class="bnpb-app-container select-none">
 
@@ -122,10 +122,10 @@
 
         <!-- Compatibility anchors for app.js (Bagian 4 sensor counter ditiadakan dari UI) -->
         <div style="display: none;" aria-hidden="true">
-          <span id="quickValMiring">--</span>
-          <span id="quickTagMiring">NORMAL</span>
-          <span id="quickValSuhu">--</span>
-          <span id="quickTagSuhu">NORMAL</span>
+          <span id="quickValMiring">0.0</span>
+          <span id="quickTagMiring">OFFLINE</span>
+          <span id="quickValSuhu">0.0</span>
+          <span id="quickTagSuhu">OFFLINE</span>
         </div>
 
         <!-- Langkah Cepat Section -->
@@ -237,21 +237,21 @@
           <div class="bnpb-device-card">
             <div class="bnpb-card-top">
               <span class="bnpb-card-name">Baterai Node LiPo</span>
-              <span id="tagBaterai" class="sensor-status-tag">NORMAL</span>
+              <span id="tagBaterai" class="sensor-status-tag" style="color: var(--color-offline); background: rgba(100, 116, 139, 0.12);">OFFLINE</span>
             </div>
             <div class="bnpb-card-body">
               <div class="bnpb-val-large">
-                <span id="valBaterai">--</span>
+                <span id="valBaterai">0</span>
                 <span class="bnpb-val-unit">%</span>
               </div>
-              <span id="valBateraiVolt" class="bnpb-val-sub">-- V</span>
+              <span id="valBateraiVolt" class="bnpb-val-sub">0.00 V</span>
             </div>
             <div class="progress-container">
-              <div id="barBaterai" class="progress-bar-fill" style="width: 0%;"></div>
+              <div id="barBaterai" class="progress-bar-fill" style="width: 0%; background-color: var(--color-offline);"></div>
             </div>
             <div class="bnpb-card-foot">
               <span>Buffer LiPo 3.7V - 4.2V</span>
-              <span>Solar Active</span>
+              <span id="subBateraiStatus">Solar Standby</span>
             </div>
           </div>
 
@@ -259,18 +259,18 @@
           <div class="bnpb-device-card">
             <div class="bnpb-card-top">
               <span class="bnpb-card-name">Transmisi LoRa SX1278</span>
-              <span id="tagRssi" class="sensor-status-tag">TERHUBUNG</span>
+              <span id="tagRssi" class="sensor-status-tag" style="color: var(--color-offline); background: rgba(100, 116, 139, 0.12);">TERPUTUS</span>
             </div>
             <div class="bnpb-card-body">
               <div class="bnpb-val-large">
-                <span id="valRssi">--</span>
+                <span id="valRssi">0</span>
                 <span class="bnpb-val-unit">dBm</span>
               </div>
               <span class="bnpb-val-sub">RSSI Paket</span>
             </div>
             <div class="bnpb-card-foot">
               <span>Frekuensi 433 MHz</span>
-              <span>Long-Range RF</span>
+              <span id="subRssiStatus">Sinyal Terputus</span>
             </div>
           </div>
 
@@ -278,11 +278,11 @@
           <div class="bnpb-device-card">
             <div class="bnpb-card-top">
               <span class="bnpb-card-name">Relay Sirine Lapangan</span>
-              <span id="tagRelay" class="sensor-status-tag">STANDBY</span>
+              <span id="tagRelay" class="sensor-status-tag" style="color: var(--color-offline); background: rgba(100, 116, 139, 0.12);">STANDBY</span>
             </div>
             <div class="bnpb-card-body">
               <div class="bnpb-val-large" style="font-size: 14px;">
-                <span id="valRelay">Nonaktif</span>
+                <span id="valRelay">Nonaktif (Standby)</span>
               </div>
               <span class="bnpb-val-sub">Aktuator</span>
             </div>
@@ -295,16 +295,16 @@
           <div class="bnpb-device-card">
             <div class="bnpb-card-top">
               <span class="bnpb-card-name">Gateway IoT (WiFi/4G)</span>
-              <span class="status-dot status-dot-pulse"></span>
+              <span id="dotGatewayCard" class="status-dot"></span>
             </div>
             <div class="bnpb-card-body">
-              <div class="bnpb-val-large" style="font-size: 14px; color: var(--color-normal);">
-                <span id="chipDeviceDataStatus">LIVE</span>
+              <div class="bnpb-val-large" style="font-size: 14px;">
+                <span id="chipDeviceDataStatus" style="color: var(--color-offline);">OFFLINE</span>
               </div>
               <span class="bnpb-val-sub">Firebase RTDB</span>
             </div>
             <div class="bnpb-card-foot">
-              <span>Uplink Cloud Terhubung</span>
+              <span id="subGatewayStatus">Uplink Cloud Terputus</span>
             </div>
           </div>
 
@@ -312,7 +312,7 @@
           <div class="bnpb-device-card">
             <div class="bnpb-card-top">
               <span class="bnpb-card-name">Node Lapangan</span>
-              <span id="chipDataStatus" class="chip-data-status live">LIVE</span>
+              <span id="chipDataStatus" class="chip-data-status stale">OFFLINE</span>
             </div>
             <div class="bnpb-card-body">
               <div>
@@ -374,8 +374,8 @@
               <span class="bnpb-station-name">Kemiringan Lereng</span>
               <i data-lucide="calendar" style="width: 12px; height: 12px;"></i>
             </div>
-            <div class="bnpb-station-alert">
-              Status Operasional: Normal &amp; Terkalibrasi
+            <div id="alertBannerMiring" class="bnpb-station-alert" style="background: rgba(100, 116, 139, 0.08); color: var(--color-offline);">
+              Status: Sensor Belum Terhubung (Offline)
             </div>
             <div class="bnpb-station-sub">Sensor MPU6050 · Pitch &amp; Roll 6-DOF</div>
 
@@ -383,19 +383,19 @@
               <svg class="bnpb-hero-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 20h18L12 4z"/></svg>
               <div class="bnpb-hero-val-box">
                 <div class="bnpb-hero-val">
-                  <span id="valMiring">--</span><span class="bnpb-hero-unit">°</span>
+                  <span id="valMiring">0.0</span><span class="bnpb-hero-unit">°</span>
                 </div>
-                <div class="bnpb-hero-label">Pitch X · <span id="subValMiringY" style="color: var(--color-primary); font-weight: 700;">Y: --°</span></div>
+                <div class="bnpb-hero-label">Pitch X · <span id="subValMiringY" style="color: var(--color-offline); font-weight: 700;">Y: 0.0°</span></div>
               </div>
             </div>
 
             <div class="progress-container">
-              <div id="barMiring" class="progress-bar-fill" style="width: 0%;"></div>
+              <div id="barMiring" class="progress-bar-fill" style="width: 0%; background-color: var(--color-offline);"></div>
             </div>
 
             <div class="bnpb-card-grid">
               <div class="bnpb-grid-item">
-                <span id="tagMiring" class="bnpb-grid-val text-emerald-600">NORMAL</span>
+                <span id="tagMiring" class="bnpb-grid-val" style="color: var(--color-offline);">OFFLINE</span>
                 <span class="bnpb-grid-lbl">Status</span>
               </div>
               <div class="bnpb-grid-item">
@@ -436,19 +436,19 @@
               <svg class="bnpb-hero-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg>
               <div class="bnpb-hero-val-box">
                 <div class="bnpb-hero-val">
-                  <span id="valTanah">--</span><span class="bnpb-hero-unit">%</span>
+                  <span id="valTanah">0</span><span class="bnpb-hero-unit">%</span>
                 </div>
                 <div class="bnpb-hero-label">Saturasi VWC</div>
               </div>
             </div>
 
             <div class="progress-container">
-              <div id="barTanah" class="progress-bar-fill" style="width: 0%;"></div>
+              <div id="barTanah" class="progress-bar-fill" style="width: 0%; background-color: var(--color-offline);"></div>
             </div>
 
             <div class="bnpb-card-grid">
               <div class="bnpb-grid-item">
-                <span id="tagTanah" class="bnpb-grid-val text-emerald-600">NORMAL</span>
+                <span id="tagTanah" class="bnpb-grid-val" style="color: var(--color-offline);">OFFLINE</span>
                 <span class="bnpb-grid-lbl">Status</span>
               </div>
               <div class="bnpb-grid-item">
@@ -489,19 +489,19 @@
               <svg class="bnpb-hero-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
               <div class="bnpb-hero-val-box">
                 <div class="bnpb-hero-val">
-                  <span id="valGetaran">--</span><span class="bnpb-hero-unit">g</span>
+                  <span id="valGetaran">0.00</span><span class="bnpb-hero-unit">g</span>
                 </div>
                 <div class="bnpb-hero-label">RMS Micro-vibe</div>
               </div>
             </div>
 
             <div class="progress-container">
-              <div id="barGetaran" class="progress-bar-fill" style="width: 0%;"></div>
+              <div id="barGetaran" class="progress-bar-fill" style="width: 0%; background-color: var(--color-offline);"></div>
             </div>
 
             <div class="bnpb-card-grid">
               <div class="bnpb-grid-item">
-                <span id="tagGetaran" class="bnpb-grid-val text-emerald-600">STABIL</span>
+                <span id="tagGetaran" class="bnpb-grid-val" style="color: var(--color-offline);">OFFLINE</span>
                 <span class="bnpb-grid-lbl">Status</span>
               </div>
               <div class="bnpb-grid-item">
@@ -559,19 +559,19 @@
               <svg class="bnpb-hero-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>
               <div class="bnpb-hero-val-box">
                 <div class="bnpb-hero-val">
-                  <span id="valSuhu">--</span><span class="bnpb-hero-unit">°C</span>
+                  <span id="valSuhu">0.0</span><span class="bnpb-hero-unit">°C</span>
                 </div>
                 <div class="bnpb-hero-label">Termometer Suhu</div>
               </div>
             </div>
 
             <div class="progress-container">
-              <div id="barSuhu" class="progress-bar-fill" style="width: 0%;"></div>
+              <div id="barSuhu" class="progress-bar-fill" style="width: 0%; background-color: var(--color-offline);"></div>
             </div>
 
             <div class="bnpb-card-grid">
               <div class="bnpb-grid-item">
-                <span id="tagSuhu" class="bnpb-grid-val text-emerald-600">NORMAL</span>
+                <span id="tagSuhu" class="bnpb-grid-val" style="color: var(--color-offline);">OFFLINE</span>
                 <span class="bnpb-grid-lbl">Status</span>
               </div>
               <div class="bnpb-grid-item">
@@ -612,19 +612,19 @@
               <svg class="bnpb-hero-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
               <div class="bnpb-hero-val-box">
                 <div class="bnpb-hero-val">
-                  <span id="valUdara">--</span><span class="bnpb-hero-unit">%</span>
+                  <span id="valUdara">0</span><span class="bnpb-hero-unit">%</span>
                 </div>
                 <div class="bnpb-hero-label">Higrometer Udara</div>
               </div>
             </div>
 
             <div class="progress-container">
-              <div id="barUdara" class="progress-bar-fill" style="width: 0%;"></div>
+              <div id="barUdara" class="progress-bar-fill" style="width: 0%; background-color: var(--color-offline);"></div>
             </div>
 
             <div class="bnpb-card-grid">
               <div class="bnpb-grid-item">
-                <span id="tagUdara" class="bnpb-grid-val text-emerald-600">NORMAL</span>
+                <span id="tagUdara" class="bnpb-grid-val" style="color: var(--color-offline);">OFFLINE</span>
                 <span class="bnpb-grid-lbl">Status</span>
               </div>
               <div class="bnpb-grid-item">
@@ -663,17 +663,17 @@
 
             <div class="bnpb-station-hero" style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
               <div id="cardSummaryKarhutla" style="flex: 1; text-align: left;">
-                <span id="badgeSummaryKarhutla" class="bnpb-status-pill-big">NORMAL</span>
+                <span id="badgeSummaryKarhutla" class="bnpb-status-pill-big" style="color: var(--color-offline); background: rgba(100, 116, 139, 0.15);">OFFLINE</span>
                 <div class="bnpb-hero-label" style="margin-top: 4px;">Bahaya Karhutla</div>
               </div>
               <div id="cardSummaryLongsor" style="flex: 1; text-align: right;">
-                <span id="badgeSummaryLongsor" class="bnpb-status-pill-big">NORMAL</span>
+                <span id="badgeSummaryLongsor" class="bnpb-status-pill-big" style="color: var(--color-offline); background: rgba(100, 116, 139, 0.15);">OFFLINE</span>
                 <div class="bnpb-hero-label" style="margin-top: 4px;">Bahaya Longsor</div>
               </div>
             </div>
 
             <div class="progress-container">
-              <div class="progress-bar-fill" style="width: 100%; background-color: var(--color-normal);"></div>
+              <div id="barBahaya" class="progress-bar-fill" style="width: 0%; background-color: var(--color-offline);"></div>
             </div>
 
             <div class="bnpb-card-grid">
@@ -835,7 +835,7 @@
     </section>
     <button id="btnOpenDeck"></button>
     <div id="nodeDetailPanel" class="collapsed"></div>
-    <div id="cardGas"><span id="valGas">--</span><span id="tagGas">NORMAL</span></div>
+    <div id="cardGas"><span id="valGas">0</span><span id="tagGas">OFFLINE</span></div>
   </div>
 
   <!-- ================================================================= -->
@@ -858,7 +858,7 @@
   <script src="js/config.js?v=4.1.0"></script>
 
   <!-- Logika Aplikasi Peta & Telemetri -->
-  <script src="js/app.js?v=4.1.0"></script>
+  <script src="js/app.js?v=4.8.0"></script>
 
 </body>
 </html>
