@@ -20,9 +20,9 @@
   <link rel="stylesheet" href="assets/vendor/leaflet.min.css" />
 
   <!-- External Stylesheet Fallback -->
-  <link rel="stylesheet" href="css/style.css?v=5.2.0" />
+  <link rel="stylesheet" href="css/style.css?v=5.3.0" />
 
-  <!-- Inlined Critical CSS for 100% Instant Cloudflare Sync (Palette: #004aad, #ffde59, #ffffff) -->
+  <!-- Inlined Critical CSS (Palette: #004aad, #ffde59, #ffffff) -->
   <style>
     :root {
       --color-primary: #004aad;
@@ -172,10 +172,26 @@
       letter-spacing: 0.4px;
     }
 
+    .pill-cloud.searching {
+      background: rgba(255, 222, 89, 0.25);
+      border-color: var(--color-gold);
+      color: #ffffff;
+    }
+
+    .pill-cloud.searching .pulse-dot {
+      background: var(--color-gold);
+      box-shadow: 0 0 8px var(--color-gold);
+    }
+
     .pill-cloud.offline {
       background: rgba(222, 53, 11, 0.2);
       border-color: #ffbdad;
       color: #ffebe6;
+    }
+
+    .pill-cloud.offline .pulse-dot {
+      background: #de350b;
+      box-shadow: 0 0 8px #de350b;
     }
 
     .pulse-dot {
@@ -245,6 +261,18 @@
       transition: all 0.3s ease;
     }
 
+    .status-banner-card.status-mencari {
+      border-color: var(--color-gold);
+      border-left-color: var(--color-primary);
+      background: #ffffff;
+    }
+
+    .status-banner-card.status-offline {
+      border-color: #cbd5e1;
+      border-left-color: #64748b;
+      background: #f8fafc;
+    }
+
     .status-banner-card.status-aman {
       border-color: var(--color-safe-border);
       border-left-color: var(--color-safe);
@@ -306,6 +334,26 @@
       letter-spacing: 0.3px;
       line-height: 1.1;
       color: var(--color-safe);
+    }
+
+    .status-value.val-mencari {
+      color: var(--color-primary);
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      animation: pulseSearching 1.5s infinite ease-in-out;
+    }
+
+    .status-value.val-offline {
+      color: #64748b;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+
+    @keyframes pulseSearching {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
     }
 
     .status-value.val-waspada { color: var(--color-gold-dark); }
@@ -562,6 +610,18 @@
       font-size: 10.5px;
     }
 
+    .sensor-card-status.status-mencari {
+      color: var(--color-primary);
+      background: rgba(0, 74, 173, 0.08);
+      font-weight: 700;
+    }
+
+    .sensor-card-status.status-offline {
+      color: #64748b;
+      background: #f1f5f9;
+      font-weight: 700;
+    }
+
     .sensor-card-status.status-warn {
       color: var(--color-gold-dark);
       background: var(--color-warn-bg);
@@ -738,9 +798,9 @@
       </div>
     </div>
     <div class="titen-nav-right">
-      <div class="pill-cloud" id="pillCloud">
+      <div class="pill-cloud searching" id="pillCloud">
         <span class="pulse-dot"></span>
-        <span id="textCloudStatus">CLOUD CONNECTED</span>
+        <span id="textCloudStatus">SEDANG MENCARI GATEWAY</span>
       </div>
       <div class="time-pill" id="clockWib">Update: --:--:-- WIB</div>
       <button class="btn-audio-mini" id="btnToggleAudio" title="Aktifkan Sirine Audio">🔊</button>
@@ -750,19 +810,19 @@
   <!-- ================================================================= -->
   <!-- 2. STATUS PERINGATAN DINI CARD                                    -->
   <!-- ================================================================= -->
-  <section class="status-banner-card status-aman" id="cardStatusBanner">
+  <section class="status-banner-card status-mencari" id="cardStatusBanner">
     <div class="status-left">
       <span class="status-label">STATUS PERINGATAN DINI</span>
-      <span class="status-value" id="textStatusEws">AMAN</span>
+      <span class="status-value val-mencari" id="textStatusEws">Sedang Mencari Gateway...</span>
     </div>
     <div class="status-badges">
       <div class="status-badge-item">
         <span class="badge-key">⚡ Mode:</span>
-        <span class="badge-val" id="badgeModeDaya">ECO DEEP SLEEP (20s)</span>
+        <span class="badge-val" id="badgeModeDaya">Mencari...</span>
       </div>
       <div class="status-badge-item" id="badgeSirineWrap">
         <span class="badge-key">📢 Sirine Posko:</span>
-        <span class="badge-val" id="badgeSirinePosko">NON-AKTIF</span>
+        <span class="badge-val" id="badgeSirinePosko">STANDBY</span>
       </div>
     </div>
   </section>
@@ -778,7 +838,7 @@
       </div>
       <span class="edge-ai-window">Sliding Window: 5 Siklus</span>
     </div>
-    <div class="edge-ai-body" id="textPrediksiAi">Lereng &amp; Termal Stabil</div>
+    <div class="edge-ai-body" id="textPrediksiAi">Menghubungkan ke Gateway ESP32 &amp; Node sensor...</div>
   </section>
 
   <!-- ================================================================= -->
@@ -793,12 +853,12 @@
         <span class="sensor-card-icon">🌡️</span>
       </div>
       <div class="sensor-card-val-row">
-        <span class="sensor-card-val" id="valSuhu">0.0</span>
+        <span class="sensor-card-val" id="valSuhu">--.-</span>
         <span class="sensor-card-unit">°C</span>
       </div>
       <div class="sensor-card-bottom">
         <span class="sensor-card-threshold" id="subSuhu">Batas Waspada: ≥ 36.0 °C</span>
-        <span class="sensor-card-status" id="tagSuhu">Normal</span>
+        <span class="sensor-card-status status-mencari" id="tagSuhu">Sedang Mencari</span>
       </div>
     </div>
 
@@ -809,12 +869,12 @@
         <span class="sensor-card-icon">💧</span>
       </div>
       <div class="sensor-card-val-row">
-        <span class="sensor-card-val" id="valUdara">0.0</span>
+        <span class="sensor-card-val" id="valUdara">--.-</span>
         <span class="sensor-card-unit">%</span>
       </div>
       <div class="sensor-card-bottom">
         <span class="sensor-card-threshold" id="subUdara">Batas Karhutla: ≤ 45.0 %</span>
-        <span class="sensor-card-status" id="tagUdara">Lembap</span>
+        <span class="sensor-card-status status-mencari" id="tagUdara">Sedang Mencari</span>
       </div>
     </div>
 
@@ -825,12 +885,12 @@
         <span class="sensor-card-icon">🌱</span>
       </div>
       <div class="sensor-card-val-row">
-        <span class="sensor-card-val" id="valTanah">0</span>
+        <span class="sensor-card-val" id="valTanah">--</span>
         <span class="sensor-card-unit">%</span>
       </div>
       <div class="sensor-card-bottom">
         <span class="sensor-card-threshold" id="subTanah">Batas Jenuh Air: ≥ 60 %</span>
-        <span class="sensor-card-status" id="tagTanah">Stabil</span>
+        <span class="sensor-card-status status-mencari" id="tagTanah">Sedang Mencari</span>
       </div>
     </div>
 
@@ -841,12 +901,12 @@
         <span class="sensor-card-icon">📐</span>
       </div>
       <div class="sensor-card-val-row">
-        <span class="sensor-card-val" id="valMiring">0</span>
+        <span class="sensor-card-val" id="valMiring">--</span>
         <span class="sensor-card-unit">°</span>
       </div>
       <div class="sensor-card-bottom">
         <span class="sensor-card-threshold" id="subMiring">Batas Kritis: ≥ 25° / 45°</span>
-        <span class="sensor-card-status" id="tagMiring">Tegak</span>
+        <span class="sensor-card-status status-mencari" id="tagMiring">Sedang Mencari</span>
       </div>
     </div>
 
@@ -857,12 +917,12 @@
         <span class="sensor-card-icon">🔋</span>
       </div>
       <div class="sensor-card-val-row">
-        <span class="sensor-card-val" id="valBateraiVolt">0.00</span>
+        <span class="sensor-card-val" id="valBateraiVolt">-.--</span>
         <span class="sensor-card-unit">V</span>
       </div>
       <div class="sensor-card-bottom">
-        <span class="sensor-card-threshold" id="subBaterai">Kapasitas: 0%</span>
-        <span class="sensor-card-status" id="tagBaterai">Li-Ion Mandiri</span>
+        <span class="sensor-card-threshold" id="subBaterai">Mencari Gateway...</span>
+        <span class="sensor-card-status status-mencari" id="tagBaterai">Sedang Mencari</span>
       </div>
     </div>
 
@@ -873,12 +933,12 @@
         <span class="sensor-card-icon">📡</span>
       </div>
       <div class="sensor-card-val-row">
-        <span class="sensor-card-val" id="valRssi">0</span>
+        <span class="sensor-card-val" id="valRssi">--</span>
         <span class="sensor-card-unit">dBm</span>
       </div>
       <div class="sensor-card-bottom">
-        <span class="sensor-card-threshold" id="subRssi">Tanpa Kuota Seluler</span>
-        <span class="sensor-card-status" id="tagRssi">Jarak Jauh</span>
+        <span class="sensor-card-threshold" id="subRssi">Mencari LoRa...</span>
+        <span class="sensor-card-status status-mencari" id="tagRssi">Sedang Mencari</span>
       </div>
     </div>
 
@@ -933,7 +993,7 @@
   <script src="assets/vendor/firebase-database.js"></script>
 
   <!-- Logika Telemetri & Peta EWS TITEN (Single script to prevent double-init) -->
-  <script src="js/app.js?v=5.2.0"></script>
+  <script src="js/app.js?v=5.3.0"></script>
 
 </body>
 </html>

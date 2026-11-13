@@ -152,10 +152,26 @@ body {
   letter-spacing: 0.4px;
 }
 
+.pill-cloud.searching {
+  background: rgba(255, 222, 89, 0.25);
+  border-color: var(--color-gold);
+  color: #ffffff;
+}
+
+.pill-cloud.searching .pulse-dot {
+  background: var(--color-gold);
+  box-shadow: 0 0 8px var(--color-gold);
+}
+
 .pill-cloud.offline {
   background: rgba(222, 53, 11, 0.2);
   border-color: #ffbdad;
   color: #ffebe6;
+}
+
+.pill-cloud.offline .pulse-dot {
+  background: #de350b;
+  box-shadow: 0 0 8px #de350b;
 }
 
 .pulse-dot {
@@ -225,6 +241,18 @@ body {
   transition: all 0.3s ease;
 }
 
+.status-banner-card.status-mencari {
+  border-color: var(--color-gold);
+  border-left-color: var(--color-primary);
+  background: #ffffff;
+}
+
+.status-banner-card.status-offline {
+  border-color: #cbd5e1;
+  border-left-color: #64748b;
+  background: #f8fafc;
+}
+
 .status-banner-card.status-aman {
   border-color: var(--color-safe-border);
   border-left-color: var(--color-safe);
@@ -286,6 +314,26 @@ body {
   letter-spacing: 0.3px;
   line-height: 1.1;
   color: var(--color-safe);
+}
+
+.status-value.val-mencari {
+  color: var(--color-primary);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  animation: pulseSearching 1.5s infinite ease-in-out;
+}
+
+.status-value.val-offline {
+  color: #64748b;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+@keyframes pulseSearching {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
 }
 
 .status-value.val-waspada { color: var(--color-gold-dark); }
@@ -540,6 +588,18 @@ body {
   padding: 2px 8px;
   border-radius: 4px;
   font-size: 10.5px;
+}
+
+.sensor-card-status.status-mencari {
+  color: var(--color-primary);
+  background: rgba(0, 74, 173, 0.08);
+  font-weight: 700;
+}
+
+.sensor-card-status.status-offline {
+  color: #64748b;
+  background: #f1f5f9;
+  font-weight: 700;
 }
 
 .sensor-card-status.status-warn {

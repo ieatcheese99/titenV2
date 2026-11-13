@@ -7,7 +7,7 @@
 (function () {
   "use strict";
 
-  // State Telemetri
+  // State Telemetri Riil (Tanpa Data Palsu)
   const state = {
     map: null,
     marker: null,
@@ -15,13 +15,17 @@
     chart: null,
     audioEnabled: false,
     audioCtx: null,
+    hasReceivedData: false,
+    isGatewayConnected: false,
+    lastPacketTime: 0,
+    searchWatchdogTimer: null,
     history: {
       labels: [],
       suhu: [],
       tanah: [],
       miring: []
     },
-    maxHistoryPoints: 12
+    maxHistoryPoints: 15
   };
 
   // Helper ID
@@ -114,10 +118,9 @@
       return;
     }
 
-    // Koordinat Presisi Menara Sains Tower 2 ITS Sukolilo Surabaya
     const tower2Coords = [-7.28197, 112.79532];
     
-    // Cegah double initialization jika container sudah terpasang
+    // Cegah double initialization
     const mapContainer = getEl("map");
     if (!mapContainer || mapContainer._leaflet_id) {
       return;
@@ -131,7 +134,7 @@
       zoomControl: true
     });
 
-    // Layer Peta Handal & Cepat (Google Maps Tiles API, CARTO, & Esri)
+    // Layer Peta Handal (Google Maps Tiles API, CARTO, & Esri)
     const baseGoogleRoad = L.tileLayer("https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", {
       attribution: '&copy; Google Maps &mdash; Menara Sains Tower 2 ITS',
       maxZoom: 20
@@ -149,7 +152,7 @@
       maxZoom: 19
     });
 
-    // Default layer: Google Maps Road
+    // Default layer: Google Maps Road (Kampus ITS)
     baseGoogleRoad.addTo(state.map);
 
     L.control.layers({
@@ -190,7 +193,7 @@
           📍 Lat: -7.28197 | Long: 112.79532
         </div>
         <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
-          <span style="font-size:11px;font-weight:700;">Status: <b id="mapPopupStatus" style="color:#108a00;">AMAN</b></span>
+          <span style="font-size:11px;font-weight:700;">Status: <b id="mapPopupStatus" style="color:#004aad;">Sedang Mencari...</b></span>
           <a href="https://maps.google.com/?q=-7.28197,112.79532" target="_blank" rel="noopener" style="background:#004aad;color:#ffffff;text-decoration:none;font-size:10px;font-weight:700;padding:4px 8px;border-radius:4px;white-space:nowrap;">Buka Maps ↗</a>
         </div>
       </div>
@@ -205,7 +208,7 @@
     }).addTo(state.map);
   }
 
-  // 4. Inisialisasi Grafik Real-Time (Chart.js)
+  // 4. Inisialisasi Grafik Real-Time (Chart.js) TANPA DATA PALSU
   function initChart() {
     const canvas = getEl("telemetryChart");
     if (!canvas || typeof Chart === "undefined") {
@@ -213,20 +216,17 @@
       return;
     }
 
-    // Hindari re-inisialisasi Chart jika sudah ada
+    // Hindari duplikasi chart instance
     if (state.chart) {
       state.chart.destroy();
       state.chart = null;
     }
 
-    const now = Date.now();
-    for (let i = state.maxHistoryPoints - 1; i >= 0; i--) {
-      const t = new Date(now - i * 20000);
-      state.history.labels.push(t.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" }));
-      state.history.suhu.push(27.4);
-      state.history.tanah.push(19);
-      state.history.miring.push(1);
-    }
+    // Mulai dari array kosong (tidak ada data buatan/dummy)
+    state.history.labels = [];
+    state.history.suhu = [];
+    state.history.tanah = [];
+    state.history.miring = [];
 
     state.chart = new Chart(canvas, {
       type: "line",
@@ -239,8 +239,8 @@
             borderColor: "#de350b",
             backgroundColor: "rgba(222, 53, 11, 0.08)",
             borderWidth: 2,
-            tension: 0.35,
-            pointRadius: 2.5
+            tension: 0.3,
+            pointRadius: 3
           },
           {
             label: "Suhu (°C)",
@@ -248,8 +248,8 @@
             borderColor: "#b89300",
             backgroundColor: "transparent",
             borderWidth: 2,
-            tension: 0.35,
-            pointRadius: 2.5
+            tension: 0.3,
+            pointRadius: 3
           },
           {
             label: "Kelembapan Tanah (%)",
@@ -258,8 +258,8 @@
             backgroundColor: "transparent",
             borderWidth: 1.8,
             borderDash: [4, 4],
-            tension: 0.35,
-            pointRadius: 2
+            tension: 0.3,
+            pointRadius: 3
           }
         ]
       },
@@ -321,100 +321,271 @@
     state.chart.update("none");
   }
 
-  // 5. Pembaharuan UI Telemetri
-  function updateTelemetryUI(data) {
-    if (!data) return;
+  // 5. State Tampilan: SEDANG MENCARI GATEWAY
+  function setUiSearching() {
+    state.isGatewayConnected = false;
 
-    // Normalisasi Nilai Sensor
-    const suhu = (data.suhu !== undefined) ? parseFloat(data.suhu) : 0.0;
-    const udara = (data.kelembapan_udara !== undefined) ? parseFloat(data.kelembapan_udara) : (data.kelembapan !== undefined ? parseFloat(data.kelembapan) : 0.0);
-    const tanah = (data.kelembapan_tanah !== undefined) ? parseInt(data.kelembapan_tanah) : 0;
-    const miring = (data.kemiringan !== undefined) ? parseFloat(data.kemiringan) : (data.pitch !== undefined ? Math.abs(parseFloat(data.pitch)) : 0.0);
-    const voltBat = (data.tegangan_baterai !== undefined) ? parseFloat(data.tegangan_baterai).toFixed(2) : (data.baterai !== undefined ? (parseFloat(data.baterai) * 0.042).toFixed(2) : "4.12");
-    const persenBat = (data.baterai !== undefined) ? Math.min(100, Math.max(0, parseInt(data.baterai))) : 98;
-    const rssi = (data.rssi !== undefined) ? parseInt(data.rssi) : -54;
+    const cardStatus = getEl("cardStatusBanner");
+    const textStatus = getEl("textStatusEws");
+    if (cardStatus && textStatus) {
+      cardStatus.className = "status-banner-card status-mencari";
+      textStatus.textContent = "Sedang Mencari Gateway...";
+      textStatus.className = "status-value val-mencari";
+    }
+
+    setText("badgeModeDaya", "Mencari...");
+    setText("textPrediksiAi", "Menunggu transmisi telemetri dari Gateway ESP32 & Node sensor...");
+
+    const pillCloud = getEl("pillCloud");
+    const textCloud = getEl("textCloudStatus");
+    if (pillCloud && textCloud) {
+      pillCloud.className = "pill-cloud searching";
+      textCloud.textContent = "SEDANG MENCARI GATEWAY";
+    }
+
+    // Set Sensor Placeholders
+    setText("valSuhu", "--.-");
+    setText("valUdara", "--.-");
+    setText("valTanah", "--");
+    setText("valMiring", "--");
+    setText("valBateraiVolt", "-.--");
+    setText("subBaterai", "Mencari Gateway...");
+    setText("valRssi", "--");
+    setText("subRssi", "Mencari LoRa...");
+
+    const tags = ["tagSuhu", "tagUdara", "tagTanah", "tagMiring", "tagBaterai", "tagRssi"];
+    tags.forEach(id => {
+      const el = getEl(id);
+      if (el) {
+        el.textContent = "Mencari";
+        el.className = "sensor-card-status status-mencari";
+      }
+    });
+
+    const cards = ["cardSuhu", "cardUdara", "cardTanah", "cardMiring", "cardBaterai", "cardRssi"];
+    cards.forEach(id => {
+      const el = getEl(id);
+      if (el) el.classList.remove("card-alert");
+    });
+
+    const mapPopupStatus = getEl("mapPopupStatus");
+    if (mapPopupStatus) {
+      mapPopupStatus.textContent = "Sedang Mencari...";
+      mapPopupStatus.style.color = "#004aad";
+    }
+
+    const markerContainer = getEl("mapMarkerContainer");
+    if (markerContainer) {
+      markerContainer.classList.remove("danger");
+    }
+  }
+
+  // 6. State Tampilan: TIDAK TERHUBUNG
+  function setUiDisconnected() {
+    state.isGatewayConnected = false;
+
+    const cardStatus = getEl("cardStatusBanner");
+    const textStatus = getEl("textStatusEws");
+    if (cardStatus && textStatus) {
+      cardStatus.className = "status-banner-card status-offline";
+      textStatus.textContent = "Tidak Terhubung";
+      textStatus.className = "status-value val-offline";
+    }
+
+    setText("badgeModeDaya", "Tidak Terhubung");
+    setText("textPrediksiAi", "Gateway ESP32 atau Node sensor tidak terhubung (offline).");
+
+    const pillCloud = getEl("pillCloud");
+    const textCloud = getEl("textCloudStatus");
+    if (pillCloud && textCloud) {
+      pillCloud.className = "pill-cloud offline";
+      textCloud.textContent = "TIDAK TERHUBUNG";
+    }
+
+    // Sensor status offline
+    setText("valSuhu", "--.-");
+    setText("valUdara", "--.-");
+    setText("valTanah", "--");
+    setText("valMiring", "--");
+    setText("valBateraiVolt", "-.--");
+    setText("subBaterai", "Gateway Terputus");
+    setText("valRssi", "--");
+    setText("subRssi", "LoRa Terputus");
+
+    const tags = ["tagSuhu", "tagUdara", "tagTanah", "tagMiring", "tagBaterai", "tagRssi"];
+    tags.forEach(id => {
+      const el = getEl(id);
+      if (el) {
+        el.textContent = "Tidak Terhubung";
+        el.className = "sensor-card-status status-offline";
+      }
+    });
+
+    const cards = ["cardSuhu", "cardUdara", "cardTanah", "cardMiring", "cardBaterai", "cardRssi"];
+    cards.forEach(id => {
+      const el = getEl(id);
+      if (el) el.classList.remove("card-alert");
+    });
+
+    const badgeSirinePosko = getEl("badgeSirinePosko");
+    const badgeSirineWrap = getEl("badgeSirineWrap");
+    if (badgeSirinePosko && badgeSirineWrap) {
+      badgeSirinePosko.textContent = "NON-AKTIF";
+      badgeSirineWrap.classList.remove("siren-active");
+    }
+
+    const mapPopupStatus = getEl("mapPopupStatus");
+    if (mapPopupStatus) {
+      mapPopupStatus.textContent = "Tidak Terhubung";
+      mapPopupStatus.style.color = "#64748b";
+    }
+
+    const markerContainer = getEl("mapMarkerContainer");
+    if (markerContainer) {
+      markerContainer.classList.remove("danger");
+    }
+
+    if (state.circle) {
+      state.circle.setStyle({ color: "#64748b", fillColor: "#64748b" });
+    }
+  }
+
+  // 7. Pembaharuan UI Telemetri Riil (Saat Paket Diterima)
+  function updateTelemetryUI(data) {
+    if (!data || typeof data !== "object") {
+      setUiDisconnected();
+      return;
+    }
+
+    // Verifikasi kelengkapan data minimal
+    const hasCoreData = (data.suhu !== undefined || data.kelembapan_tanah !== undefined || data.kemiringan !== undefined || data.status_ews !== undefined);
+    if (!hasCoreData) {
+      setUiDisconnected();
+      return;
+    }
+
+    state.hasReceivedData = true;
+    state.isGatewayConnected = true;
+    state.lastPacketTime = Date.now();
+
+    // Normalisasi Nilai Sensor Riil
+    const suhu = (data.suhu !== undefined) ? parseFloat(data.suhu) : NaN;
+    const udara = (data.kelembapan_udara !== undefined) ? parseFloat(data.kelembapan_udara) : (data.kelembapan !== undefined ? parseFloat(data.kelembapan) : NaN);
+    const tanah = (data.kelembapan_tanah !== undefined) ? parseInt(data.kelembapan_tanah) : NaN;
+    const miring = (data.kemiringan !== undefined) ? parseFloat(data.kemiringan) : (data.pitch !== undefined ? Math.abs(parseFloat(data.pitch)) : NaN);
+    const persenBat = (data.persen_baterai !== undefined) ? parseInt(data.persen_baterai) : (data.baterai !== undefined ? parseInt(data.baterai) : NaN);
+    const voltBat = (data.tegangan_baterai !== undefined) ? parseFloat(data.tegangan_baterai).toFixed(2) : (!isNaN(persenBat) ? (3.3 + (persenBat / 100) * 0.9).toFixed(2) : "-.--");
+    const rssi = (data.rssi !== undefined) ? parseInt(data.rssi) : NaN;
 
     const rawStatus = (data.status_ews || "AMAN").toUpperCase();
     const modeDaya = data.mode_daya || "ECO DEEP SLEEP (20s)";
     const prediksiAi = data.prediksi_ai || "Lereng & Termal Stabil";
     const alarmAktif = data.alarm_aktif === true;
 
-    // 1. Tampilkan Angka Sensor
-    setText("valSuhu", suhu.toFixed(1));
-    setText("valUdara", udara.toFixed(1));
-    setText("valTanah", tanah.toString());
-    setText("valMiring", miring.toFixed(0));
+    // 1. Tampilkan Angka Sensor Riil
+    setText("valSuhu", isNaN(suhu) ? "--.-" : suhu.toFixed(1));
+    setText("valUdara", isNaN(udara) ? "--.-" : udara.toFixed(1));
+    setText("valTanah", isNaN(tanah) ? "--" : tanah.toString());
+    setText("valMiring", isNaN(miring) ? "--" : miring.toFixed(0));
     setText("valBateraiVolt", voltBat);
-    setText("subBaterai", `Kapasitas: ${persenBat}%`);
-    setText("valRssi", rssi.toString());
+    setText("subBaterai", !isNaN(persenBat) ? `Kapasitas: ${persenBat}%` : "Kapasitas: --%");
+    setText("valRssi", isNaN(rssi) ? "--" : rssi.toString());
+    setText("subRssi", !isNaN(rssi) ? (rssi > -75 ? "Sinyal Sangat Kuat" : "Jarak Jauh") : "Tanpa Sinyal");
 
     // Evaluasi Status Ambang Batas Sensor Individual & Animasi Alert Kartu
     const cardSuhu = getEl("cardSuhu");
     const tagSuhu = getEl("tagSuhu");
     if (tagSuhu) {
-      if (suhu >= 40) {
-        tagSuhu.textContent = "Bahaya"; tagSuhu.className = "sensor-card-status status-danger";
-        if (cardSuhu) cardSuhu.classList.add("card-alert");
-      } else if (suhu >= 36) {
-        tagSuhu.textContent = "Waspada"; tagSuhu.className = "sensor-card-status status-warn";
-        if (cardSuhu) cardSuhu.classList.remove("card-alert");
+      if (!isNaN(suhu)) {
+        if (suhu >= 40) {
+          tagSuhu.textContent = "Bahaya"; tagSuhu.className = "sensor-card-status status-danger";
+          if (cardSuhu) cardSuhu.classList.add("card-alert");
+        } else if (suhu >= 36) {
+          tagSuhu.textContent = "Waspada"; tagSuhu.className = "sensor-card-status status-warn";
+          if (cardSuhu) cardSuhu.classList.remove("card-alert");
+        } else {
+          tagSuhu.textContent = "Normal"; tagSuhu.className = "sensor-card-status";
+          if (cardSuhu) cardSuhu.classList.remove("card-alert");
+        }
       } else {
-        tagSuhu.textContent = "Normal"; tagSuhu.className = "sensor-card-status";
-        if (cardSuhu) cardSuhu.classList.remove("card-alert");
+        tagSuhu.textContent = "--"; tagSuhu.className = "sensor-card-status";
       }
     }
 
     const cardUdara = getEl("cardUdara");
     const tagUdara = getEl("tagUdara");
     if (tagUdara) {
-      if (udara <= 30) {
-        tagUdara.textContent = "Kering Kritis"; tagUdara.className = "sensor-card-status status-danger";
-        if (cardUdara) cardUdara.classList.add("card-alert");
-      } else if (udara <= 45) {
-        tagUdara.textContent = "Kering"; tagUdara.className = "sensor-card-status status-warn";
-        if (cardUdara) cardUdara.classList.remove("card-alert");
+      if (!isNaN(udara)) {
+        if (udara <= 30) {
+          tagUdara.textContent = "Kering Kritis"; tagUdara.className = "sensor-card-status status-danger";
+          if (cardUdara) cardUdara.classList.add("card-alert");
+        } else if (udara <= 45) {
+          tagUdara.textContent = "Kering"; tagUdara.className = "sensor-card-status status-warn";
+          if (cardUdara) cardUdara.classList.remove("card-alert");
+        } else {
+          tagUdara.textContent = "Lembap"; tagUdara.className = "sensor-card-status";
+          if (cardUdara) cardUdara.classList.remove("card-alert");
+        }
       } else {
-        tagUdara.textContent = "Lembap"; tagUdara.className = "sensor-card-status";
-        if (cardUdara) cardUdara.classList.remove("card-alert");
+        tagUdara.textContent = "--"; tagUdara.className = "sensor-card-status";
       }
     }
 
     const cardTanah = getEl("cardTanah");
     const tagTanah = getEl("tagTanah");
     if (tagTanah) {
-      if (tanah >= 75) {
-        tagTanah.textContent = "Jenuh Bahaya"; tagTanah.className = "sensor-card-status status-danger";
-        if (cardTanah) cardTanah.classList.add("card-alert");
-      } else if (tanah >= 60) {
-        tagTanah.textContent = "Jenuh Air"; tagTanah.className = "sensor-card-status status-warn";
-        if (cardTanah) cardTanah.classList.remove("card-alert");
+      if (!isNaN(tanah)) {
+        if (tanah >= 75) {
+          tagTanah.textContent = "Jenuh Bahaya"; tagTanah.className = "sensor-card-status status-danger";
+          if (cardTanah) cardTanah.classList.add("card-alert");
+        } else if (tanah >= 60) {
+          tagTanah.textContent = "Jenuh Air"; tagTanah.className = "sensor-card-status status-warn";
+          if (cardTanah) cardTanah.classList.remove("card-alert");
+        } else {
+          tagTanah.textContent = "Stabil"; tagTanah.className = "sensor-card-status";
+          if (cardTanah) cardTanah.classList.remove("card-alert");
+        }
       } else {
-        tagTanah.textContent = "Stabil"; tagTanah.className = "sensor-card-status";
-        if (cardTanah) cardTanah.classList.remove("card-alert");
+        tagTanah.textContent = "--"; tagTanah.className = "sensor-card-status";
       }
     }
 
     const cardMiring = getEl("cardMiring");
     const tagMiring = getEl("tagMiring");
     if (tagMiring) {
-      if (miring >= 25) {
-        tagMiring.textContent = "Kritis"; tagMiring.className = "sensor-card-status status-danger";
-        if (cardMiring) cardMiring.classList.add("card-alert");
-      } else if (miring >= 12) {
-        tagMiring.textContent = "Miring"; tagMiring.className = "sensor-card-status status-warn";
-        if (cardMiring) cardMiring.classList.remove("card-alert");
+      if (!isNaN(miring)) {
+        if (miring >= 25) {
+          tagMiring.textContent = "Kritis"; tagMiring.className = "sensor-card-status status-danger";
+          if (cardMiring) cardMiring.classList.add("card-alert");
+        } else if (miring >= 12) {
+          tagMiring.textContent = "Miring"; tagMiring.className = "sensor-card-status status-warn";
+          if (cardMiring) cardMiring.classList.remove("card-alert");
+        } else {
+          tagMiring.textContent = "Tegak"; tagMiring.className = "sensor-card-status";
+          if (cardMiring) cardMiring.classList.remove("card-alert");
+        }
       } else {
-        tagMiring.textContent = "Tegak"; tagMiring.className = "sensor-card-status";
-        if (cardMiring) cardMiring.classList.remove("card-alert");
+        tagMiring.textContent = "--"; tagMiring.className = "sensor-card-status";
       }
     }
 
-    // Evaluasi Status LoRa
+    // Evaluasi Status Baterai & LoRa
+    const tagBaterai = getEl("tagBaterai");
+    if (tagBaterai) {
+      if (!isNaN(persenBat)) {
+        tagBaterai.textContent = persenBat <= 20 ? "Lemah" : "Li-Ion Mandiri";
+        tagBaterai.className = persenBat <= 20 ? "sensor-card-status status-warn" : "sensor-card-status";
+      }
+    }
+
     const tagRssi = getEl("tagRssi");
     if (tagRssi) {
-      if (rssi > -75) tagRssi.textContent = "Sangat Kuat";
-      else if (rssi >= -95) tagRssi.textContent = "Jarak Jauh";
-      else tagRssi.textContent = "Lemah";
+      if (!isNaN(rssi)) {
+        if (rssi > -75) tagRssi.textContent = "Sangat Kuat";
+        else if (rssi >= -95) tagRssi.textContent = "Jarak Jauh";
+        else tagRssi.textContent = "Lemah";
+        tagRssi.className = rssi < -95 ? "sensor-card-status status-warn" : "sensor-card-status";
+      }
     }
 
     // 2. Tampilkan Mode & Edge AI
@@ -434,15 +605,23 @@
       }
     }
 
-    // 4. Evaluasi Status Peringatan Dini Global & Animasi Bahaya
+    // 4. Status Cloud Pill Navbar
+    const pillCloud = getEl("pillCloud");
+    const textCloud = getEl("textCloudStatus");
+    if (pillCloud && textCloud) {
+      pillCloud.className = "pill-cloud";
+      textCloud.textContent = "GATEWAY TERHUBUNG";
+    }
+
+    // 5. Evaluasi Status Peringatan Dini Global & Animasi Bahaya
     const cardStatus = getEl("cardStatusBanner");
     const textStatus = getEl("textStatusEws");
     const markerContainer = getEl("mapMarkerContainer");
     const mapPopupStatus = getEl("mapPopupStatus");
 
-    let isDanger = rawStatus.includes("BAHAYA") || rawStatus.includes("AWAS") || miring >= 25 || suhu >= 40;
-    let isSiaga = rawStatus.includes("SIAGA") || miring >= 20 || suhu >= 38;
-    let isWaspada = rawStatus.includes("WASPADA") || miring >= 12 || suhu >= 36 || tanah >= 60;
+    let isDanger = rawStatus.includes("BAHAYA") || rawStatus.includes("AWAS") || (!isNaN(miring) && miring >= 25) || (!isNaN(suhu) && suhu >= 40);
+    let isSiaga = rawStatus.includes("SIAGA") || (!isNaN(miring) && miring >= 20) || (!isNaN(suhu) && suhu >= 38);
+    let isWaspada = rawStatus.includes("WASPADA") || (!isNaN(miring) && miring >= 12) || (!isNaN(suhu) && suhu >= 36) || (!isNaN(tanah) && tanah >= 60);
 
     let displayStatus = "AMAN";
     let statusClass = "status-aman";
@@ -505,14 +684,17 @@
       playAlertChirp(true);
     }
 
-    // Perbarui Grafik Real-Time
-    pushChartData(suhu, tanah, miring);
+    // Perbarui Grafik Real-Time Hanya Jika Data Angka Valid
+    if (!isNaN(suhu) && !isNaN(tanah) && !isNaN(miring)) {
+      pushChartData(suhu, tanah, miring);
+    }
   }
 
-  // 6. Koneksi Firebase Realtime Database
+  // 8. Koneksi Firebase Realtime Database
   function initFirebase() {
     if (typeof firebase === "undefined") {
       console.warn("Firebase SDK tidak termuat.");
+      setUiDisconnected();
       return;
     }
 
@@ -521,41 +703,44 @@
         databaseURL: "https://ews-titen-default-rtdb.asia-southeast1.firebasedatabase.app"
       };
 
-      // Pastikan inisialisasi hanya sekali
       if (!firebase.apps || !firebase.apps.length) {
         firebase.initializeApp(firebaseConfig);
       }
       const db = firebase.database();
 
-      // Monitor Status Koneksi Cloud
+      // Monitor Status Koneksi Cloud Firebase
       db.ref(".info/connected").on("value", (snap) => {
         const isConnected = snap.val() === true;
-        const pillCloud = getEl("pillCloud");
-        const textCloud = getEl("textCloudStatus");
-
-        if (pillCloud && textCloud) {
-          if (isConnected) {
-            pillCloud.className = "pill-cloud";
-            textCloud.textContent = "CLOUD CONNECTED";
-          } else {
-            pillCloud.className = "pill-cloud offline";
-            textCloud.textContent = "OFFLINE";
-          }
+        if (!isConnected) {
+          setUiDisconnected();
+        } else if (!state.hasReceivedData) {
+          setUiSearching();
         }
       });
 
-      // Dengarkan Paket Data ews_data
+      // Dengarkan Paket Data ews_data dari Gateway
       db.ref("ews_data").on("value", (snapshot) => {
         const data = snapshot.val();
         if (data) {
           updateTelemetryUI(data);
+        } else {
+          setUiDisconnected();
         }
       }, (err) => {
         console.warn("Firebase ews_data error:", err);
+        setUiDisconnected();
       });
+
+      // Watchdog: jika setelah 15 detik belum ada data masuk, tampilkan Tidak Terhubung
+      setTimeout(() => {
+        if (!state.hasReceivedData) {
+          setUiDisconnected();
+        }
+      }, 15000);
 
     } catch (err) {
       console.warn("Firebase initialization notice:", err);
+      setUiDisconnected();
     }
   }
 
@@ -565,6 +750,7 @@
     initAudio();
     initMap();
     initChart();
+    setUiSearching(); // Default awal: Sedang Mencari Gateway
     initFirebase();
   });
 
