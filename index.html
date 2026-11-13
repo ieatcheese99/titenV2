@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="id" data-theme="dark" class="dark">
+<html lang="id" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="description" content="EWS TITEN - Sistem Peringatan Dini IoT Multi-Bencana Tanah Longsor dan Karhutla (MAGE 12 TRILOGY)" />
-  <meta name="theme-color" content="#0C0C0C" />
+  <meta name="theme-color" content="#004aad" />
   <title>EWS TITEN — Dashboard Pemantauan Aktivitas Multi-Bencana</title>
 
   <!-- Favicon & Touch Icon Resmi TITEN -->
@@ -30,13 +30,13 @@
   <!-- Leaflet 1.9.4 CSS (Local Vendor) -->
   <link rel="stylesheet" href="assets/vendor/leaflet.min.css" />
 
-  <!-- Stylesheet Utama EWS TITEN (BNPB Command Center Layout) -->
-  <link rel="stylesheet" href="css/style.css?v=4.0.0" />
+  <!-- Stylesheet Utama EWS TITEN (BNPB Command Center Layout - Light Mode) -->
+  <link rel="stylesheet" href="css/style.css?v=4.1.0" />
 </head>
 <body class="bnpb-app-container select-none">
 
   <!-- ================================================================= -->
-  <!-- 1. TOP BAR NAVIGASI TERPADU (BNPB MHEWS STYLE)                    -->
+  <!-- 1. TOP BAR NAVIGASI TERPADU (CLEAN LIGHT BLUE TITEN)               -->
   <!-- ================================================================= -->
   <header class="topbar">
     <div class="topbar-left">
@@ -101,7 +101,7 @@
   </header>
 
   <!-- ================================================================= -->
-  <!-- 2. MAIN 2-ROW COMMAND CENTER DASHBOARD                            -->
+  <!-- 2. MAIN 2-ROW COMMAND CENTER DASHBOARD (LIGHT MODE)               -->
   <!-- ================================================================= -->
   <main class="bnpb-dashboard">
 
@@ -110,8 +110,8 @@
 
       <!-- 1. LEFT COLUMN (~24% width): Info & Langkah Cepat -->
       <div class="bnpb-col-info">
-        <!-- Orange Gradient Banner -->
-        <div class="bnpb-banner-orange">
+        <!-- Blue Gradient Banner (Khas TITEN #004aad) -->
+        <div class="bnpb-banner-blue">
           <div class="bnpb-banner-header">
             <span class="bnpb-banner-clock sync-clockWib">--:--:-- WIB</span>
             <span class="bnpb-banner-date">13 November 2026</span>
@@ -200,7 +200,7 @@
         </div>
       </div>
 
-      <!-- 2. CENTER COLUMN (~46% width): Satellite GIS Map -->
+      <!-- 2. CENTER COLUMN (~46% width): GIS Map Container -->
       <div class="bnpb-col-map">
         <!-- Floating Layer Control (Top-Left) -->
         <div class="bnpb-map-ctrl-topleft">
@@ -413,7 +413,7 @@
             <div class="bnpb-station-table">
               <div class="bnpb-tbl-row">
                 <span class="tbl-k">Status</span>
-                <span id="tagMiring" class="tbl-v text-emerald-400">NORMAL</span>
+                <span id="tagMiring" class="tbl-v text-emerald-600">NORMAL</span>
               </div>
               <div class="bnpb-tbl-row">
                 <span class="tbl-k">Ambang Batas</span>
@@ -456,7 +456,7 @@
               </div>
               <div class="bnpb-tbl-row">
                 <span class="tbl-k">Stabilitas</span>
-                <span class="tbl-v text-emerald-400">Stabil</span>
+                <span class="tbl-v text-emerald-600">Stabil</span>
               </div>
               <div class="bnpb-tbl-row">
                 <span class="tbl-k">Filter Drift</span>
@@ -495,7 +495,7 @@
             <div class="bnpb-station-table">
               <div class="bnpb-tbl-row">
                 <span class="tbl-k">Status</span>
-                <span id="tagTanah" class="tbl-v text-emerald-400">NORMAL</span>
+                <span id="tagTanah" class="tbl-v text-emerald-600">NORMAL</span>
               </div>
               <div class="bnpb-tbl-row">
                 <span class="tbl-k">Ambang Batas</span>
@@ -534,7 +534,7 @@
             <div class="bnpb-station-table">
               <div class="bnpb-tbl-row">
                 <span class="tbl-k">Status</span>
-                <span id="tagGetaran" class="tbl-v text-emerald-400">STABIL</span>
+                <span id="tagGetaran" class="tbl-v text-emerald-600">STABIL</span>
               </div>
               <div class="bnpb-tbl-row">
                 <span class="tbl-k">Sensitivitas</span>
@@ -614,7 +614,7 @@
             <div id="cardSummaryKarhutla" class="bnpb-karhutla-card deck-summary-card status-normal">
               <div class="bnpb-card-top">
                 <span class="bnpb-card-name">Status Bahaya Karhutla</span>
-                <i data-lucide="flame" style="width: 14px; height: 14px; color: var(--color-brand-light);"></i>
+                <i data-lucide="flame" style="width: 14px; height: 14px; color: var(--color-siaga);"></i>
               </div>
               <div class="bnpb-card-body">
                 <span id="badgeSummaryKarhutla" class="bnpb-status-pill-big">NORMAL</span>
@@ -680,14 +680,14 @@
 
   <!-- Banner Izin Audio Pertama Kali -->
   <div id="audioPromptBanner" class="audio-prompt-banner hidden">
-    <i data-lucide="bell" style="width: 16px; height: 16px; color: var(--color-brand);"></i>
+    <i data-lucide="bell" style="width: 16px; height: 16px; color: var(--color-primary);"></i>
     <span>Aktifkan audio untuk mendengar peringatan dini darurat.</span>
     <button id="btnEnableAudio" class="btn-enable-audio">Aktifkan Suara</button>
   </div>
 
   <!-- Banner Animasi Zoom Pembuka (FlyTo) di Sudut Layar -->
   <div id="openingZoomBanner" class="opening-zoom-banner hidden" role="status">
-    <img src="assets/logo-mark-white.png" alt="TITEN" class="opening-zoom-logo" />
+    <img src="assets/logo-mark-blue.png" alt="TITEN" class="opening-zoom-logo" />
     <span id="openingZoomText">Menuju Node-01 · Tower 2 ITS...</span>
     <button id="btnSkipZoom" class="btn-skip-zoom" title="Lewati animasi kamera">Lewati</button>
   </div>
@@ -708,11 +708,11 @@
       <span style="font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Peta Dasar</span>
       <label class="layer-item">
         <span>OpenStreetMap (Standar)</span>
-        <input type="radio" name="basemap" value="osm" />
+        <input type="radio" name="basemap" value="osm" checked />
       </label>
       <label class="layer-item">
         <span>Satelit Esri World Imagery</span>
-        <input type="radio" name="basemap" value="satellite" checked />
+        <input type="radio" name="basemap" value="satellite" />
       </label>
     </div>
 
@@ -824,10 +824,10 @@
   <script src="assets/vendor/firebase-database.js"></script>
 
   <!-- Konfigurasi Tunggal EWS TITEN -->
-  <script src="js/config.js?v=4.0.0"></script>
+  <script src="js/config.js?v=4.1.0"></script>
 
   <!-- Logika Aplikasi Peta & Telemetri -->
-  <script src="js/app.js?v=4.0.0"></script>
+  <script src="js/app.js?v=4.1.0"></script>
 
 </body>
 </html>

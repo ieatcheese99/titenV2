@@ -1,73 +1,73 @@
 /**
- * EWS TITEN - Stylesheet Dashboard Pemantauan Terpadu (BNPB Command Center Layout)
- * Adaptasi UI: 1:1 BNPB MHEWS Gunung Ibu (2-Row Command Center Grid)
- * Identitas: EWS TITEN - Tim TRILOGY (MAGE 12 - IoT)
- * Warna Aksen: Orange BNPB #F36A1D & Cobalt Blue TITEN #004aad
- * Mode: Dark Command Center (High-Contrast Industrial SCADA)
+ * EWS TITEN - Stylesheet Dashboard Pemantauan Terpadu (BNPB Command Center Layout - Light Mode)
+ * Desain: Clean Industrial SCADA & Geospatial Command Center
+ * Warna Primer: #004aad (Cobalt Blue Resmi Logo TITEN)
+ * Layout: 2-Row BNPB Command Center Grid (Light Mode)
+ * Sesuai Standar: WCAG AA, High-Contrast Light Industrial Theme
  */
 
 /* ==========================================================================
-   1. VARIABEL TEMA & WARNA COMMAND CENTER BNPB
+   1. VARIABEL TEMA & WARNA INDUSTRI RESMI TITEN (LIGHT MODE)
    ========================================================================== */
 :root,
-[data-theme="dark"],
-.dark {
-  /* Skala Warna Latar Belakang (BNPB Deep Dark Aesthetic) */
-  --bg-canvas: #0C0C0C;
-  --bg-surface: #141414;
-  --bg-surface-elevated: #1A1918;
-  --bg-surface-muted: #232221;
-  --bg-card: #232221;
-  --bg-card-hover: #2D2C2A;
-  --bg-backdrop: rgba(20, 20, 20, 0.94);
+[data-theme="light"] {
+  /* Skala Warna Latar Belakang (Clean Industrial Light) */
+  --bg-canvas: #F4F6F9;
+  --bg-surface: #FFFFFF;
+  --bg-surface-elevated: #FFFFFF;
+  --bg-surface-muted: #F8FAFC;
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #F1F5F9;
+  --bg-backdrop: rgba(255, 255, 255, 0.96);
 
   /* Skala Tipografi & Teks */
-  --text-primary: #F9F8F7;
-  --text-secondary: #D4D4D0;
-  --text-muted: #9E9D9A;
-  --text-subtle: #777674;
+  --text-primary: #1A2332;
+  --text-secondary: #475569;
+  --text-muted: #64748B;
+  --text-subtle: #94A3B8;
 
   /* Garis Batas / Border */
-  --border-subtle: #282726;
-  --border-medium: #353332;
-  --border-strong: #4F4D4A;
+  --border-subtle: #E2E8F0;
+  --border-medium: #CBD5E1;
+  --border-strong: #94A3B8;
 
-  /* Warna Aksen Merek */
+  /* Warna Aksen Merek Resmi TITEN (Cobalt Blue) */
   --color-primary: #004aad;
-  --color-brand: #F36A1D;
-  --color-brand-light: #F59047;
-  --color-brand-dark: #CD541B;
-  --color-brand-glow: rgba(243, 106, 29, 0.25);
+  --color-primary-hover: #003680;
+  --color-primary-light: #0284c7;
+  --color-primary-soft: rgba(0, 74, 173, 0.08);
+  --color-primary-border: rgba(0, 74, 173, 0.22);
+  --color-primary-glow: rgba(0, 74, 173, 0.25);
 
-  /* Warna Status Kebencanaan Resmi BNPB */
+  /* Warna Status Kebencanaan Resmi BNPB (Light Mode) */
   --color-normal: #10B981;
-  --color-normal-soft: rgba(16, 185, 129, 0.15);
-  --color-normal-border: rgba(16, 185, 129, 0.3);
+  --color-normal-soft: #ECFDF5;
+  --color-normal-border: #A7F3D0;
 
-  --color-waspada: #F59E0B;
-  --color-waspada-soft: rgba(245, 158, 11, 0.15);
-  --color-waspada-border: rgba(245, 158, 11, 0.3);
+  --color-waspada: #FFB800;
+  --color-waspada-soft: #FFFBEB;
+  --color-waspada-border: #FDE68A;
 
   --color-siaga: #F97316;
-  --color-siaga-soft: rgba(249, 115, 22, 0.15);
-  --color-siaga-border: rgba(249, 115, 22, 0.3);
+  --color-siaga-soft: #FFF7ED;
+  --color-siaga-border: #FED7AA;
 
-  --color-awas: #EF4444;
-  --color-awas-soft: rgba(239, 68, 68, 0.15);
-  --color-awas-border: rgba(239, 68, 68, 0.3);
+  --color-awas: #DC2626;
+  --color-awas-soft: #FEF2F2;
+  --color-awas-border: #FECACA;
 
-  --color-offline: #71717A;
-  --color-offline-soft: rgba(113, 113, 122, 0.15);
-  --color-offline-border: rgba(113, 113, 122, 0.3);
+  --color-offline: #64748B;
+  --color-offline-soft: #F1F5F9;
+  --color-offline-border: #CBD5E1;
 
   /* Tipografi */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  /* Elevasi & Efek */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.6);
-  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.8);
+  /* Elevasi & Efek Bayangan */
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 12px -2px rgba(15, 23, 42, 0.08), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 10px 25px -4px rgba(15, 23, 42, 0.12), 0 4px 10px -2px rgba(15, 23, 42, 0.06);
 
   --radius-xs: 4px;
   --radius-sm: 6px;
@@ -108,13 +108,13 @@ button, input, select {
   font-family: var(--font-mono);
 }
 
-/* Custom Scrollbar Presisi */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 4px;
   height: 4px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg-surface);
+  background: var(--bg-surface-muted);
 }
 ::-webkit-scrollbar-thumb {
   background: var(--border-medium);
@@ -125,19 +125,20 @@ button, input, select {
 }
 
 /* ==========================================================================
-   3. TOPBAR NAVIGASI TERPADU (BNPB MHEWS STYLE)
+   3. TOPBAR NAVIGASI TERPADU (CLEAN LIGHT BLUE TITEN)
    ========================================================================== */
 .topbar {
-  height: 46px;
+  height: 48px;
   background-color: var(--bg-surface);
   border-bottom: 1px solid var(--border-subtle);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 14px;
+  padding: 0 16px;
   z-index: 1000;
   flex-shrink: 0;
   position: relative;
+  box-shadow: var(--shadow-sm);
 }
 
 .topbar-left {
@@ -154,15 +155,15 @@ button, input, select {
 }
 
 .brand-icon-box {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border-radius: 6px;
-  background: linear-gradient(135deg, var(--color-brand-dark), var(--color-brand-light));
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
   display: flex;
   align-items: center;
   justify-content: center;
   color: #FFFFFF;
-  box-shadow: 0 2px 6px rgba(243, 106, 29, 0.3);
+  box-shadow: 0 2px 6px rgba(0, 74, 173, 0.25);
 }
 
 .brand-icon-box svg {
@@ -179,19 +180,19 @@ button, input, select {
 .brand-name {
   font-size: 13.5px;
   font-weight: 700;
-  color: #FFFFFF;
+  color: var(--color-primary);
   margin: 0;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
 }
 
 .brand-tag {
   font-size: 9.5px;
   padding: 1.5px 6px;
   border-radius: 4px;
-  background: rgba(243, 106, 29, 0.15);
-  color: var(--color-brand-light);
-  border: 1px solid rgba(243, 106, 29, 0.3);
-  font-weight: 600;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary-border);
+  font-weight: 700;
 }
 
 .topbar-summary-chip {
@@ -200,7 +201,7 @@ button, input, select {
   gap: 6px;
   padding: 3px 8px;
   border-radius: 4px;
-  background: var(--bg-surface-elevated);
+  background: var(--bg-surface-muted);
   border: 1px solid var(--border-subtle);
   font-size: 11px;
   color: var(--text-secondary);
@@ -222,9 +223,9 @@ button, input, select {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 3px 8px;
+  padding: 4px 8px;
   border-radius: 4px;
-  background: var(--bg-surface-elevated);
+  background: var(--bg-surface-muted);
   border: 1px solid var(--border-subtle);
   font-size: 11px;
   color: var(--text-secondary);
@@ -257,9 +258,9 @@ button, input, select {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 3px 10px;
+  padding: 4px 10px;
   border-radius: 4px;
-  background: var(--bg-surface-elevated);
+  background: var(--bg-surface-muted);
   border: 1px solid var(--border-subtle);
   font-size: 11px;
   color: var(--text-secondary);
@@ -287,10 +288,10 @@ button, input, select {
 }
 
 .btn-icon-topbar {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border-radius: 6px;
-  background: var(--bg-surface-elevated);
+  background: var(--bg-surface-muted);
   border: 1px solid var(--border-subtle);
   color: var(--text-secondary);
   display: flex;
@@ -301,13 +302,13 @@ button, input, select {
 }
 
 .btn-icon-topbar:hover {
-  background: var(--bg-surface-muted);
-  color: #FFFFFF;
-  border-color: var(--border-medium);
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  border-color: var(--color-primary-border);
 }
 
 /* ==========================================================================
-   4. LAYOUT UTAMA: 2-BARIS GRID BNPB COMMAND CENTER
+   4. LAYOUT UTAMA: 2-BARIS GRID BNPB COMMAND CENTER (LIGHT MODE)
    ========================================================================== */
 .bnpb-app-container {
   display: flex;
@@ -349,19 +350,20 @@ button, input, select {
   gap: 8px;
   overflow-y: auto;
   min-height: 0;
+  box-shadow: var(--shadow-sm);
 }
 
-/* Banner Oranye Gradien Khas BNPB */
-.bnpb-banner-orange {
-  background: linear-gradient(135deg, #F59047 0%, #CD541B 100%);
+/* Banner Biru Gradien Khas TITEN */
+.bnpb-banner-blue {
+  background: linear-gradient(135deg, #0284c7 0%, #004aad 100%);
   border-radius: var(--radius-sm);
   padding: 10px;
   color: #FFFFFF;
   display: flex;
   flex-direction: column;
   gap: 6px;
-  box-shadow: 0 2px 8px rgba(205, 84, 27, 0.35);
-  border: 1px solid rgba(102, 49, 33, 0.6);
+  box-shadow: 0 3px 10px rgba(0, 74, 173, 0.25);
+  border: 1px solid rgba(0, 54, 128, 0.3);
   flex-shrink: 0;
 }
 
@@ -370,11 +372,11 @@ button, input, select {
   align-items: center;
   justify-content: space-between;
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.92);
 }
 
 .bnpb-banner-clock {
-  background: rgba(0, 0, 0, 0.25);
+  background: rgba(0, 0, 0, 0.2);
   padding: 2px 6px;
   border-radius: 4px;
   font-family: var(--font-mono);
@@ -391,7 +393,7 @@ button, input, select {
 
 .bnpb-banner-subtitle {
   font-size: 9.5px;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.88);
   margin: 2px 0 0 0;
 }
 
@@ -404,17 +406,17 @@ button, input, select {
 }
 
 .bnpb-stat-card {
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-medium);
+  background-color: var(--bg-surface-muted);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   padding: 6px 4px;
   text-align: center;
 }
 
 .bnpb-stat-num {
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: 700;
-  color: #FFFFFF;
+  color: var(--color-primary);
 }
 
 .bnpb-stat-label {
@@ -440,7 +442,7 @@ button, input, select {
   font-size: 11.5px;
   font-weight: 700;
   margin: 0;
-  color: #FFFFFF;
+  color: var(--text-primary);
 }
 
 .bnpb-section-desc {
@@ -457,8 +459,8 @@ button, input, select {
 }
 
 .bnpb-action-item {
-  background: rgba(35, 34, 33, 0.7);
-  border: 1px solid var(--border-medium);
+  background: var(--bg-surface-muted);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   padding: 6px 8px;
   display: flex;
@@ -482,18 +484,18 @@ button, input, select {
 }
 
 .bnpb-action-icon.action-search {
-  background: rgba(59, 130, 246, 0.15);
-  color: #60A5FA;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
 }
 
 .bnpb-action-icon.action-bell {
-  background: rgba(245, 158, 11, 0.15);
-  color: #FBBF24;
+  background: rgba(245, 158, 11, 0.12);
+  color: #D97706;
 }
 
 .bnpb-action-icon.action-radio {
-  background: rgba(16, 185, 129, 0.15);
-  color: #34D399;
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
 }
 
 .bnpb-action-body {
@@ -504,7 +506,7 @@ button, input, select {
 .bnpb-action-title {
   display: block;
   font-weight: 600;
-  color: #FFFFFF;
+  color: var(--text-primary);
   font-size: 9.5px;
 }
 
@@ -514,8 +516,8 @@ button, input, select {
 }
 
 .bnpb-action-rec-box {
-  background: rgba(16, 185, 129, 0.1);
-  border: 1px solid rgba(16, 185, 129, 0.25);
+  background: #ECFDF5;
+  border: 1px solid #A7F3D0;
   border-radius: var(--radius-sm);
   padding: 5px 8px;
   margin-top: 2px;
@@ -523,7 +525,7 @@ button, input, select {
 
 .bnpb-action-rec-text {
   font-size: 9px;
-  color: #A7F3D0;
+  color: #065F46;
   margin: 0;
   line-height: 1.3;
 }
@@ -533,9 +535,9 @@ button, input, select {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  background: rgba(239, 68, 68, 0.15);
-  border: 1px solid rgba(239, 68, 68, 0.35);
-  color: #FCA5A5;
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  color: #DC2626;
   padding: 6px 10px;
   border-radius: var(--radius-sm);
   font-size: 10.5px;
@@ -546,8 +548,8 @@ button, input, select {
 }
 
 .bnpb-btn-emergency:hover {
-  background: rgba(239, 68, 68, 0.3);
-  color: #FFFFFF;
+  background: #FEE2E2;
+  color: #991B1B;
 }
 
 .bnpb-btn-emergency svg, .bnpb-btn-emergency i {
@@ -555,7 +557,7 @@ button, input, select {
   height: 13px;
 }
 
-/* 2. Kolom Tengah: GIS Satellite Map (~46% lebar) */
+/* 2. Kolom Tengah: GIS Map Container (~46% lebar) */
 .bnpb-col-map {
   width: 46%;
   background-color: var(--bg-surface);
@@ -566,6 +568,7 @@ button, input, select {
   display: flex;
   flex-direction: column;
   min-height: 0;
+  box-shadow: var(--shadow-sm);
 }
 
 .bnpb-col-map #map {
@@ -607,24 +610,25 @@ button, input, select {
 }
 
 .bnpb-map-btn {
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   border-radius: 6px;
-  background: rgba(26, 25, 24, 0.92);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(6px);
   border: 1px solid var(--border-medium);
   color: var(--text-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+  box-shadow: var(--shadow-sm);
   transition: all 0.15s ease;
 }
 
 .bnpb-map-btn:hover {
-  background: #2D2C2A;
-  color: #FFFFFF;
-  border-color: var(--border-strong);
+  background: #FFFFFF;
+  color: var(--color-primary);
+  border-color: var(--color-primary-border);
 }
 
 .bnpb-map-btn svg, .bnpb-map-btn i {
@@ -632,14 +636,14 @@ button, input, select {
   height: 14px;
 }
 
-/* Leaflet dark theme fix */
+/* Leaflet light theme */
 .leaflet-container {
-  background: #141414 !important;
+  background: #F1F5F9 !important;
   font-family: inherit;
 }
 
 .leaflet-control-attribution {
-  background: rgba(20, 20, 20, 0.85) !important;
+  background: rgba(255, 255, 255, 0.9) !important;
   color: var(--text-muted) !important;
   font-size: 9px !important;
   padding: 2px 6px !important;
@@ -647,7 +651,7 @@ button, input, select {
 }
 
 .leaflet-control-attribution a {
-  color: var(--color-brand-light) !important;
+  color: var(--color-primary) !important;
   text-decoration: none;
 }
 
@@ -662,6 +666,7 @@ button, input, select {
   flex-direction: column;
   min-height: 0;
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
 .bnpb-devices-header {
@@ -678,7 +683,7 @@ button, input, select {
   font-size: 11.5px;
   font-weight: 700;
   margin: 0;
-  color: #FFFFFF;
+  color: var(--text-primary);
 }
 
 .bnpb-devices-subtitle {
@@ -697,7 +702,7 @@ button, input, select {
 }
 
 .bnpb-btn-icon-subtle:hover {
-  color: #FFFFFF;
+  color: var(--color-primary);
 }
 
 .bnpb-btn-icon-subtle svg, .bnpb-btn-icon-subtle i {
@@ -717,13 +722,18 @@ button, input, select {
 }
 
 .bnpb-device-card {
-  background-color: var(--bg-surface-elevated);
-  border: 1px solid var(--border-medium);
+  background-color: var(--bg-surface-muted);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   padding: 7px 8px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  transition: border-color 0.15s ease;
+}
+
+.bnpb-device-card:hover {
+  border-color: var(--border-medium);
 }
 
 .bnpb-card-top {
@@ -732,7 +742,7 @@ button, input, select {
   justify-content: space-between;
   font-size: 10px;
   font-weight: 600;
-  color: #FFFFFF;
+  color: var(--text-primary);
 }
 
 .bnpb-card-name {
@@ -751,7 +761,7 @@ button, input, select {
 .bnpb-val-large {
   font-size: 17px;
   font-weight: 700;
-  color: #FFFFFF;
+  color: var(--text-primary);
   font-family: var(--font-mono);
   line-height: 1;
 }
@@ -772,7 +782,7 @@ button, input, select {
 .bnpb-node-title {
   font-size: 11px;
   font-weight: 700;
-  color: #FFFFFF;
+  color: var(--text-primary);
   margin: 0;
 }
 
@@ -796,7 +806,7 @@ button, input, select {
   justify-content: space-between;
   font-size: 8px;
   color: var(--text-subtle);
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid var(--border-subtle);
   padding-top: 3px;
 }
 
@@ -821,10 +831,12 @@ button, input, select {
   flex-direction: column;
   min-height: 0;
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
 .bnpb-sensor-header {
-  background-color: var(--bg-card);
+  background-color: var(--bg-surface-muted);
+  border: 1px solid var(--border-subtle);
   padding: 5px 10px;
   border-radius: var(--radius-sm);
   display: flex;
@@ -838,7 +850,7 @@ button, input, select {
   font-size: 11.5px;
   font-weight: 700;
   margin: 0;
-  color: #FFFFFF;
+  color: var(--text-primary);
 }
 
 .bnpb-sensor-subtitle {
@@ -864,7 +876,7 @@ button, input, select {
 }
 
 .bnpb-sensor-actions button:hover {
-  color: #FFFFFF;
+  color: var(--color-primary);
 }
 
 .bnpb-sensor-actions svg, .bnpb-sensor-actions i {
@@ -883,8 +895,8 @@ button, input, select {
 }
 
 .bnpb-station-col {
-  background-color: var(--bg-surface-elevated);
-  border: 1px solid var(--border-medium);
+  background-color: var(--bg-surface-muted);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   padding: 7px;
   display: flex;
@@ -898,20 +910,20 @@ button, input, select {
   align-items: center;
   justify-content: space-between;
   padding-bottom: 3px;
-  border-bottom: 1px solid var(--border-medium);
+  border-bottom: 1px solid var(--border-subtle);
   margin-bottom: 5px;
 }
 
 .bnpb-station-name {
   font-weight: 700;
-  color: #FFFFFF;
+  color: var(--text-primary);
   font-size: 10px;
 }
 
 .bnpb-station-alert {
-  background: rgba(120, 53, 15, 0.35);
-  border: 1px solid rgba(245, 158, 11, 0.25);
-  color: #FCD34D;
+  background: #FFFBEB;
+  border: 1px solid #FDE68A;
+  color: #92400E;
   padding: 3px 5px;
   border-radius: 4px;
   font-size: 8px;
@@ -936,7 +948,7 @@ button, input, select {
 .bnpb-hero-svg {
   width: 26px;
   height: 26px;
-  color: var(--color-brand);
+  color: var(--color-primary);
 }
 
 .bnpb-hero-val-box {
@@ -946,7 +958,7 @@ button, input, select {
 .bnpb-hero-val {
   font-size: 18px;
   font-weight: 700;
-  color: #FFFFFF;
+  color: var(--text-primary);
   font-family: var(--font-mono);
   line-height: 1;
 }
@@ -965,7 +977,7 @@ button, input, select {
 }
 
 .bnpb-station-table {
-  border-top: 1px solid var(--border-medium);
+  border-top: 1px solid var(--border-subtle);
   padding-top: 4px;
   margin-top: 4px;
   display: flex;
@@ -1006,8 +1018,8 @@ button, input, select {
 }
 
 .bnpb-karhutla-card {
-  background-color: var(--bg-surface-elevated);
-  border: 1px solid var(--border-medium);
+  background-color: var(--bg-surface-muted);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   padding: 7px;
   display: flex;
@@ -1028,8 +1040,8 @@ button, input, select {
 
 /* Seismogram Waveform Box */
 .bnpb-seismo-box {
-  background-color: var(--bg-surface-elevated);
-  border: 1px solid var(--border-medium);
+  background-color: var(--bg-surface-muted);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   padding: 7px 10px;
   flex: 1;
@@ -1049,7 +1061,7 @@ button, input, select {
 .bnpb-seismo-title {
   font-size: 10.5px;
   font-weight: 600;
-  color: #FFFFFF;
+  color: var(--text-primary);
 }
 
 .bnpb-chart-wrapper {
@@ -1071,10 +1083,10 @@ button, input, select {
 }
 
 .btn-range-filter {
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
+  background: #FFFFFF;
+  border: 1px solid var(--border-medium);
   border-radius: 4px;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   font-size: 9.5px;
   font-weight: 600;
   padding: 2px 6px;
@@ -1083,14 +1095,14 @@ button, input, select {
 }
 
 .btn-range-filter:hover {
-  color: #FFFFFF;
-  border-color: var(--border-medium);
+  color: var(--color-primary);
+  border-color: var(--color-primary);
 }
 
 .btn-range-filter.active {
-  background: var(--color-brand-dark);
+  background: var(--color-primary);
   color: #FFFFFF;
-  border-color: var(--color-brand);
+  border-color: var(--color-primary);
 }
 
 /* ==========================================================================
@@ -1116,15 +1128,15 @@ button, input, select {
 }
 
 .chip-data-status.live {
-  background: rgba(16, 185, 129, 0.15);
+  background: var(--color-normal-soft);
   color: var(--color-normal);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  border: 1px solid var(--color-normal-border);
 }
 
 .progress-container {
   width: 100%;
-  height: 3.5px;
-  background: rgba(255, 255, 255, 0.08);
+  height: 4px;
+  background: #E2E8F0;
   border-radius: 2px;
   overflow: hidden;
   margin: 3px 0;
@@ -1142,7 +1154,7 @@ button, input, select {
 .floating-overlay-card {
   position: fixed;
   z-index: 1100;
-  background: rgba(20, 20, 20, 0.96);
+  background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(12px);
   border: 1px solid var(--border-medium);
   border-radius: var(--radius-md);
@@ -1159,8 +1171,8 @@ button, input, select {
 }
 
 .layer-panel {
-  top: 54px;
-  right: 14px;
+  top: 56px;
+  right: 16px;
   width: 280px;
 }
 
@@ -1175,7 +1187,7 @@ button, input, select {
 .card-title-sm {
   font-size: 12px;
   font-weight: 700;
-  color: #FFFFFF;
+  color: var(--text-primary);
   margin: 0;
 }
 
@@ -1189,7 +1201,7 @@ button, input, select {
 }
 
 .btn-close-panel:hover {
-  color: #FFFFFF;
+  color: var(--text-primary);
 }
 
 .layer-item {
@@ -1205,7 +1217,7 @@ button, input, select {
 .layer-item input[type="checkbox"],
 .layer-item input[type="radio"] {
   cursor: pointer;
-  accent-color: var(--color-brand);
+  accent-color: var(--color-primary);
   width: 14px;
   height: 14px;
 }
@@ -1249,11 +1261,11 @@ button, input, select {
 /* System Issue Banner */
 .system-issue-banner {
   position: fixed;
-  top: 54px;
+  top: 56px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1200;
-  background: rgba(26, 25, 24, 0.96);
+  background: #FFFFFF;
   border: 1px solid var(--color-waspada);
   border-radius: var(--radius-sm);
   padding: 8px 14px;
@@ -1261,7 +1273,7 @@ button, input, select {
   align-items: center;
   gap: 12px;
   box-shadow: var(--shadow-lg);
-  color: #FFFFFF;
+  color: var(--text-primary);
   font-size: 11.5px;
 }
 
@@ -1284,7 +1296,7 @@ button, input, select {
 }
 
 .banner-close:hover {
-  color: #FFFFFF;
+  color: var(--text-primary);
 }
 
 /* Audio Prompt Banner */
@@ -1294,8 +1306,8 @@ button, input, select {
   left: 50%;
   transform: translateX(-50%);
   z-index: 1200;
-  background: rgba(20, 20, 20, 0.96);
-  border: 1px solid var(--color-brand);
+  background: #FFFFFF;
+  border: 1px solid var(--color-primary);
   border-radius: var(--radius-md);
   padding: 8px 14px;
   display: flex;
@@ -1303,7 +1315,7 @@ button, input, select {
   gap: 10px;
   box-shadow: var(--shadow-lg);
   font-size: 11.5px;
-  color: #FFFFFF;
+  color: var(--text-primary);
 }
 
 .audio-prompt-banner.hidden {
@@ -1311,7 +1323,7 @@ button, input, select {
 }
 
 .btn-enable-audio {
-  background: var(--color-brand);
+  background: var(--color-primary);
   color: #FFFFFF;
   border: none;
   border-radius: 4px;
@@ -1321,22 +1333,27 @@ button, input, select {
   cursor: pointer;
 }
 
+.btn-enable-audio:hover {
+  background: var(--color-primary-hover);
+}
+
 /* Opening Zoom Banner */
 .opening-zoom-banner {
   position: fixed;
-  top: 54px;
+  top: 56px;
   left: 14px;
   z-index: 1050;
   display: flex;
   align-items: center;
   gap: 8px;
-  background: rgba(20, 20, 20, 0.92);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(8px);
   border: 1px solid var(--border-medium);
   padding: 4px 12px;
   border-radius: 9999px;
   font-size: 11px;
-  color: #FFFFFF;
+  color: var(--text-primary);
+  box-shadow: var(--shadow-md);
 }
 
 .opening-zoom-banner.hidden {
@@ -1350,7 +1367,7 @@ button, input, select {
 }
 
 .btn-skip-zoom {
-  background: var(--bg-card);
+  background: var(--bg-surface-muted);
   border: 1px solid var(--border-subtle);
   color: var(--text-secondary);
   border-radius: 9999px;
@@ -1360,6 +1377,11 @@ button, input, select {
   cursor: pointer;
 }
 
+.btn-skip-zoom:hover {
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+
 /* Demo Mode Dock */
 .demo-mode-dock {
   position: fixed;
@@ -1367,8 +1389,8 @@ button, input, select {
   left: 50%;
   transform: translateX(-50%);
   z-index: 1150;
-  background: var(--bg-surface);
-  border: 1px solid var(--color-brand);
+  background: #FFFFFF;
+  border: 1px solid var(--color-primary);
   border-radius: var(--radius-md);
   padding: 6px 12px;
   box-shadow: var(--shadow-lg);
@@ -1386,13 +1408,13 @@ button, input, select {
   font-size: 10.5px;
   font-weight: 700;
   font-family: var(--font-mono);
-  color: var(--color-brand);
+  color: var(--color-primary);
   padding-right: 6px;
   border-right: 1px solid var(--border-subtle);
 }
 
 .btn-demo-sim {
-  background: var(--bg-card);
+  background: var(--bg-surface-muted);
   border: 1px solid var(--border-medium);
   border-radius: var(--radius-xs);
   padding: 3px 6px;
@@ -1404,8 +1426,9 @@ button, input, select {
 }
 
 .btn-demo-sim:hover {
-  background: var(--bg-card-hover);
-  color: #FFFFFF;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  border-color: var(--color-primary-border);
 }
 
 /* ==========================================================================
@@ -1428,7 +1451,7 @@ button, input, select {
   align-items: center;
   justify-content: center;
   color: #FFFFFF;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 2px 8px rgba(0, 74, 173, 0.4);
   transition: transform 0.2s ease;
 }
 
@@ -1441,7 +1464,7 @@ button, input, select {
   top: 30px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(20, 20, 20, 0.9);
+  background: rgba(255, 255, 255, 0.95);
   border: 1px solid var(--border-subtle);
   border-radius: 4px;
   padding: 2px 6px;
@@ -1450,7 +1473,7 @@ button, input, select {
   font-family: var(--font-mono);
   white-space: nowrap;
   box-shadow: var(--shadow-sm);
-  color: #FFFFFF;
+  color: var(--text-primary);
   pointer-events: none;
 }
 
@@ -1525,7 +1548,7 @@ button, input, select {
 
 @media (max-width: 640px) {
   .topbar {
-    padding: 0 8px;
+    padding: 0 10px;
   }
   .brand-name {
     font-size: 12px;
