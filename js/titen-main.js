@@ -515,7 +515,7 @@
     setText("valRssi", isNaN(rssi) ? "--" : rssi.toString());
     setText("subRssi", !isNaN(rssi) ? (rssi > -75 ? "Sinyal Sangat Kuat" : "Jarak Jauh") : "Tanpa Sinyal");
 
-    // Evaluasi Status Ambang Batas Sensor Individual & Animasi Alert Kartu
+    // Evaluasi Status Ambang Batas Sensor Individual (Sesuai Tabel Ambang Batas TITEN)
     const cardSuhu = getEl("cardSuhu");
     const tagSuhu = getEl("tagSuhu");
     if (tagSuhu) {
@@ -540,10 +540,10 @@
     if (tagUdara) {
       if (!isNaN(udara)) {
         if (udara <= 30) {
-          tagUdara.textContent = "Kering Kritis"; tagUdara.className = "sensor-card-status status-danger";
+          tagUdara.textContent = "Kritis (≤30%)"; tagUdara.className = "sensor-card-status status-danger";
           if (cardUdara) cardUdara.classList.add("card-alert");
         } else if (udara <= 45) {
-          tagUdara.textContent = "Kering"; tagUdara.className = "sensor-card-status status-warn";
+          tagUdara.textContent = "Kering (≤45%)"; tagUdara.className = "sensor-card-status status-warn";
           if (cardUdara) cardUdara.classList.remove("card-alert");
         } else {
           tagUdara.textContent = "Lembap"; tagUdara.className = "sensor-card-status";
@@ -559,10 +559,10 @@
     if (tagTanah) {
       if (!isNaN(tanah)) {
         if (tanah >= 75) {
-          tagTanah.textContent = "Jenuh Bahaya"; tagTanah.className = "sensor-card-status status-danger";
+          tagTanah.textContent = "Kritis (≥75%)"; tagTanah.className = "sensor-card-status status-danger";
           if (cardTanah) cardTanah.classList.add("card-alert");
         } else if (tanah >= 60) {
-          tagTanah.textContent = "Jenuh Air"; tagTanah.className = "sensor-card-status status-warn";
+          tagTanah.textContent = "Jenuh (≥60%)"; tagTanah.className = "sensor-card-status status-warn";
           if (cardTanah) cardTanah.classList.remove("card-alert");
         } else {
           tagTanah.textContent = "Stabil"; tagTanah.className = "sensor-card-status";
@@ -577,14 +577,14 @@
     const tagMiring = getEl("tagMiring");
     if (tagMiring) {
       if (!isNaN(miring)) {
-        if (miring >= 25) {
-          tagMiring.textContent = "Kritis"; tagMiring.className = "sensor-card-status status-danger";
+        if (miring >= 45 || (miring >= 30 && !isNaN(tanah) && tanah >= 75)) {
+          tagMiring.textContent = "Bahaya (≥45°)"; tagMiring.className = "sensor-card-status status-danger";
           if (cardMiring) cardMiring.classList.add("card-alert");
-        } else if (miring >= 12) {
-          tagMiring.textContent = "Miring"; tagMiring.className = "sensor-card-status status-warn";
+        } else if (miring >= 25) {
+          tagMiring.textContent = "Waspada (≥25°)"; tagMiring.className = "sensor-card-status status-warn";
           if (cardMiring) cardMiring.classList.remove("card-alert");
         } else {
-          tagMiring.textContent = "Tegak"; tagMiring.className = "sensor-card-status";
+          tagMiring.textContent = "Tegak/Aman"; tagMiring.className = "sensor-card-status";
           if (cardMiring) cardMiring.classList.remove("card-alert");
         }
       } else {
@@ -611,46 +611,35 @@
       }
     }
 
-    // 2. Tampilkan Mode & Edge AI Riil
-    setText("badgeModeDaya", modeDaya);
-    setText("textPrediksiAi", prediksiAi);
+    // =========================================================================
+    // 5. EVALUASI AMBANG BATAS SISTEM RESMI (3 TINGKAT: AMAN, WASPADA, BAHAYA)
+    // Sesuai Matriks Spesifikasi Ambang Batas Sistem TITEN MAGE 12:
+    // 1. BAHAYA:
+    //    - Tanah Longsor: Sudut >= 45° (Mutlak) ATAU (Sudut >= 30° & Tanah >= 75%)
+    //    - Karhutla: Suhu >= 40°C DAN Udara <= 30%
+    //    - Flag Hardware: status_ews mengandung BAHAYA / AWAS / DARURAT
+    //    - Tindakan: Real-Time Active (1s) + Sirine 125dB + Alarm Web & Posko
+    //
+    // 2. WASPADA:
+    //    - Tanah Longsor: Sudut >= 25° ATAU Tanah >= 60°% ATAU Tren AI Aktif
+    //    - Karhutla: (Suhu >= 36°C & Udara <= 45%) ATAU Tren AI Aktif
+    //    - Flag Hardware: status_ews mengandung WASPADA
+    //    - Tindakan: Real-Time Active (1s) + Peringatan Dini AI + Buzzer Pendek
+    //
+    // 3. AMAN:
+    //    - Tanah Longsor: Sudut < 25° DAN Tanah < 60%
+    //    - Karhutla: Suhu < 36°C ATAU Udara > 45%
+    //    - Tindakan: Eco Deep Sleep (Lapor tiap 20s, Instant Wake-Up 0.2s)
+    // =========================================================================
 
-    // 3. Status Sirine
-    const badgeSirinePosko = getEl("badgeSirinePosko");
-    const badgeSirineWrap = getEl("badgeSirineWrap");
-    if (badgeSirinePosko && badgeSirineWrap) {
-      if (alarmAktif || rawStatus.includes("BAHAYA") || rawStatus.includes("AWAS")) {
-        badgeSirinePosko.textContent = "AKTIF (125dB)";
-        badgeSirineWrap.classList.add("siren-active");
-      } else {
-        badgeSirinePosko.textContent = "NON-AKTIF";
-        badgeSirineWrap.classList.remove("siren-active");
-      }
-    }
+    const bahayaLongsor = (!isNaN(miring) && miring >= 45) || (!isNaN(miring) && !isNaN(tanah) && miring >= 30 && tanah >= 75);
+    const bahayaKarhutla = (!isNaN(suhu) && !isNaN(udara) && suhu >= 40 && udara <= 30);
+    const isBahaya = rawStatus.includes("BAHAYA") || rawStatus.includes("AWAS") || rawStatus.includes("DARURAT") || bahayaLongsor || bahayaKarhutla;
 
-    // 4. Status Cloud Pill Navbar: GATEWAY TERHUBUNG
-    const pillCloud = getEl("pillCloud");
-    const textCloud = getEl("textCloudStatus");
-    if (pillCloud && textCloud) {
-      pillCloud.className = "pill-cloud";
-      textCloud.textContent = "GATEWAY TERHUBUNG";
-    }
-
-    // 5. Evaluasi Status Sistem (3 Status Saja: AMAN, WASPADA, BAHAYA)
-    const cardStatus = getEl("cardStatusBanner");
-    const textStatus = getEl("textStatusEws");
-    const markerContainer = getEl("mapMarkerContainer");
-    const mapPopupStatus = getEl("mapPopupStatus");
-    const levelAman = getEl("levelAman");
-    const levelWaspada = getEl("levelWaspada");
-    const levelBahaya = getEl("levelBahaya");
-
-    // Kriteria 3 Status:
-    // 1. BAHAYA: Kemiringan >= 20° atau Suhu >= 38°C atau status dari hardware mengandung BAHAYA/AWAS/SIAGA/DARURAT
-    // 2. WASPADA: Kemiringan >= 12° atau Suhu >= 35°C atau Kelembapan Tanah >= 50% atau status mengandung WASPADA
-    // 3. AMAN: Kondisi normal di bawah ambang batas waspada
-    let isBahaya = rawStatus.includes("BAHAYA") || rawStatus.includes("AWAS") || rawStatus.includes("SIAGA") || rawStatus.includes("DARURAT") || (!isNaN(miring) && miring >= 20) || (!isNaN(suhu) && suhu >= 38);
-    let isWaspada = !isBahaya && (rawStatus.includes("WASPADA") || (!isNaN(miring) && miring >= 12) || (!isNaN(suhu) && suhu >= 35) || (!isNaN(tanah) && tanah >= 50));
+    const isAiAlert = prediksiAi && !prediksiAi.toLowerCase().includes("stabil") && !prediksiAi.toLowerCase().includes("aman");
+    const waspadaLongsor = (!isNaN(miring) && miring >= 25) || (!isNaN(tanah) && tanah >= 60);
+    const waspadaKarhutla = (!isNaN(suhu) && !isNaN(udara) && suhu >= 36 && udara <= 45);
+    const isWaspada = !isBahaya && (rawStatus.includes("WASPADA") || waspadaLongsor || waspadaKarhutla || isAiAlert);
 
     let displayStatus = "AMAN";
     let statusClass = "status-aman";
@@ -669,6 +658,49 @@
       statusClass = "status-aman";
       statusColor = "#108a00";
     }
+
+    // Sinkronisasi Mode Daya Sesuai Tindakan Sistem
+    let computedModeDaya = modeDaya;
+    if (isBahaya || isWaspada) {
+      computedModeDaya = (modeDaya && modeDaya.includes("REAL-TIME")) ? modeDaya : "REAL-TIME ACTIVE (1s)";
+    } else {
+      computedModeDaya = modeDaya || "ECO DEEP SLEEP (20s)";
+    }
+    setText("badgeModeDaya", computedModeDaya);
+    setText("textPrediksiAi", prediksiAi);
+
+    // Sinkronisasi Sirine Sesuai Tindakan Sistem
+    const badgeSirinePosko = getEl("badgeSirinePosko");
+    const badgeSirineWrap = getEl("badgeSirineWrap");
+    if (badgeSirinePosko && badgeSirineWrap) {
+      if (isBahaya || alarmAktif || rawStatus.includes("BAHAYA") || rawStatus.includes("AWAS")) {
+        badgeSirinePosko.textContent = "AKTIF (125dB)";
+        badgeSirineWrap.classList.add("siren-active");
+      } else if (isWaspada) {
+        badgeSirinePosko.textContent = "BUZZER PENDEK";
+        badgeSirineWrap.classList.remove("siren-active");
+      } else {
+        badgeSirinePosko.textContent = "NON-AKTIF";
+        badgeSirineWrap.classList.remove("siren-active");
+      }
+    }
+
+    // Status Cloud Pill Navbar: GATEWAY TERHUBUNG
+    const pillCloud = getEl("pillCloud");
+    const textCloud = getEl("textCloudStatus");
+    if (pillCloud && textCloud) {
+      pillCloud.className = "pill-cloud";
+      textCloud.textContent = "GATEWAY TERHUBUNG";
+    }
+
+    // Banner Status Sistem & Nilai
+    const cardStatus = getEl("cardStatusBanner");
+    const textStatus = getEl("textStatusEws");
+    const markerContainer = getEl("mapMarkerContainer");
+    const mapPopupStatus = getEl("mapPopupStatus");
+    const levelAman = getEl("levelAman");
+    const levelWaspada = getEl("levelWaspada");
+    const levelBahaya = getEl("levelBahaya");
 
     if (cardStatus && textStatus) {
       cardStatus.className = `status-banner-card ${statusClass}`;
