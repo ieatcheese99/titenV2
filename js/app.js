@@ -7,7 +7,7 @@
 (function () {
   "use strict";
 
-  // State Telemetri Riil (Tanpa Data Palsu)
+  // State Telemetri Riil (Deteksi Hardware Gateway Riil)
   const state = {
     map: null,
     marker: null,
@@ -15,10 +15,12 @@
     chart: null,
     audioEnabled: false,
     audioCtx: null,
-    hasReceivedData: false,
-    isGatewayConnected: false,
+    isGatewayLive: false,
+    liveUpdateCount: 0,
+    initialSnapshotReceived: false,
+    initialDataString: null,
     lastPacketTime: 0,
-    searchWatchdogTimer: null,
+    staleTimeoutSec: 35, // Gateway deep sleep ~20s, toleransi 35 detik
     history: {
       labels: [],
       suhu: [],
@@ -201,8 +203,8 @@
 
     // Radius Lingkaran Jangkauan Sensor (120m di sekitar Tower 2 ITS)
     state.circle = L.circle(tower2Coords, {
-      color: "#004aad",
-      fillColor: "#004aad",
+      color: "#64748b",
+      fillColor: "#64748b",
       fillOpacity: 0.12,
       radius: 120
     }).addTo(state.map);
@@ -323,7 +325,7 @@
 
   // 5. State Tampilan: SEDANG MENCARI GATEWAY
   function setUiSearching() {
-    state.isGatewayConnected = false;
+    state.isGatewayLive = false;
 
     const cardStatus = getEl("cardStatusBanner");
     const textStatus = getEl("textStatusEws");
@@ -357,7 +359,7 @@
     tags.forEach(id => {
       const el = getEl(id);
       if (el) {
-        el.textContent = "Mencari";
+        el.textContent = "Sedang Mencari";
         el.className = "sensor-card-status status-mencari";
       }
     });
@@ -378,11 +380,15 @@
     if (markerContainer) {
       markerContainer.classList.remove("danger");
     }
+
+    if (state.circle) {
+      state.circle.setStyle({ color: "#004aad", fillColor: "#004aad" });
+    }
   }
 
   // 6. State Tampilan: TIDAK TERHUBUNG
-  function setUiDisconnected() {
-    state.isGatewayConnected = false;
+  function setUiDisconnected(reason) {
+    state.isGatewayLive = false;
 
     const cardStatus = getEl("cardStatusBanner");
     const textStatus = getEl("textStatusEws");
@@ -393,7 +399,7 @@
     }
 
     setText("badgeModeDaya", "Tidak Terhubung");
-    setText("textPrediksiAi", "Gateway ESP32 atau Node sensor tidak terhubung (offline).");
+    setText("textPrediksiAi", reason ? `Gateway ESP32 belum dinyalakan atau sedang offline (${reason}).` : "Gateway ESP32 belum dinyalakan atau sedang offline.");
 
     const pillCloud = getEl("pillCloud");
     const textCloud = getEl("textCloudStatus");
@@ -450,22 +456,21 @@
     }
   }
 
-  // 7. Pembaharuan UI Telemetri Riil (Saat Paket Diterima)
+  // 7. Pembaharuan UI Telemetri Riil (HANYA SAAT ADA PAKET TRANSMISI AKTIF DARI GATEWAY)
   function updateTelemetryUI(data) {
     if (!data || typeof data !== "object") {
-      setUiDisconnected();
+      setUiDisconnected("Paket Kosong");
       return;
     }
 
     // Verifikasi kelengkapan data minimal
     const hasCoreData = (data.suhu !== undefined || data.kelembapan_tanah !== undefined || data.kemiringan !== undefined || data.status_ews !== undefined);
     if (!hasCoreData) {
-      setUiDisconnected();
+      setUiDisconnected("Format Tidak Sesuai");
       return;
     }
 
-    state.hasReceivedData = true;
-    state.isGatewayConnected = true;
+    state.isGatewayLive = true;
     state.lastPacketTime = Date.now();
 
     // Normalisasi Nilai Sensor Riil
@@ -588,7 +593,7 @@
       }
     }
 
-    // 2. Tampilkan Mode & Edge AI
+    // 2. Tampilkan Mode & Edge AI Riil
     setText("badgeModeDaya", modeDaya);
     setText("textPrediksiAi", prediksiAi);
 
@@ -605,7 +610,7 @@
       }
     }
 
-    // 4. Status Cloud Pill Navbar
+    // 4. Status Cloud Pill Navbar: GATEWAY TERHUBUNG
     const pillCloud = getEl("pillCloud");
     const textCloud = getEl("textCloudStatus");
     if (pillCloud && textCloud) {
@@ -684,7 +689,7 @@
       playAlertChirp(true);
     }
 
-    // Perbarui Grafik Real-Time Hanya Jika Data Angka Valid
+    // Perbarui Grafik Real-Time Hanya dengan Data Valid
     if (!isNaN(suhu) && !isNaN(tanah) && !isNaN(miring)) {
       pushChartData(suhu, tanah, miring);
     }
@@ -694,7 +699,7 @@
   function initFirebase() {
     if (typeof firebase === "undefined") {
       console.warn("Firebase SDK tidak termuat.");
-      setUiDisconnected();
+      setUiDisconnected("Firebase SDK Offline");
       return;
     }
 
@@ -708,39 +713,69 @@
       }
       const db = firebase.database();
 
-      // Monitor Status Koneksi Cloud Firebase
+      // Monitor Status Koneksi Cloud Firebase (Koneksi Web Client ke Firebase)
       db.ref(".info/connected").on("value", (snap) => {
         const isConnected = snap.val() === true;
         if (!isConnected) {
-          setUiDisconnected();
-        } else if (!state.hasReceivedData) {
+          setUiDisconnected("Internet Terputus");
+        } else if (!state.isGatewayLive) {
           setUiSearching();
         }
       });
 
-      // Dengarkan Paket Data ews_data dari Gateway
+      // Dengarkan Paket Data ews_data
       db.ref("ews_data").on("value", (snapshot) => {
         const data = snapshot.val();
-        if (data) {
-          updateTelemetryUI(data);
-        } else {
-          setUiDisconnected();
+        if (!data || typeof data !== "object") {
+          setUiDisconnected("Data Kosong");
+          return;
         }
+
+        const dataStr = JSON.stringify(data);
+
+        // Snapshot pertama kali pada saat buka web adalah data lama/stale di database
+        if (!state.initialSnapshotReceived) {
+          state.initialSnapshotReceived = true;
+          state.initialDataString = dataStr;
+
+          // Gateway belum tentu aktif dinyalakan saat buka web -> Tetap di state mencari!
+          setUiSearching();
+
+          // Beri jendela waktu 12 detik: jika gateway tidak mengirimkan pembaruan, nyatakan TIDAK TERHUBUNG
+          setTimeout(() => {
+            if (!state.isGatewayLive) {
+              setUiDisconnected("Gateway Belum Dinyalakan");
+            }
+          }, 12000);
+          return;
+        }
+
+        // Jika ada penulisan data baru berikutnya dari gateway ESP32:
+        state.liveUpdateCount++;
+        state.isGatewayLive = true;
+        state.lastPacketTime = Date.now();
+        updateTelemetryUI(data);
+
       }, (err) => {
         console.warn("Firebase ews_data error:", err);
-        setUiDisconnected();
+        setUiDisconnected("Error Firebase");
       });
 
-      // Watchdog: jika setelah 15 detik belum ada data masuk, tampilkan Tidak Terhubung
-      setTimeout(() => {
-        if (!state.hasReceivedData) {
-          setUiDisconnected();
+      // Watchdog Rutin: Cek setiap 3 detik apakah gateway masih aktif mengirim
+      setInterval(() => {
+        if (state.isGatewayLive) {
+          const elapsedSec = (Date.now() - state.lastPacketTime) / 1000;
+          if (elapsedSec > state.staleTimeoutSec) {
+            // Lebih dari 35 detik tidak ada transmisi baru -> Gateway offline/dimatikan
+            state.isGatewayLive = false;
+            setUiDisconnected("Gateway Terputus");
+          }
         }
-      }, 15000);
+      }, 3000);
 
     } catch (err) {
       console.warn("Firebase initialization notice:", err);
-      setUiDisconnected();
+      setUiDisconnected("Gagal Inisialisasi");
     }
   }
 
