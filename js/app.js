@@ -26,6 +26,8 @@
     isNodeOnline: false,
     isBrowserConnected: false,
     lastFirebaseUpdate: 0,
+    _liveUpdateCount: 0,       // Berapa kali ews_data/nodes berubah sejak halaman dibuka
+    _lastEwsDataHash: null,    // Hash data terakhir untuk deteksi perubahan nyata
     isDemoMode: false,
     simulatedOverride: null
   };
@@ -809,67 +811,42 @@
     const textNode = getEl("textNode");
     const dotNode = getEl("dotNode");
 
-    // Jika koneksi internet browser terputus
+    // Jika koneksi internet browser ke Firebase terputus total
     if (!state.isBrowserConnected) {
       state.isGatewayOnline = false;
       state.isNodeOnline = false;
       if (textGw) textGw.textContent = "Gateway: Terputus";
-      if (dotGw) {
-        dotGw.style.backgroundColor = "var(--color-offline)";
-        dotGw.style.boxShadow = "none";
-      }
+      if (dotGw) { dotGw.style.backgroundColor = "var(--color-offline)"; dotGw.style.boxShadow = "none"; }
       if (textNode) textNode.textContent = "Node: Offline";
-      if (dotNode) {
-        dotNode.style.backgroundColor = "var(--color-offline)";
-        dotNode.style.boxShadow = "none";
-      }
+      if (dotNode) { dotNode.style.backgroundColor = "var(--color-offline)"; dotNode.style.boxShadow = "none"; }
       updateSystemIssueBanner();
       updateGlobalStatusSummary();
       return;
     }
 
-    // Cari timestamp paket data terbaru dari seluruh node
-    let latestTs = 0;
-    state.nodes.forEach(node => {
-      if (node.latest && node.latest.ts) {
-        let t = Number(node.latest.ts);
-        if (t < 1e11 && t > 0) t = t * 1000;
-        if (t > latestTs) latestTs = t;
-      }
-    });
-
-    if (latestTs === 0 && state.lastFirebaseUpdate > 0) {
-      latestTs = state.lastFirebaseUpdate;
-    }
-
+    // ATURAN UTAMA:
+    // Online HANYA jika ada bukti nyata perangkat mengirim data segar.
+    // Bukti = state._liveUpdateCount >= 2 (artinya data sudah berubah minimal sekali sejak halaman dibuka)
+    //         DAN lastFirebaseUpdate dalam rentang timeout yang sah.
+    // Jika _liveUpdateCount < 2, itu berarti hanya snapshot awal (data lama yang sudah ada di DB).
     const staleTimeoutMs = (CONFIG.NETWORK.STALE_DATA_TIMEOUT_SEC || 180) * 1000;
-    const isOnline = latestTs > 0 && (now - latestTs <= staleTimeoutMs);
+    const hasLiveData = state._liveUpdateCount >= 2;
+    const isFresh = state.lastFirebaseUpdate > 0 && (now - state.lastFirebaseUpdate <= staleTimeoutMs);
+    const isOnline = hasLiveData && isFresh;
 
     state.isGatewayOnline = isOnline;
     state.isNodeOnline = isOnline;
 
     if (isOnline) {
       if (textGw) textGw.textContent = "Gateway: Online";
-      if (dotGw) {
-        dotGw.style.backgroundColor = "var(--color-normal)";
-        dotGw.style.boxShadow = "0 0 6px var(--color-normal)";
-      }
+      if (dotGw) { dotGw.style.backgroundColor = "var(--color-normal)"; dotGw.style.boxShadow = "0 0 6px var(--color-normal)"; }
       if (textNode) textNode.textContent = "Node: Terhubung";
-      if (dotNode) {
-        dotNode.style.backgroundColor = "var(--color-normal)";
-        dotNode.style.boxShadow = "0 0 6px var(--color-normal)";
-      }
+      if (dotNode) { dotNode.style.backgroundColor = "var(--color-normal)"; dotNode.style.boxShadow = "0 0 6px var(--color-normal)"; }
     } else {
       if (textGw) textGw.textContent = "Gateway: Offline";
-      if (dotGw) {
-        dotGw.style.backgroundColor = "var(--color-offline)";
-        dotGw.style.boxShadow = "none";
-      }
+      if (dotGw) { dotGw.style.backgroundColor = "var(--color-offline)"; dotGw.style.boxShadow = "none"; }
       if (textNode) textNode.textContent = "Node: Offline";
-      if (dotNode) {
-        dotNode.style.backgroundColor = "var(--color-offline)";
-        dotNode.style.boxShadow = "none";
-      }
+      if (dotNode) { dotNode.style.backgroundColor = "var(--color-offline)"; dotNode.style.boxShadow = "none"; }
     }
 
     // Refresh marker jika status stale berubah
@@ -1053,8 +1030,8 @@
       return;
     }
 
-    let isFirstNodesSnapshot = true;
-    let isFirstEwsSnapshot = true;
+    let _lastNodesHash = null;   // Hash JSON nodes terakhir
+    let _lastEwsHash = null;     // Hash JSON ews_data terakhir
 
     try {
       firebase.initializeApp(CONFIG.FIREBASE);
@@ -1070,6 +1047,11 @@
       db.ref("nodes").on("value", (snapshot) => {
         const data = snapshot.val();
         if (data && typeof data === "object") {
+          // Deteksi apakah data benar-benar berubah dari snapshot sebelumnya
+          const currentHash = JSON.stringify(data);
+          const isRealChange = (_lastNodesHash !== null && currentHash !== _lastNodesHash);
+          _lastNodesHash = currentHash;
+
           let latestPacketTs = 0;
           Object.keys(data).forEach(nodeKey => {
             const raw = data[nodeKey];
@@ -1090,15 +1072,12 @@
             renderOrUpdateNodeMarker(nodeObj);
           });
 
-          // Catat waktu paket terakhir (gunakan timestamp data jika valid, atau live update jika data baru masuk)
-          if (latestPacketTs > 0) {
-            state.lastFirebaseUpdate = latestPacketTs;
-          } else if (!isFirstNodesSnapshot) {
-            state.lastFirebaseUpdate = Date.now();
-          } else {
-            state.lastFirebaseUpdate = 0;
+          // Hanya update lastFirebaseUpdate jika data BENAR-BENAR berubah
+          if (isRealChange) {
+            state._liveUpdateCount++;
+            state.lastFirebaseUpdate = (latestPacketTs > 0) ? latestPacketTs : Date.now();
           }
-          isFirstNodesSnapshot = false;
+          // Snapshot pertama: JANGAN set lastFirebaseUpdate (tetap 0)
           evaluateNetworkStatus();
         }
       }, (err) => {
@@ -1109,21 +1088,27 @@
       db.ref("ews_data").on("value", (snapshot) => {
         const val = snapshot.val();
         if (val && !state.nodes.has("node-01")) {
+          // Deteksi apakah data benar-benar berubah dari snapshot sebelumnya
+          const currentHash = JSON.stringify(val);
+          const isRealChange = (_lastEwsHash !== null && currentHash !== _lastEwsHash);
+          _lastEwsHash = currentHash;
+
           const rawTs = (val.timestamp || val.ts) ? Number(val.timestamp || val.ts) : 0;
           const normalizedTs = (rawTs < 1e11 && rawTs > 0) ? rawTs * 1000 : rawTs;
 
+          // packetTs untuk display di UI (bukan untuk status Online/Offline)
           let packetTs = 0;
           if (normalizedTs > 0) {
             packetTs = normalizedTs;
-            state.lastFirebaseUpdate = normalizedTs;
-          } else if (!isFirstEwsSnapshot) {
-            packetTs = Date.now();
-            state.lastFirebaseUpdate = Date.now();
-          } else {
-            packetTs = 0;
-            state.lastFirebaseUpdate = 0;
           }
-          isFirstEwsSnapshot = false;
+
+          // Hanya update lastFirebaseUpdate jika data BENAR-BENAR berubah
+          if (isRealChange) {
+            state._liveUpdateCount++;
+            state.lastFirebaseUpdate = (normalizedTs > 0) ? normalizedTs : Date.now();
+            packetTs = state.lastFirebaseUpdate;
+          }
+          // Snapshot pertama: JANGAN set lastFirebaseUpdate (tetap 0)
 
           const fallbackNode = {
             id: CONFIG.DEFAULT_NODE.id,
@@ -1291,6 +1276,8 @@
     }
 
     activeNode.latest = mockData;
+    state._liveUpdateCount = Math.max(state._liveUpdateCount, 2); // Demo mode = online
+    state.lastFirebaseUpdate = Date.now();
     renderOrUpdateNodeMarker(activeNode);
     evaluateNetworkStatus();
   }
@@ -1544,7 +1531,8 @@
           latestTs = state.lastFirebaseUpdate;
         }
 
-        if (latestTs > 0) {
+        // Hanya tampilkan waktu jika ada live update (bukan dari data stale awal)
+        if (latestTs > 0 && state._liveUpdateCount >= 2) {
           const diffSec = Math.floor((now.getTime() - latestTs) / 1000);
           if (diffSec < 60) {
             syncEl.textContent = `Diperbarui ${Math.max(0, diffSec)} detik lalu`;
