@@ -31,7 +31,7 @@
   <link rel="stylesheet" href="assets/vendor/leaflet.min.css" />
 
   <!-- Stylesheet Utama EWS TITEN (Command Center Layout - Light Mode) -->
-  <link rel="stylesheet" href="css/style.css?v=4.8.1" />
+  <link rel="stylesheet" href="css/style.css?v=4.8.2" />
 </head>
 <body class="bnpb-app-container select-none">
 
@@ -218,7 +218,7 @@
         <div id="map" role="region" aria-label="Peta Interaktif Lokasi Node Sensor"></div>
       </div>
 
-      <!-- 3. RIGHT COLUMN (~30% width): Hardware & Gateway Grid (2x3) -->
+      <!-- 3. RIGHT COLUMN (~30% width): Hardware & Gateway Grid (5 Cards) -->
       <div class="bnpb-col-devices">
         <div class="bnpb-devices-header">
           <div>
@@ -230,7 +230,7 @@
           </button>
         </div>
 
-        <!-- 2x3 Grid of 6 Hardware Cards -->
+        <!-- 5 Hardware Cards Grid -->
         <div class="bnpb-devices-grid">
 
           <!-- Card 1: Baterai Node -->
@@ -249,10 +249,6 @@
             <div class="progress-container">
               <div id="barBaterai" class="progress-bar-fill" style="width: 0%; background-color: var(--color-offline);"></div>
             </div>
-            <div class="bnpb-card-foot">
-              <span>Buffer LiPo 3.7V - 4.2V</span>
-              <span id="subBateraiStatus">Solar Standby</span>
-            </div>
           </div>
 
           <!-- Card 2: Transmisi LoRa -->
@@ -268,10 +264,6 @@
               </div>
               <span class="bnpb-val-sub">RSSI Paket</span>
             </div>
-            <div class="bnpb-card-foot">
-              <span>Frekuensi 433 MHz</span>
-              <span id="subRssiStatus">Sinyal Terputus</span>
-            </div>
           </div>
 
           <!-- Card 3: Relay Sirine -->
@@ -281,13 +273,10 @@
               <span id="tagRelay" class="sensor-status-tag" style="color: var(--color-offline); background: rgba(100, 116, 139, 0.12);">STANDBY</span>
             </div>
             <div class="bnpb-card-body">
-              <div class="bnpb-val-large" style="font-size: 14px;">
+              <div class="bnpb-val-large" style="font-size: 18px;">
                 <span id="valRelay">Nonaktif (Standby)</span>
               </div>
               <span class="bnpb-val-sub">Aktuator</span>
-            </div>
-            <div class="bnpb-card-foot">
-              <span>Otomatis Bunyi saat AWAS</span>
             </div>
           </div>
 
@@ -298,48 +287,27 @@
               <span id="dotGatewayCard" class="status-dot"></span>
             </div>
             <div class="bnpb-card-body">
-              <div class="bnpb-val-large" style="font-size: 14px;">
+              <div class="bnpb-val-large" style="font-size: 20px;">
                 <span id="chipDeviceDataStatus" style="color: var(--color-offline);">OFFLINE</span>
               </div>
               <span class="bnpb-val-sub">Firebase RTDB</span>
             </div>
-            <div class="bnpb-card-foot">
-              <span id="subGatewayStatus">Uplink Cloud Terputus</span>
-            </div>
           </div>
 
-          <!-- Card 5: Identitas Node -->
-          <div class="bnpb-device-card">
+          <!-- Card 5: Identitas Node (Full Width Span 2) -->
+          <div class="bnpb-device-card bnpb-card-span-2">
             <div class="bnpb-card-top">
               <span class="bnpb-card-name">Node Lapangan</span>
               <span id="chipDataStatus" class="chip-data-status stale">OFFLINE</span>
             </div>
-            <div class="bnpb-card-body">
+            <div class="bnpb-card-body" style="align-items: center;">
               <div>
                 <h4 id="devicePanelNodeTitle" class="bnpb-node-title">Node-01 · Tower 2 ITS</h4>
                 <p id="devicePanelNodeLocation" class="bnpb-node-loc">
                   <i data-lucide="map-pin"></i>
-                  <span>Sukolilo, Surabaya</span>
+                  <span>Gedung Tower 2 ITS, Kampus Sukolilo, Surabaya</span>
                 </p>
               </div>
-            </div>
-            <div class="bnpb-card-foot">
-              <span>ESP32 Low-Power Standby</span>
-            </div>
-          </div>
-
-          <!-- Card 6: Posko Call Center -->
-          <div class="bnpb-device-card">
-            <div class="bnpb-card-top">
-              <span class="bnpb-card-name">Call Center Darurat</span>
-              <i data-lucide="shield-check" style="width: 14px; height: 14px; color: var(--color-normal);"></i>
-            </div>
-            <div class="bnpb-card-body">
-              <div class="bnpb-val-large" style="font-size: 14px; color: var(--color-waspada);">112 Siaga</div>
-              <span class="bnpb-val-sub">BPBD &amp; SAR</span>
-            </div>
-            <div class="bnpb-card-foot">
-              <span>Layanan Tanggap Bencana 24 Jam</span>
             </div>
           </div>
 
@@ -836,6 +804,9 @@
     <button id="btnOpenDeck"></button>
     <div id="nodeDetailPanel" class="collapsed"></div>
     <div id="cardGas"><span id="valGas">0</span><span id="tagGas">OFFLINE</span></div>
+    <span id="subBateraiStatus"></span>
+    <span id="subRssiStatus"></span>
+    <span id="subGatewayStatus"></span>
   </div>
 
   <!-- ================================================================= -->
@@ -858,7 +829,7 @@
   <script src="js/config.js?v=4.1.0"></script>
 
   <!-- Logika Aplikasi Peta & Telemetri -->
-  <script src="js/app.js?v=4.8.1"></script>
+  <script src="js/app.js?v=4.8.2"></script>
 
 </body>
 </html>

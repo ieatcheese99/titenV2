@@ -714,14 +714,14 @@ button, input, select {
 }
 
 .bnpb-devices-title {
-  font-size: 11.5px;
+  font-size: 13.5px;
   font-weight: 700;
   margin: 0;
   color: var(--text-primary);
 }
 
 .bnpb-devices-subtitle {
-  font-size: 9px;
+  font-size: 10px;
   color: var(--text-muted);
   margin: 0;
 }
@@ -744,12 +744,12 @@ button, input, select {
   height: 13px;
 }
 
-/* 2x3 Grid of 6 Hardware Cards */
+/* 5 Hardware Cards Grid */
 .bnpb-devices-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(3, 1fr);
-  gap: 7px;
+  grid-template-rows: 1fr 1fr auto;
+  gap: 8px;
   flex: 1;
   min-height: 0;
   overflow-y: auto;
@@ -759,10 +759,11 @@ button, input, select {
   background-color: var(--bg-surface-muted);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  padding: 7px 8px;
+  padding: 10px 12px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 6px;
   transition: border-color 0.15s ease;
 }
 
@@ -770,12 +771,17 @@ button, input, select {
   border-color: var(--border-medium);
 }
 
+.bnpb-device-card.bnpb-card-span-2 {
+  grid-column: span 2;
+  padding: 10px 14px;
+}
+
 .bnpb-card-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 10px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 700;
   color: var(--text-primary);
 }
 
@@ -783,65 +789,58 @@ button, input, select {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: -0.2px;
 }
 
 .bnpb-card-body {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  margin: 3px 0;
+  margin: 3px 0 2px 0;
 }
 
 .bnpb-val-large {
-  font-size: 17px;
-  font-weight: 700;
+  font-size: 26px;
+  font-weight: 800;
   color: var(--text-primary);
   font-family: var(--font-mono);
   line-height: 1;
 }
 
 .bnpb-val-unit {
-  font-size: 9.5px;
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 600;
   color: var(--text-muted);
-  margin-left: 2px;
+  margin-left: 3px;
 }
 
 .bnpb-val-sub {
-  font-size: 9.5px;
+  font-size: 13px;
   font-family: var(--font-mono);
-  color: var(--text-muted);
+  font-weight: 600;
+  color: var(--text-secondary);
 }
 
 .bnpb-node-title {
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 14.5px;
+  font-weight: 800;
   color: var(--text-primary);
   margin: 0;
+  letter-spacing: -0.2px;
 }
 
 .bnpb-node-loc {
-  font-size: 8.5px;
+  font-size: 11.5px;
   color: var(--text-muted);
-  margin: 2px 0 0 0;
+  margin: 3px 0 0 0;
   display: flex;
   align-items: center;
-  gap: 3px;
+  gap: 4px;
 }
 
-.bnpb-node-loc svg {
-  width: 10px;
-  height: 10px;
-}
-
-.bnpb-card-foot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 8px;
-  color: var(--text-subtle);
-  border-top: 1px solid var(--border-subtle);
-  padding-top: 3px;
+.bnpb-node-loc svg, .bnpb-node-loc i {
+  width: 12px;
+  height: 12px;
 }
 
 /* ==========================================================================
@@ -1153,22 +1152,22 @@ button, input, select {
    6. ELEMEN REUSABLE & STATUS BADGES
    ========================================================================== */
 .sensor-status-tag {
-  font-size: 8px;
+  font-size: 10.5px;
   font-weight: 700;
   font-family: var(--font-mono);
-  padding: 1.5px 5px;
-  border-radius: 3px;
+  padding: 2px 7px;
+  border-radius: 4px;
   background: var(--color-normal-soft);
   color: var(--color-normal);
   border: 1px solid currentColor;
 }
 
 .chip-data-status {
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   font-family: var(--font-mono);
-  padding: 1.5px 6px;
-  border-radius: 3px;
+  padding: 2.5px 8px;
+  border-radius: 4px;
 }
 
 .chip-data-status.live {
@@ -1612,5 +1611,8 @@ button, input, select {
   .bnpb-devices-grid {
     grid-template-columns: 1fr;
     grid-template-rows: auto;
+  }
+  .bnpb-device-card.bnpb-card-span-2 {
+    grid-column: span 1;
   }
 }
