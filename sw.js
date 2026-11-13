@@ -1,16 +1,16 @@
 /**
  * EWS TITEN - Service Worker
- * Versi Cache: v3.3.5 (Pemberian Skala Ekstra Besar untuk PC Telemetri)
+ * Versi Cache: v3.3.6 (Ultra-Scale PC Telemetry Panels & Prominent Metrics)
  */
 
-const CACHE_NAME = "ews-titen-v3.3.5";
+const CACHE_NAME = "ews-titen-v3.3.6";
 const ASSETS_TO_CACHE = [
   "./",
   "./index.html",
   "./qr.html",
-  "./css/style.css?v=3.3.5",
-  "./js/config.js?v=3.3.5",
-  "./js/app.js?v=3.3.5",
+  "./css/style.css?v=3.3.6",
+  "./js/config.js?v=3.3.6",
+  "./js/app.js?v=3.3.6",
   "./manifest.json",
   "./assets/vendor/leaflet.min.css",
   "./assets/vendor/leaflet.min.js",

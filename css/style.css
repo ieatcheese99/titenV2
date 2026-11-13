@@ -462,16 +462,16 @@ button, input, select {
 /* 7A. Panel Kondisi Perangkat (Kiri Atas - Khusus Hardware & Diagnostik) */
 .device-status-panel {
   position: absolute;
-  top: calc(var(--topbar-height) + 18px);
+  top: calc(var(--topbar-height) + 20px);
   left: 24px;
-  width: 440px;
-  max-height: min(520px, calc(100vh - var(--topbar-height) - 48px));
+  width: 520px;
+  max-height: min(640px, calc(100vh - var(--topbar-height) - 40px));
   z-index: 1000;
   background: var(--bg-backdrop);
-  backdrop-filter: blur(14px);
+  backdrop-filter: blur(16px);
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.14), 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 18px;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.16), 0 3px 12px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -486,14 +486,14 @@ button, input, select {
 
 .btn-toggle-device-panel {
   position: absolute;
-  top: calc(var(--topbar-height) + 18px);
+  top: calc(var(--topbar-height) + 20px);
   left: 24px;
   z-index: 999;
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  padding: 12px 18px;
-  font-size: 14px;
+  padding: 12px 20px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--text-primary);
   box-shadow: var(--shadow-md);
@@ -501,42 +501,108 @@ button, input, select {
   align-items: center;
   gap: 10px;
   cursor: pointer;
-  min-height: 44px;
+  min-height: 46px;
 }
 
 .btn-toggle-device-panel.visible {
   display: flex;
 }
 
+.device-status-panel .panel-header {
+  padding: 18px 24px 14px 24px;
+}
+
+.device-status-panel .panel-title {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.device-status-panel .panel-subtitle {
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 4px;
+}
+
+.device-status-panel .chip-data-status {
+  font-size: 12px;
+  font-weight: 800;
+  padding: 4px 12px;
+}
+
+.device-status-panel .btn-close-panel {
+  width: 38px;
+  height: 38px;
+}
+
 .device-panel-content {
-  padding: 16px 20px 22px 20px;
+  padding: 18px 24px 24px 24px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
 }
 
 .device-panel-content .sensor-metric-card {
-  padding: 16px 18px;
+  padding: 18px 22px;
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
+  border-radius: 14px;
+  gap: 10px;
 }
 
 .device-panel-content .sensor-header {
-  font-size: 12.5px;
+  font-size: 14.5px;
   font-weight: 700;
 }
 
-.device-panel-content .sensor-big-value {
-  font-size: 36px;
+.device-panel-content .sensor-status-tag {
+  font-size: 13px;
   font-weight: 800;
-  line-height: 1.1;
+  padding: 3px 10px;
+  border-radius: 6px;
+}
+
+.device-panel-content .sensor-big-value {
+  font-size: 56px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
 }
 
 .device-panel-content .sensor-unit {
-  font-size: 16px;
+  font-size: 26px;
+  font-weight: 700;
+  margin-left: 3px;
+}
+
+.device-panel-content #valBateraiVolt {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.device-panel-content .progress-container {
+  height: 12px;
+  border-radius: 9999px;
+  margin: 4px 0;
+}
+
+.device-panel-content .sensor-footer-info {
+  font-size: 13px;
   font-weight: 600;
+}
+
+.device-panel-content .sensor-sub-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.device-panel-content #valRelay {
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.2;
 }
 
 /* 7B. Konsol Bencana Bawah (Command Deck: Ringkasan, Longsor, Karhutla, Riwayat) */
@@ -545,15 +611,15 @@ button, input, select {
   bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
-  width: min(1360px, calc(100vw - 80px));
-  max-height: 460px;
-  min-height: 320px;
+  width: min(1560px, calc(100vw - 64px));
+  max-height: 540px;
+  min-height: 360px;
   z-index: 1010;
   background: var(--bg-backdrop);
-  backdrop-filter: blur(14px);
+  backdrop-filter: blur(16px);
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18), 0 4px 16px rgba(0, 0, 0, 0.06);
+  border-radius: 18px;
+  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.2), 0 4px 18px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -576,7 +642,7 @@ button, input, select {
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   padding: 12px 24px;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--text-primary);
   box-shadow: var(--shadow-md);
@@ -584,7 +650,7 @@ button, input, select {
   align-items: center;
   gap: 10px;
   cursor: pointer;
-  min-height: 44px;
+  min-height: 46px;
 }
 
 .btn-toggle-deck.visible {
@@ -596,7 +662,7 @@ button, input, select {
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  padding: 12px 24px;
+  padding: 14px 28px;
   border-bottom: 1px solid var(--border-subtle);
   background: var(--bg-surface-muted);
   flex-wrap: nowrap;
@@ -609,7 +675,7 @@ button, input, select {
 .deck-summary-pills {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   flex-shrink: 0;
   order: 1;
 }
@@ -617,13 +683,13 @@ button, input, select {
 .deck-summary-card {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 16px;
-  border-radius: var(--radius-sm);
+  gap: 12px;
+  padding: 10px 18px;
+  border-radius: 10px;
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 700;
 }
 
 .deck-summary-card.status-normal { border-left: 3px solid var(--color-normal); }
@@ -633,7 +699,7 @@ button, input, select {
 .deck-summary-card.status-offline { border-left: 3px solid var(--color-offline); }
 
 .deck-summary-label {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 800;
   text-transform: uppercase;
   color: var(--text-muted);
@@ -641,17 +707,17 @@ button, input, select {
 }
 
 .deck-summary-badge {
-  font-size: 12px;
+  font-size: 13.5px;
   font-weight: 800;
   font-family: var(--font-mono);
-  padding: 3px 8px;
-  border-radius: 4px;
+  padding: 4px 10px;
+  border-radius: 6px;
 }
 
 .deck-tabs {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   border-bottom: none;
   background: transparent;
   padding: 0;
@@ -659,10 +725,16 @@ button, input, select {
 }
 
 .deck-tabs .tab-btn {
-  padding: 10px 20px;
-  font-size: 14px;
-  font-weight: 700;
-  min-height: 42px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 800;
+  min-height: 48px;
+  border-bottom: 3px solid transparent;
+}
+
+.deck-tabs .tab-btn.active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
 }
 
 .mobile-only-tab {
@@ -672,9 +744,15 @@ button, input, select {
 .deck-header-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   flex-shrink: 0;
   order: 3;
+}
+
+.deck-header-actions .chip-data-status {
+  font-size: 13px;
+  font-weight: 800;
+  padding: 4px 12px;
 }
 
 .btn-close-deck {
@@ -682,13 +760,13 @@ button, input, select {
   border: none;
   color: var(--text-muted);
   cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
+  padding: 6px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 32px;
-  min-height: 32px;
+  min-width: 38px;
+  min-height: 38px;
 }
 
 .btn-close-deck:hover {
@@ -697,52 +775,108 @@ button, input, select {
 }
 
 .deck-content {
-  padding: 20px 24px;
+  padding: 24px 28px 28px 28px;
   overflow-y: auto;
   flex: 1;
 }
 
 .deck-ringkasan-grid {
   display: grid;
-  grid-template-columns: 1.25fr 1fr;
-  gap: 20px;
+  grid-template-columns: 1.15fr 1.35fr;
+  gap: 24px;
   align-items: stretch;
 }
 
 .deck-quick-metrics {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  gap: 20px;
 }
 
 .deck-quick-metrics .sensor-metric-card {
-  padding: 18px 20px;
+  padding: 22px 24px;
+  border-radius: 16px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  min-height: 170px;
 }
 
 .deck-quick-metrics .sensor-header {
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 700;
 }
 
-.deck-quick-metrics .sensor-big-value {
-  font-size: 42px;
+.deck-quick-metrics .sensor-status-tag {
+  font-size: 13.5px;
   font-weight: 800;
-  line-height: 1.1;
+  padding: 4px 12px;
+  border-radius: 6px;
+}
+
+.deck-quick-metrics .sensor-big-value {
+  font-size: 68px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
 }
 
 .deck-quick-metrics .sensor-unit {
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 28px;
+  font-weight: 700;
+  margin-left: 4px;
 }
 
 .deck-horizontal-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
   align-items: stretch;
+}
+
+.deck-horizontal-grid .sensor-metric-card {
+  padding: 22px 24px;
+  border-radius: 16px;
+  gap: 12px;
+}
+
+.deck-horizontal-grid .sensor-header {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.deck-horizontal-grid .sensor-status-tag {
+  font-size: 13px;
+  font-weight: 800;
+  padding: 4px 10px;
+}
+
+.deck-horizontal-grid .sensor-big-value {
+  font-size: 58px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.deck-horizontal-grid .sensor-unit {
+  font-size: 26px;
+  font-weight: 700;
+  margin-left: 3px;
+}
+
+.deck-horizontal-grid .tabular-nums {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.deck-horizontal-grid .progress-container {
+  height: 14px;
+  border-radius: 9999px;
+}
+
+.deck-horizontal-grid .sensor-footer-info {
+  font-size: 13px;
+  font-weight: 600;
 }
 
 /* Komponen Umum (Header & Elemen Panel) */
@@ -1023,11 +1157,11 @@ button, input, select {
 .action-recommendation-box {
   background: var(--bg-surface-muted);
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: 14px 16px;
+  border-radius: 16px;
+  padding: 22px 26px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
   justify-content: space-between;
 }
 
@@ -1037,20 +1171,26 @@ button, input, select {
 }
 
 .action-title {
-  font-size: 13px;
-  font-weight: 700;
+  font-size: 17px;
+  font-weight: 800;
   text-transform: uppercase;
   color: var(--text-primary);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+}
+
+.action-title i, .action-title svg {
+  width: 20px;
+  height: 20px;
 }
 
 .action-text {
-  font-size: 13px;
+  font-size: 15.5px;
   color: var(--text-secondary);
   margin: 0;
-  line-height: 1.5;
+  line-height: 1.6;
+  font-weight: 500;
 }
 
 .emergency-actions-row {
@@ -1062,18 +1202,23 @@ button, input, select {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
   background: var(--color-primary);
   color: #FFFFFF;
   text-decoration: none;
-  border-radius: var(--radius-sm);
-  padding: 10px 18px;
-  font-size: 13px;
-  font-weight: 600;
-  min-height: 42px;
+  border-radius: 12px;
+  padding: 16px 24px;
+  font-size: 17px;
+  font-weight: 800;
+  min-height: 54px;
   transition: background-color 0.15s ease;
   text-align: center;
   width: 100%;
+}
+
+.btn-emergency-call i, .btn-emergency-call svg {
+  width: 20px;
+  height: 20px;
 }
 
 .btn-emergency-call:hover {
@@ -1083,8 +1228,8 @@ button, input, select {
 /* Riwayat Grafik */
 .history-controls {
   display: flex;
-  gap: 6px;
-  margin-bottom: 8px;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
 .btn-range-filter {
@@ -1092,12 +1237,12 @@ button, input, select {
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  padding: 6px 8px;
-  font-size: 11px;
-  font-weight: 600;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 700;
   color: var(--text-secondary);
   cursor: pointer;
-  min-height: 36px;
+  min-height: 44px;
 }
 
 .btn-range-filter.active {
@@ -1109,11 +1254,11 @@ button, input, select {
 .chart-wrapper {
   position: relative;
   width: 100%;
-  height: 220px;
+  height: 340px;
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
-  padding: 8px;
+  border-radius: 14px;
+  padding: 12px;
 }
 
 /* ==========================================================================
@@ -1562,10 +1707,84 @@ button, input, select {
 
   .deck-ringkasan-grid {
     grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .deck-quick-metrics {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .deck-quick-metrics .sensor-metric-card,
+  .deck-horizontal-grid .sensor-metric-card {
+    padding: 12px 14px;
+    min-height: auto;
+  }
+
+  .deck-quick-metrics .sensor-header,
+  .deck-horizontal-grid .sensor-header {
+    font-size: 11.5px;
+  }
+
+  .deck-quick-metrics .sensor-big-value {
+    font-size: 28px;
+  }
+
+  .deck-quick-metrics .sensor-unit {
+    font-size: 14px;
   }
 
   .deck-horizontal-grid {
     grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .deck-horizontal-grid .sensor-big-value {
+    font-size: 26px;
+  }
+
+  .deck-horizontal-grid .sensor-unit {
+    font-size: 13px;
+  }
+
+  .action-recommendation-box {
+    padding: 12px 14px;
+    border-radius: var(--radius-md);
+  }
+
+  .action-title {
+    font-size: 12.5px;
+  }
+
+  .action-title i, .action-title svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  .action-text {
+    font-size: 12px;
+  }
+
+  .btn-emergency-call {
+    font-size: 12.5px;
+    padding: 10px 14px;
+    min-height: 40px;
+    border-radius: var(--radius-sm);
+  }
+
+  .btn-emergency-call i, .btn-emergency-call svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .chart-wrapper {
+    height: 220px;
+  }
+
+  .btn-range-filter {
+    padding: 6px 8px;
+    font-size: 11px;
+    min-height: 36px;
   }
 
   .btn-toggle-deck {

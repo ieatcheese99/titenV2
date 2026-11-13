@@ -37,7 +37,7 @@
   <link rel="stylesheet" href="assets/vendor/leaflet.min.css" />
 
   <!-- Stylesheet Utama EWS TITEN -->
-  <link rel="stylesheet" href="css/style.css?v=3.3.5" />
+  <link rel="stylesheet" href="css/style.css?v=3.3.6" />
 </head>
 <body>
 
@@ -139,20 +139,20 @@
     <div class="panel-header">
       <div class="panel-header-top">
         <div>
-          <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 2px;">
-            <i data-lucide="cpu" style="width: 14px; height: 14px; color: var(--color-primary);"></i>
-            <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em;">Kondisi Perangkat</span>
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+            <i data-lucide="cpu" style="width: 16px; height: 16px; color: var(--color-primary);"></i>
+            <span style="font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.06em;">Kondisi Perangkat</span>
           </div>
-          <h2 id="devicePanelNodeTitle" class="panel-title" style="font-size: 15px;">Node-01 · Tower 2 ITS</h2>
-          <p id="devicePanelNodeLocation" class="panel-subtitle" style="font-size: 11px;">
-            <i data-lucide="map-pin" style="width: 11px; height: 11px;"></i>
+          <h2 id="devicePanelNodeTitle" class="panel-title">Node-01 · Tower 2 ITS</h2>
+          <p id="devicePanelNodeLocation" class="panel-subtitle">
+            <i data-lucide="map-pin" style="width: 13px; height: 13px;"></i>
             <span>Gedung Tower 2 ITS, Sukolilo</span>
           </p>
         </div>
-        <div style="display: flex; align-items: center; gap: 6px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
           <span id="chipDeviceDataStatus" class="chip-data-status live">LIVE</span>
           <button id="btnCloseDevicePanel" class="btn-close-panel" title="Tutup Panel Perangkat">
-            <i data-lucide="x" style="width: 16px; height: 16px;"></i>
+            <i data-lucide="x" style="width: 18px; height: 18px;"></i>
           </button>
         </div>
       </div>
@@ -171,7 +171,7 @@
             <span id="valBaterai" class="sensor-big-value">--</span>
             <span class="sensor-unit">%</span>
           </div>
-          <span id="valBateraiVolt" class="tabular-nums" style="font-size: 13px; font-weight: 600; color: var(--text-secondary);">-- V</span>
+          <span id="valBateraiVolt" class="tabular-nums">-- V</span>
         </div>
         <div class="progress-container">
           <div id="barBaterai" class="progress-bar-fill" style="width: 0%; background-color: var(--color-normal);"></div>
@@ -193,7 +193,7 @@
             <span id="valRssi" class="sensor-big-value">--</span>
             <span class="sensor-unit">dBm</span>
           </div>
-          <span class="tabular-nums" style="font-size: 11px; color: var(--text-muted);">RSSI Paket</span>
+          <span class="sensor-sub-label">RSSI Paket</span>
         </div>
       </div>
 
@@ -205,9 +205,9 @@
         </div>
         <div class="sensor-value-row">
           <div>
-            <span id="valRelay" class="sensor-big-value" style="font-size: 16px;">Nonaktif</span>
+            <span id="valRelay" class="sensor-big-value">Nonaktif</span>
           </div>
-          <span style="font-size: 11px; color: var(--text-muted);">Otomatis saat AWAS</span>
+          <span class="sensor-sub-label">Otomatis saat AWAS</span>
         </div>
       </div>
     </div>
@@ -656,10 +656,10 @@
   <script src="assets/vendor/firebase-database.js"></script>
 
   <!-- Konfigurasi Tunggal EWS TITEN -->
-  <script src="js/config.js?v=3.3.5"></script>
+  <script src="js/config.js?v=3.3.6"></script>
 
   <!-- Logika Aplikasi Peta & Telemetri -->
-  <script src="js/app.js?v=3.3.5"></script>
+  <script src="js/app.js?v=3.3.6"></script>
 
 </body>
 </html>
