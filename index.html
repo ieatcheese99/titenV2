@@ -31,7 +31,7 @@
   <link rel="stylesheet" href="assets/vendor/leaflet.min.css" />
 
   <!-- Stylesheet Utama EWS TITEN (Command Center Layout - Light Mode) -->
-  <link rel="stylesheet" href="css/style.css?v=4.8.8" />
+  <link rel="stylesheet" href="css/style.css?v=4.8.9" />
 </head>
 <body class="bnpb-app-container select-none">
 
@@ -316,7 +316,58 @@
 
     </div>
 
-    <!-- ==================== BOTTOM ROW (HEIGHT ~48%) ==================== -->
+    <!-- ================================================================= -->
+    <!-- INDEKS BAHAYA MULTI-BENCANA BANNER (FOKUS UTAMA SISTEM EWS)        -->
+    <!-- ================================================================= -->
+    <div id="sectionIndeksBahaya" class="bnpb-indeks-bahaya-banner">
+      <div class="bnpb-indeks-left">
+        <div class="bnpb-indeks-tag-pill">Fokus Utama Sistem EWS</div>
+        <h3 class="bnpb-indeks-title">Indeks Bahaya Multi-Bencana</h3>
+        <p class="bnpb-indeks-sub">Analisis Risiko Realtime · Kompilasi Bahaya Karhutla &amp; Tanah Longsor</p>
+      </div>
+
+      <div class="bnpb-indeks-center">
+        <div class="bnpb-indeks-badges">
+          <div id="cardSummaryKarhutla" class="bnpb-indeks-badge-item">
+            <span class="bnpb-indeks-badge-label">Bahaya Karhutla:</span>
+            <span id="badgeSummaryKarhutla" class="bnpb-status-pill-big" style="color: var(--color-offline); background: rgba(100, 116, 139, 0.15);">OFFLINE</span>
+          </div>
+          <div class="bnpb-indeks-divider"></div>
+          <div id="cardSummaryLongsor" class="bnpb-indeks-badge-item">
+            <span class="bnpb-indeks-badge-label">Bahaya Longsor:</span>
+            <span id="badgeSummaryLongsor" class="bnpb-status-pill-big" style="color: var(--color-offline); background: rgba(100, 116, 139, 0.15);">OFFLINE</span>
+          </div>
+        </div>
+        <div class="progress-container" style="height: 5px; margin-top: 4px; width: 100%; max-width: 340px;">
+          <div id="barBahaya" class="progress-bar-fill" style="width: 0%; background-color: var(--color-offline);"></div>
+        </div>
+      </div>
+
+      <div class="bnpb-indeks-right">
+        <div class="bnpb-indeks-chip">
+          <span class="bnpb-indeks-chip-val">Suhu &amp; RH</span>
+          <span class="bnpb-indeks-chip-lbl">Karhutla</span>
+        </div>
+        <div class="bnpb-indeks-chip">
+          <span class="bnpb-indeks-chip-val">Pitch &amp; Pori</span>
+          <span class="bnpb-indeks-chip-lbl">Longsor</span>
+        </div>
+        <div class="bnpb-indeks-chip">
+          <span class="bnpb-indeks-chip-val">Terpadu</span>
+          <span class="bnpb-indeks-chip-lbl">Protokol</span>
+        </div>
+        <div class="bnpb-indeks-chip">
+          <span class="bnpb-indeks-chip-val">Sirine Ready</span>
+          <span class="bnpb-indeks-chip-lbl">Aktuator</span>
+        </div>
+        <div class="bnpb-indeks-chip">
+          <span class="bnpb-indeks-chip-val sync-clockWib">--:--:-- WIB</span>
+          <span class="bnpb-indeks-chip-lbl">Waktu Update</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== BOTTOM ROW (HEIGHT ~40%) ==================== -->
     <div class="bnpb-row-bottom">
 
       <!-- 1. SENSOR TANAH LONGSOR (WIDTH 50%) -->
@@ -508,59 +559,6 @@
             </div>
           </div>
 
-          <!-- Col 2: Status Indeks Bahaya Multi-Bencana (Karhutla & Longsor) -->
-          <div class="bnpb-station-col">
-            <div class="bnpb-station-top">
-              <span class="bnpb-station-name">Indeks Bahaya Multi-Bencana</span>
-            </div>
-            <div class="bnpb-station-alert">
-              Sistem Analisis Risiko Otomatis Realtime
-            </div>
-            <div class="bnpb-station-sub">Kompilasi Bahaya Karhutla &amp; Tanah Longsor</div>
-
-            <div class="bnpb-station-hero" style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
-              <div id="cardSummaryKarhutla" style="flex: 1; text-align: left;">
-                <span id="badgeSummaryKarhutla" class="bnpb-status-pill-big" style="color: var(--color-offline); background: rgba(100, 116, 139, 0.15);">OFFLINE</span>
-                <div class="bnpb-hero-label" style="margin-top: 4px;">Bahaya Karhutla</div>
-              </div>
-              <div id="cardSummaryLongsor" style="flex: 1; text-align: right;">
-                <span id="badgeSummaryLongsor" class="bnpb-status-pill-big" style="color: var(--color-offline); background: rgba(100, 116, 139, 0.15);">OFFLINE</span>
-                <div class="bnpb-hero-label" style="margin-top: 4px;">Bahaya Longsor</div>
-              </div>
-            </div>
-
-            <div class="progress-container">
-              <div id="barBahaya" class="progress-bar-fill" style="width: 0%; background-color: var(--color-offline);"></div>
-            </div>
-
-            <div class="bnpb-card-grid">
-              <div class="bnpb-grid-item">
-                <span class="bnpb-grid-val">Suhu &amp; RH</span>
-                <span class="bnpb-grid-lbl">Indikator Karhutla</span>
-              </div>
-              <div class="bnpb-grid-item">
-                <span class="bnpb-grid-val">Pitch &amp; Pori</span>
-                <span class="bnpb-grid-lbl">Indikator Longsor</span>
-              </div>
-              <div class="bnpb-grid-item">
-                <span class="bnpb-grid-val">Terpadu</span>
-                <span class="bnpb-grid-lbl">Protokol Siaga</span>
-              </div>
-              <div class="bnpb-grid-item">
-                <span class="bnpb-grid-val">Sirine Standby</span>
-                <span class="bnpb-grid-lbl">Alarm Lapangan</span>
-              </div>
-              <div class="bnpb-grid-item">
-                <span class="bnpb-grid-val">TRILOGY IoT</span>
-                <span class="bnpb-grid-lbl">Engine EWS</span>
-              </div>
-              <div class="bnpb-grid-item">
-                <span class="bnpb-grid-val sync-clockWib">--:--:-- WIB</span>
-                <span class="bnpb-grid-lbl">Waktu Update</span>
-              </div>
-            </div>
-          </div>
-
         </div>
 
         <!-- Canvas Tersembunyi (Kompatibilitas app.js Chart.js Instance) -->
@@ -719,7 +717,7 @@
   <script src="js/config.js?v=4.1.0"></script>
 
   <!-- Logika Aplikasi Peta & Telemetri -->
-  <script src="js/app.js?v=4.8.8"></script>
+  <script src="js/app.js?v=4.8.9"></script>
 
 </body>
 </html>

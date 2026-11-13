@@ -352,10 +352,10 @@ button, input, select {
   overflow: hidden;
 }
 
-/* BARIS ATAS: TINGGI ~57% */
+/* BARIS ATAS: TINGGI ~52% */
 .bnpb-row-top {
   display: flex;
-  height: 57%;
+  height: 52%;
   gap: 8px;
   min-height: 0;
 }
@@ -875,18 +875,145 @@ button, input, select {
 }
 
 /* ==========================================================================
-   5. BARIS BAWAH: TINGGI ~43% (SENSOR LONGSOR & KARHUTLA)
+   4.5 BANNER INDEKS BAHAYA MULTI-BENCANA (FOKUS UTAMA DESKTOP & MOBILE)
+   ========================================================================== */
+.bnpb-indeks-bahaya-banner {
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  border-top: 3.5px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  padding: 6px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 10px rgba(0, 74, 173, 0.08);
+  transition: all 0.2s ease;
+}
+
+.bnpb-indeks-bahaya-banner:hover {
+  border-color: #94A3B8;
+  border-top-color: #003680;
+  box-shadow: 0 4px 16px rgba(0, 74, 173, 0.12);
+}
+
+.bnpb-indeks-left {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 220px;
+}
+
+.bnpb-indeks-tag-pill {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: var(--color-primary);
+  background: rgba(0, 74, 173, 0.08);
+  border: 1px solid rgba(0, 74, 173, 0.2);
+  padding: 1px 5px;
+  border-radius: 3px;
+  text-transform: uppercase;
+}
+
+.bnpb-indeks-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 1px 0 0 0;
+  letter-spacing: -0.2px;
+}
+
+.bnpb-indeks-sub {
+  font-size: 9px;
+  color: #64748B;
+  margin: 0;
+}
+
+.bnpb-indeks-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  flex: 1;
+  max-width: 420px;
+}
+
+.bnpb-indeks-badges {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  width: 100%;
+}
+
+.bnpb-indeks-badge-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bnpb-indeks-badge-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #334155;
+  white-space: nowrap;
+}
+
+.bnpb-indeks-divider {
+  width: 1px;
+  height: 18px;
+  background-color: #E2E8F0;
+}
+
+.bnpb-indeks-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.bnpb-indeks-chip {
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  border-radius: 5px;
+  padding: 2px 7px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-width: 58px;
+}
+
+.bnpb-indeks-chip-val {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
+.bnpb-indeks-chip-lbl {
+  font-size: 7.5px;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   5. BARIS BAWAH: SENSOR LONGSOR & KARHUTLA (MENGISI SISA LAYAR)
    ========================================================================== */
 .bnpb-row-bottom {
   display: flex;
-  height: 43%;
+  flex: 1;
   gap: 8px;
   min-height: 0;
 }
 
-/* Panel Sensor Kiri & Kanan: 50% Lebar Masing-masing */
+/* Panel Sensor Kiri & Kanan */
 .bnpb-col-sensor {
-  width: 50%;
   background-color: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
@@ -896,6 +1023,16 @@ button, input, select {
   min-height: 0;
   overflow: hidden;
   box-shadow: var(--shadow-sm);
+}
+
+.bnpb-col-sensor.bnpb-col-sensor-longsor {
+  flex: 1.35;
+  width: auto;
+}
+
+.bnpb-col-sensor.bnpb-col-sensor-karhutla {
+  flex: 1;
+  width: auto;
 }
 
 .bnpb-sensor-header {
@@ -950,12 +1087,20 @@ button, input, select {
   height: 13px;
 }
 
-/* 2 Kolom Lebar Simetris: Longsor & Karhutla (1 Sensor Fisik = 1 Tampilan) */
+/* Kolom Sensor: Tanah Longsor (2 Kolom) & Karhutla (1 Kolom Penuh) */
 .bnpb-stations-grid,
-.bnpb-stations-grid.bnpb-longsor-grid,
-.bnpb-stations-grid.bnpb-karhutla-grid {
+.bnpb-stations-grid.bnpb-longsor-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.bnpb-stations-grid.bnpb-karhutla-grid {
+  display: grid;
+  grid-template-columns: 1fr;
   gap: 8px;
   flex: 1;
   min-height: 0;
@@ -1768,9 +1913,17 @@ button, input, select {
     display: contents !important;
   }
 
-  /* 1. Kolom Info & Langkah Cepat di bagian atas */
-  .bnpb-col-info {
+  /* 1. Indeks Bahaya Multi-Bencana (PALING ATAS DI MOBILE SESUAI INSTRUKSI) */
+  #sectionIndeksBahaya,
+  .bnpb-indeks-bahaya-banner {
     order: 1 !important;
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  /* 2. Kolom Info & Langkah Cepat */
+  .bnpb-col-info {
+    order: 2 !important;
     width: 100% !important;
     height: auto !important;
     overflow: visible !important;
@@ -1782,29 +1935,18 @@ button, input, select {
     min-height: 48px;
   }
 
-  /* 2. Peta GIS Utama */
+  /* 3. Peta GIS Utama */
   .bnpb-col-map {
-    order: 2 !important;
+    order: 3 !important;
     width: 100% !important;
     height: 360px !important;
     box-sizing: border-box;
   }
 
-  /* 3. Sensor Tanah Longsor (Diletakkan DI ATAS Perangkat & Gateway) */
+  /* 4. Sensor Tanah Longsor (Diletakkan DI ATAS Perangkat & Gateway) */
   .bnpb-col-sensor.bnpb-col-sensor-longsor,
   #colSensorLongsor,
   .bnpb-col-sensor:nth-of-type(1) {
-    order: 3 !important;
-    width: 100% !important;
-    height: auto !important;
-    overflow: visible !important;
-    box-sizing: border-box;
-  }
-
-  /* 4. Sensor Karhutla (Diletakkan DI ATAS Perangkat & Gateway) */
-  .bnpb-col-sensor.bnpb-col-sensor-karhutla,
-  #colSensorKarhutla,
-  .bnpb-col-sensor:nth-of-type(2) {
     order: 4 !important;
     width: 100% !important;
     height: auto !important;
@@ -1812,10 +1954,21 @@ button, input, select {
     box-sizing: border-box;
   }
 
-  /* 5. Kondisi Perangkat & Gateway (Diletakkan DI BAWAH Sensor Tanah Longsor & Karhutla) */
+  /* 5. Sensor Karhutla (Diletakkan DI ATAS Perangkat & Gateway) */
+  .bnpb-col-sensor.bnpb-col-sensor-karhutla,
+  #colSensorKarhutla,
+  .bnpb-col-sensor:nth-of-type(2) {
+    order: 5 !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    box-sizing: border-box;
+  }
+
+  /* 6. Kondisi Perangkat & Gateway (Diletakkan DI BAWAH Sensor Tanah Longsor & Karhutla) */
   .bnpb-col-devices,
   #colDevices {
-    order: 5 !important;
+    order: 6 !important;
     width: 100% !important;
     height: auto !important;
     overflow: visible !important;
@@ -1845,6 +1998,51 @@ button, input, select {
   
   .link-indicators {
     display: none;
+  }
+
+  /* Indeks Bahaya Banner di Layar Ponsel: Responsive Wrap Paling Atas */
+  .bnpb-indeks-bahaya-banner {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+    padding: 10px 12px !important;
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  .bnpb-indeks-left {
+    text-align: center;
+    align-items: center;
+    min-width: 0;
+  }
+
+  .bnpb-indeks-badges {
+    justify-content: space-around;
+  }
+
+  .bnpb-indeks-center {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .bnpb-indeks-right {
+    display: grid !important;
+    grid-template-columns: repeat(5, 1fr) !important;
+    gap: 4px !important;
+    width: 100% !important;
+  }
+
+  .bnpb-indeks-chip {
+    min-width: 0 !important;
+    padding: 3px 2px !important;
+  }
+
+  .bnpb-indeks-chip-val {
+    font-size: 8.5px !important;
+  }
+
+  .bnpb-indeks-chip-lbl {
+    font-size: 7px !important;
   }
 
   /* 1 Kolom Penuh untuk Seluruh Sensor: Menghilangkan Scroll ke Samping */
