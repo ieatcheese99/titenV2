@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QR Code Akses Sistem — EWS TITEN (MAGE 12)</title>
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  
+  <style>
+    :root {
+      --brand-blue: #004aad;
+      --brand-dark: #0A0F19;
+      --brand-gray: #F4F6F9;
+      --text-main: #1A2332;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--brand-gray);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .card {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: 0 10px 25px rgba(0, 74, 173, 0.08);
+      text-align: center;
+    }
+
+    .brand-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .brand-logo {
+      height: 38px;
+      object-fit: contain;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(0, 74, 173, 0.1);
+      color: var(--brand-blue);
+      padding: 3px 10px;
+      border-radius: 9999px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      margin: 0 0 6px 0;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    p.subtitle {
+      margin: 0 0 24px 0;
+      font-size: 13px;
+      color: #64748B;
+      line-height: 1.4;
+    }
+
+    .qr-frame {
+      background: #FFFFFF;
+      border: 2px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 18px;
+      display: inline-block;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    }
+
+    #qrcode {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .url-display {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--brand-blue);
+      background: #EFF6FF;
+      border: 1px dashed #BFDBFE;
+      padding: 8px 12px;
+      border-radius: 8px;
+      margin-bottom: 24px;
+      word-break: break-all;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s ease;
+      min-height: 44px;
+    }
+
+    .btn-primary {
+      background: var(--brand-blue);
+      color: #FFFFFF;
+      border: none;
+    }
+    .btn-primary:hover {
+      background: #003680;
+    }
+
+    .btn-secondary {
+      background: #F8FAFC;
+      color: #475569;
+      border: 1px solid #CBD5E1;
+    }
+    .btn-secondary:hover {
+      background: #E2E8F0;
+      color: #1E293B;
+    }
+
+    .footer-note {
+      margin-top: 24px;
+      font-size: 11px;
+      color: #94A3B8;
+    }
+
+    @media print {
+      body {
+        background: #FFFFFF;
+        padding: 0;
+      }
+      .card {
+        border: none;
+        box-shadow: none;
+        max-width: 100%;
+        padding: 0;
+      }
+      .actions, .footer-note {
+        display: none;
+      }
+    }
+  </style>
+  <!-- QRCode.js (Pinned Version dari cdnjs) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1U4UbZZ747FhZWyDZjyI0456XIT3FAzD3qCU65IX8S4AUIQZ/A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+
+  <div class="card">
+    <div class="brand-header">
+      <img src="assets/logo-cropped.png" alt="Logo EWS TITEN" class="brand-logo" />
+    </div>
+
+    <span class="badge">MAGE 12 · TAHAP 2 (IoT)</span>
+
+    <h1>Pindai untuk Akses Peta EWS</h1>
+    <p class="subtitle">Arahkan kamera ponsel Anda ke QR code di bawah untuk membuka sistem pemantauan bencana EWS TITEN secara langsung.</p>
+
+    <div class="qr-frame">
+      <div id="qrcode"></div>
+    </div>
+
+    <div class="url-display">https://titenv2.pages.dev</div>
+
+    <div class="actions">
+      <button id="btnDownload" class="btn btn-primary" title="Unduh gambar resolusi tinggi untuk dicetak di poster">
+        Unduh Gambar PNG
+      </button>
+      <button onclick="window.print()" class="btn btn-secondary" title="Cetak langsung ke printer">
+        Cetak Halaman
+      </button>
+    </div>
+
+    <div class="footer-note">
+      Dikembangkan oleh Tim TRILOGY — SMK Budi Luhur Kota Tangerang
+    </div>
+  </div>
+
+  <script>
+    const targetUrl = "https://titenv2.pages.dev";
+    
+    // Inisialisasi QR Code resolusi tajam
+    const qrcode = new QRCode(document.getElementById("qrcode"), {
+      text: targetUrl,
+      width: 256,
+      height: 256,
+      colorDark: "#004aad",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.H
+    });
+
+    // Handler tombol unduh gambar PNG
+    document.getElementById("btnDownload").addEventListener("click", function() {
+      const img = document.querySelector("#qrcode img");
+      const canvas = document.querySelector("#qrcode canvas");
+      
+      let dataUrl = "";
+      if (canvas) {
+        dataUrl = canvas.toDataURL("image/png");
+      } else if (img && img.src) {
+        dataUrl = img.src;
+      }
+
+      if (dataUrl) {
+        const a = document.createElement("a");
+        a.href = dataUrl;
+        a.download = "EWS_TITEN_QRCode_Poster.png";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } else {
+        alert("Gambar QR sedang diproses, silakan coba sesaat lagi.");
+      }
+    });
+  </script>
+</body>
+</html>
+

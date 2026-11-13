@@ -1,0 +1,27 @@
+# Cloudflare Pages Caching Headers - EWS TITEN
+# Mencegah Service Worker & HTML tersangkut di cache browser
+
+/sw.js
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/index.html
+  Cache-Control: no-cache, must-revalidate
+
+/
+  Cache-Control: no-cache, must-revalidate
+
+/qr.html
+  Cache-Control: no-cache, must-revalidate
+
+/js/config.js
+  Cache-Control: no-cache, must-revalidate
+
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/css/*
+  Cache-Control: public, max-age=86400, must-revalidate
+
+/js/*
+  Cache-Control: public, max-age=86400, must-revalidate
+

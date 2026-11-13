@@ -1,0 +1,78 @@
+{
+  "nodes": {
+    "node-01": {
+      "meta": {
+        "nama": "Node-01 · Tower 2 ITS",
+        "lokasi": "Gedung Tower 2 ITS, Kampus Sukolilo, Surabaya",
+        "lat": -7.28528,
+        "lng": 112.79530,
+        "tipe": "Multisensor Lereng & Karhutla",
+        "interval_kirim_detik": 60
+      },
+      "latest": {
+        "ts": 1794532800000,
+        "suhu": 29.8,
+        "kelembapan_udara": 68.0,
+        "kelembapan_tanah": 46.0,
+        "kemiringan_x": 4.2,
+        "kemiringan_y": 0.8,
+        "getaran": 0.02,
+        "gas": 12.0,
+        "baterai_persen": 91,
+        "baterai_voltase": 4.12,
+        "rssi": -76
+      },
+      "history": {
+        "1794522000000": {
+          "ts": 1794522000000,
+          "suhu": 27.5,
+          "kelembapan_udara": 76.0,
+          "kelembapan_tanah": 48.0,
+          "kemiringan_x": 4.1,
+          "baterai_persen": 94,
+          "baterai_voltase": 4.16
+        },
+        "1794525600000": {
+          "ts": 1794525600000,
+          "suhu": 28.4,
+          "kelembapan_udara": 72.0,
+          "kelembapan_tanah": 47.0,
+          "kemiringan_x": 4.2,
+          "baterai_persen": 93,
+          "baterai_voltase": 4.14
+        },
+        "1794529200000": {
+          "ts": 1794529200000,
+          "suhu": 29.2,
+          "kelembapan_udara": 69.0,
+          "kelembapan_tanah": 46.5,
+          "kemiringan_x": 4.2,
+          "baterai_persen": 92,
+          "baterai_voltase": 4.13
+        },
+        "1794532800000": {
+          "ts": 1794532800000,
+          "suhu": 29.8,
+          "kelembapan_udara": 68.0,
+          "kelembapan_tanah": 46.0,
+          "kemiringan_x": 4.2,
+          "baterai_persen": 91,
+          "baterai_voltase": 4.12
+        }
+      }
+    }
+  },
+  "ews_data": {
+    "suhu": 29.8,
+    "kelembapan_udara": 68.0,
+    "kelembapan_tanah": 46.0,
+    "kemiringan_x": 4.2,
+    "kemiringan_y": 0.8,
+    "getaran": 0.02,
+    "baterai_persen": 91,
+    "baterai_voltase": 4.12,
+    "rssi": -76,
+    "timestamp": 1794532800000
+  }
+}
+

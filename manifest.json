@@ -1,0 +1,31 @@
+{
+  "name": "EWS TITEN — Peta Pemantauan Bencana Terpadu",
+  "short_name": "EWS TITEN",
+  "description": "Sistem Peringatan Dini IoT Tanah Longsor dan Karhutla Berbasis LoRa & Peta Interaktif (MAGE 12 - Tim TRILOGY)",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0A0F19",
+  "theme_color": "#004aad",
+  "icons": [
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

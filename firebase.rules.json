@@ -1,0 +1,24 @@
+{
+  "rules": {
+    "nodes": {
+      ".read": true,
+      ".write": "auth != null",
+      "$node_id": {
+        "meta": {
+          ".validate": "newData.hasChildren(['nama', 'lat', 'lng'])"
+        },
+        "latest": {
+          ".validate": "newData.hasChildren(['ts'])"
+        },
+        "history": {
+          ".indexOn": ["ts"]
+        }
+      }
+    },
+    "ews_data": {
+      ".read": true,
+      ".write": "auth != null"
+    }
+  }
+}
+

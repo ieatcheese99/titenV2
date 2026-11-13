@@ -1,0 +1,20 @@
+{
+  "name": "ews-titen-web",
+  "version": "2.4.0",
+  "description": "EWS TITEN - Early Warning System Landslide and Forest Fire Command Center (MAGE 12)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "iot",
+    "ews",
+    "titen",
+    "lora",
+    "esp32",
+    "firebase"
+  ],
+  "author": "TRILOGY - SMK Budi Luhur",
+  "license": "ISC"
+}
+

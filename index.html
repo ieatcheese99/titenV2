@@ -1,1371 +1,670 @@
 <!DOCTYPE html>
-<html lang="id" class="dark">
+<html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EWS TITEN - Real-time Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="description" content="EWS TITEN - Sistem Peringatan Dini IoT Tanah Longsor dan Karhutla Berbasis LoRa & Peta Interaktif (MAGE 12)" />
+  <meta name="theme-color" content="#004aad" />
+  <title>EWS TITEN — Peta Pemantauan Bencana Terpadu</title>
 
-  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <!-- Favicon & Touch Icon Resmi TITEN -->
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
+
+  <!-- Open Graph & Media Sosial Preview (WhatsApp, Facebook, Twitter) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://titenv2.pages.dev/" />
+  <meta property="og:title" content="EWS TITEN — Peta Pemantauan Bencana Terpadu" />
+  <meta property="og:description" content="Sistem Peringatan Dini IoT Tanah Longsor dan Karhutla Berbasis LoRa & Peta Interaktif — Tim TRILOGY SMK Budi Luhur (MAGE 12)" />
+  <meta property="og:image" content="https://titenv2.pages.dev/assets/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="EWS TITEN — Peta Pemantauan Bencana Terpadu" />
+  <meta name="twitter:description" content="Sistem Peringatan Dini IoT Tanah Longsor dan Karhutla Berbasis LoRa & Peta Interaktif (MAGE 12)" />
+  <meta name="twitter:image" content="https://titenv2.pages.dev/assets/og-image.png" />
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json" />
+
+  <!-- Google Fonts: Inter & JetBrains Mono (Pinned) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-            mono: ['JetBrains Mono', 'monospace'],
-          },
-          colors: {
-            brand: {
-              dark: '#080c14',
-              surface: '#0d1527',
-              card: 'rgba(15, 23, 42, 0.75)',
-              border: 'rgba(56, 189, 248, 0.15)',
-              cyan: '#06b6d4',
-              emerald: '#10b981',
-              amber: '#f59e0b',
-              rose: '#f43f5e',
-            }
-          },
-          animation: {
-            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-            'glow-emerald': 'glowEmerald 2s ease-in-out infinite alternate',
-            'glow-rose': 'glowRose 1.5s ease-in-out infinite alternate',
-            'scanline': 'scanline 8s linear infinite',
-          },
-          keyframes: {
-            glowEmerald: {
-              '0%': { boxShadow: '0 0 15px rgba(16, 185, 129, 0.2)' },
-              '100%': { boxShadow: '0 0 35px rgba(16, 185, 129, 0.5)' },
-            },
-            glowRose: {
-              '0%': { boxShadow: '0 0 20px rgba(244, 63, 94, 0.3)' },
-              '100%': { boxShadow: '0 0 45px rgba(244, 63, 94, 0.75)' },
-            },
-            scanline: {
-              '0%': { transform: 'translateY(-100%)' },
-              '100%': { transform: 'translateY(1000%)' },
-            }
-          }
-        }
-      }
-    }
-  </script>
+  <!-- Leaflet 1.9.4 CSS (Local Vendor) -->
+  <link rel="stylesheet" href="assets/vendor/leaflet.min.css" />
 
-  <!-- Lucide Icons CDN -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-
-  <style>
-    /* Custom High-Tech Aesthetic Styles */
-    body {
-      background-color: #070b12;
-      background-image: 
-        radial-gradient(at 0% 0%, rgba(6, 182, 212, 0.08) 0px, transparent 50%),
-        radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.07) 0px, transparent 50%),
-        radial-gradient(at 50% 100%, rgba(14, 165, 233, 0.06) 0px, transparent 50%),
-        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-      background-size: 100% 100%, 100% 100%, 100% 100%, 32px 32px, 32px 32px;
-    }
-
-    .glass-card {
-      background: rgba(13, 21, 39, 0.7);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-    }
-
-    .glass-card:hover {
-      border-color: rgba(56, 189, 248, 0.3);
-      box-shadow: 0 12px 40px 0 rgba(6, 182, 212, 0.15);
-    }
-
-    /* Cyber Corner Accents */
-    .cyber-corner {
-      position: relative;
-    }
-    .cyber-corner::before,
-    .cyber-corner::after {
-      content: '';
-      position: absolute;
-      width: 8px;
-      height: 8px;
-      pointer-events: none;
-    }
-    .cyber-corner::before {
-      top: -1px;
-      left: -1px;
-      border-top: 2px solid rgba(56, 189, 248, 0.6);
-      border-left: 2px solid rgba(56, 189, 248, 0.6);
-    }
-    .cyber-corner::after {
-      bottom: -1px;
-      right: -1px;
-      border-bottom: 2px solid rgba(56, 189, 248, 0.6);
-      border-right: 2px solid rgba(56, 189, 248, 0.6);
-    }
-
-    /* Status Banner Glow Themes */
-    .status-safe {
-      background: linear-gradient(135deg, rgba(6, 78, 59, 0.8) 0%, rgba(13, 21, 39, 0.9) 60%, rgba(4, 120, 87, 0.3) 100%);
-      border: 1px solid rgba(16, 185, 129, 0.4);
-      box-shadow: 0 0 30px rgba(16, 185, 129, 0.25);
-    }
-    .status-warning {
-      background: linear-gradient(135deg, rgba(120, 53, 15, 0.85) 0%, rgba(13, 21, 39, 0.9) 60%, rgba(217, 119, 6, 0.35) 100%);
-      border: 1px solid rgba(245, 158, 11, 0.5);
-      box-shadow: 0 0 35px rgba(245, 158, 11, 0.3);
-    }
-    .status-danger {
-      background: linear-gradient(135deg, rgba(136, 19, 55, 0.9) 0%, rgba(13, 21, 39, 0.92) 60%, rgba(225, 29, 72, 0.4) 100%);
-      border: 1px solid rgba(244, 63, 94, 0.7);
-      box-shadow: 0 0 45px rgba(244, 63, 94, 0.5);
-    }
-    .status-offline {
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 60%, rgba(71, 85, 105, 0.35) 100%);
-      border: 1px solid rgba(148, 163, 184, 0.35);
-      box-shadow: 0 0 25px rgba(100, 116, 139, 0.2);
-    }
-  </style>
+  <!-- Stylesheet Utama EWS TITEN -->
+  <link rel="stylesheet" href="css/style.css" />
 </head>
+<body>
 
-<body class="text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-cyan-500/30 selection:text-cyan-200">
+  <!-- ================================================================= -->
+  <!-- 1. PETA LAYAR PENUH (LEAFLET CANVAS)                              -->
+  <!-- ================================================================= -->
+  <div id="map" role="region" aria-label="Peta Interaktif Lokasi Node Sensor"></div>
 
-  <!-- TOP STATUS BAR / CAD HEADER -->
-  <header class="border-b border-slate-800/80 bg-slate-950/60 backdrop-blur-md sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 py-3.5 flex flex-wrap items-center justify-between gap-4">
-      
-      <!-- Logo & Title -->
-      <div class="flex items-center space-x-3.5">
-        <div class="relative flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-br from-cyan-500/20 to-emerald-500/10 border border-cyan-500/30 shadow-inner shadow-cyan-500/20">
-          <i data-lucide="shield-alert" class="w-6 h-6 text-cyan-400"></i>
-          <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-cyan-400 rounded-full animate-ping"></span>
+  <!-- Banner Animasi Zoom Pembuka (FlyTo) di Sudut Layar -->
+  <div id="openingZoomBanner" class="opening-zoom-banner hidden" role="status">
+    <img src="assets/logo-mark-white.png" alt="TITEN" class="opening-zoom-logo logo-dark-mode" />
+    <img src="assets/logo-mark-blue.png" alt="TITEN" class="opening-zoom-logo logo-light-mode" />
+    <span id="openingZoomText">Menuju Node-01 · Tower 2 ITS...</span>
+    <button id="btnSkipZoom" class="btn-skip-zoom" title="Lewati animasi kamera">Lewati</button>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- 2. TOP BAR MELAYANG (THIN, CLEAN & FUNCTIONAL)                    -->
+  <!-- ================================================================= -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <a href="#" class="brand-badge" title="EWS TITEN - MAGE 12 TRILOGY">
+        <img src="assets/logo-white-transparent.png" alt="Logo TITEN" class="brand-logo-img logo-dark-mode" />
+        <img src="assets/logo-blue-transparent.png" alt="Logo TITEN" class="brand-logo-img logo-light-mode" />
+        <div class="brand-text-group">
+          <span class="brand-name">EWS TITEN</span>
+          <span class="brand-tag">MAGE 12</span>
         </div>
-        <div>
-          <div class="flex items-center space-x-2.5">
-            <h1 class="text-lg sm:text-xl font-extrabold tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-teal-300 to-emerald-400">
-              EWS TITEN
-            </h1>
-            <span class="text-xs px-2 py-0.5 rounded-full font-mono font-semibold bg-cyan-950/80 text-cyan-400 border border-cyan-800/50">
-              MAGE 12
-            </span>
-          </div>
-          <p class="text-xs text-slate-400 font-medium tracking-tight">
-            Early Warning System &bull; Landslide & Forest Fire Command Center
-          </p>
+      </a>
+
+      <!-- Ringkasan Status Global -->
+      <div id="topbarSummary" class="status-chip-summary" title="Ringkasan Status Keseluruhan Node">
+        <span class="status-dot" style="background-color: var(--color-offline);"></span>
+        <span id="topbarSummaryText">Memuat node...</span>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <!-- Dua Indikator Koneksi Terpisah -->
+      <div class="link-indicators">
+        <div class="link-pill" id="pillGateway" title="Status koneksi Gateway ke Firebase RTDB">
+          <span class="status-dot" id="dotGateway" style="background-color: var(--color-offline);"></span>
+          <span id="textGateway">Gateway: Offline</span>
+        </div>
+        <div class="link-pill" id="pillNode" title="Status telemetri LoRa 433MHz dari Node">
+          <span class="status-dot" id="dotNode" style="background-color: var(--color-offline);"></span>
+          <span id="textNode">Node: Offline</span>
         </div>
       </div>
 
-      <!-- Control / Status Indicators (Dual-Link: Gateway & Node) -->
-      <div class="flex items-center gap-2 sm:gap-3">
-        <!-- 1. Gateway -> Web Connection Pill -->
-        <div class="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-slate-900/90 border border-slate-700/60 shadow-sm" id="gateway-pill" title="Status koneksi ESP32 Gateway ke Database">
-          <span class="relative flex h-2.5 w-2.5">
-            <span id="gateway-ping" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-            <span id="gateway-dot" class="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500"></span>
-          </span>
-          <span id="gateway-text" class="text-xs font-semibold tracking-wide text-amber-400 font-mono">
-            Gateway: Tidak Terhubung
-          </span>
-        </div>
+      <!-- Jam WIB & Latensi Data -->
+      <div class="topbar-time">
+        <span class="time-live" id="clockWib">--:--:-- WIB</span>
+        <span class="time-updated" id="syncLatency">Sinkronisasi: Memuat...</span>
+      </div>
 
-        <!-- 2. Node -> Gateway Connection Pill -->
-        <div class="hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-full bg-slate-900/90 border border-slate-700/60 shadow-sm" id="node-pill" title="Status transmisi LoRa Node Sensor ke Gateway">
-          <span class="relative flex h-2.5 w-2.5">
-            <span id="node-ping" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-            <span id="node-dot" class="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500"></span>
-          </span>
-          <span id="node-text" class="text-xs font-semibold tracking-wide text-amber-400 font-mono">
-            Node: Tidak Terhubung
-          </span>
-        </div>
+      <!-- Tombol Aksi Topbar -->
+      <div class="topbar-actions">
+        <!-- Toggle Audio Alarm -->
+        <button id="btnToggleAudio" class="btn-icon-topbar" title="Bisukan / Aktifkan Alarm Audio" aria-label="Toggle Alarm">
+          <i data-lucide="volume-2" id="iconAudio" style="width: 18px; height: 18px;"></i>
+        </button>
 
-        <!-- Telemetry Clock -->
-        <div class="hidden md:flex flex-col items-end text-right ml-2">
-          <span class="text-xs font-mono text-slate-400 flex items-center gap-1.5">
-            <i data-lucide="clock" class="w-3.5 h-3.5 text-cyan-400"></i>
-            <span id="live-clock">--:--:-- WIB</span>
-          </span>
-          <span class="text-[10px] text-slate-500 font-mono" id="last-updated-text">
-            Sinkronisasi: Memuat...
-          </span>
-        </div>
+        <!-- Toggle Panel Layer -->
+        <button id="btnToggleLayers" class="btn-icon-topbar" title="Buka Panel Layer Peta" aria-label="Toggle Layer">
+          <i data-lucide="layers" style="width: 18px; height: 18px;"></i>
+        </button>
 
-        <!-- Audio Alert Mute Toggle -->
-        <button id="btn-audio" onclick="toggleAudioAlarm()" title="Ubah Pengaturan Audio Alarm" class="p-2 rounded-lg bg-slate-900/80 border border-slate-700/60 text-slate-400 hover:text-cyan-400 hover:border-cyan-500/40 transition ml-1">
-          <i data-lucide="volume-2" id="audio-icon" class="w-4 h-4"></i>
+        <!-- Toggle Tema Terang/Gelap -->
+        <button id="btnToggleTheme" class="btn-icon-topbar" title="Ganti Tema Terang/Gelap" aria-label="Toggle Tema">
+          <i data-lucide="moon" id="iconTheme" style="width: 18px; height: 18px;"></i>
         </button>
       </div>
-
     </div>
   </header>
 
-  <!-- MAIN DASHBOARD CONTENT -->
-  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full space-y-5">
+  <!-- ================================================================= -->
+  <!-- 3. BANNER KONDISI SISTEM (HANYA MUNCUL JIKA ADA MASALAH)          -->
+  <!-- ================================================================= -->
+  <aside id="systemIssueBanner" class="system-issue-banner hidden" role="alert">
+    <div class="banner-content">
+      <i data-lucide="alert-triangle" id="bannerIssueIcon" style="width: 18px; height: 18px; flex-shrink: 0; color: var(--color-waspada);"></i>
+      <div>
+        <strong id="bannerIssueTitle">Peringatan Sistem:</strong>
+        <span id="bannerIssueDesc">Paket data tidak terdeteksi.</span>
+      </div>
+    </div>
+    <button id="btnCloseBanner" class="banner-close" title="Tutup peringatan">
+      <i data-lucide="x" style="width: 16px; height: 16px;"></i>
+    </button>
+  </aside>
 
-    <!-- REAL-TIME DISCONNECTED / SYSTEM ALERT CALLOUT BANNER -->
-    <div id="conn-alert-banner" class="rounded-xl border border-amber-500/40 bg-gradient-to-r from-amber-950/70 via-slate-900/80 to-amber-950/40 p-4 backdrop-blur-md shadow-lg transition-all duration-300 flex items-start sm:items-center justify-between gap-3">
-      <div class="flex items-start sm:items-center space-x-3">
-        <div class="p-2 rounded-lg bg-amber-500/20 text-amber-400 flex-shrink-0" id="alert-icon-box">
-          <i data-lucide="wifi-off" id="alert-icon" class="w-5 h-5"></i>
-        </div>
+  <!-- Banner Izin Audio Pertama Kali -->
+  <div id="audioPromptBanner" class="audio-prompt-banner hidden">
+    <i data-lucide="bell" style="width: 18px; height: 18px; color: var(--color-primary);"></i>
+    <span>Aktifkan audio untuk mendengar peringatan dini darurat.</span>
+    <button id="btnEnableAudio" class="btn-enable-audio">Aktifkan Suara</button>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- 4A. PANEL KONDISI PERANGKAT LAPANGAN (KIRI ATAS - KHUSUS HARDWARE) -->
+  <!-- ================================================================= -->
+  <aside id="deviceStatusPanel" class="device-status-panel" aria-label="Panel Status Perangkat Node">
+    <div class="panel-header">
+      <div class="panel-header-top">
         <div>
-          <h4 class="text-xs font-bold font-mono uppercase tracking-wider text-amber-300" id="alert-banner-title">
-            STATUS: PERANGKAT TIDAK TERHUBUNG
-          </h4>
-          <p class="text-xs text-slate-300 mt-0.5 leading-relaxed" id="alert-banner-desc">
-            Sistem belum menerima sinyal data telemetri dari ESP32 Gateway dan Node Sensor. Menunggu perangkat terhubung...
+          <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 2px;">
+            <i data-lucide="cpu" style="width: 14px; height: 14px; color: var(--color-primary);"></i>
+            <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em;">Kondisi Perangkat</span>
+          </div>
+          <h2 id="devicePanelNodeTitle" class="panel-title" style="font-size: 15px;">Node-01 · Tower 2 ITS</h2>
+          <p id="devicePanelNodeLocation" class="panel-subtitle" style="font-size: 11px;">
+            <i data-lucide="map-pin" style="width: 11px; height: 11px;"></i>
+            <span>Gedung Tower 2 ITS, Sukolilo</span>
           </p>
         </div>
-      </div>
-      <span class="text-[10px] font-mono px-2.5 py-1 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 whitespace-nowrap hidden sm:inline" id="alert-banner-pill">
-        TIDAK TERHUBUNG
-      </span>
-    </div>
-
-    <!-- 1. MAIN HERO SECTION (ALERT STATUS BANNER) -->
-    <section>
-      <div id="status-card" class="glass-card cyber-corner status-offline rounded-2xl p-6 sm:p-7 transition-all duration-500 relative overflow-hidden">
-        
-        <!-- Background Ambient Grid Glow -->
-        <div class="absolute -right-16 -top-16 w-64 h-64 bg-slate-500/10 rounded-full blur-3xl pointer-events-none" id="status-glow"></div>
-
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
-          
-          <!-- Left: Status Indicator & Description -->
-          <div class="flex items-start sm:items-center space-x-5">
-            <!-- Icon Frame -->
-            <div id="status-icon-box" class="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-slate-800/60 border border-slate-700/60 flex items-center justify-center shadow-lg shadow-black/40">
-              <i data-lucide="wifi-off" id="status-icon" class="w-9 h-9 sm:w-11 sm:h-11 text-slate-400"></i>
-            </div>
-            
-            <div class="space-y-1.5">
-              <div class="flex items-center gap-2">
-                <span class="text-xs uppercase tracking-widest font-mono font-semibold px-2.5 py-0.5 rounded bg-black/40 border border-white/10 text-slate-300">
-                  Status Kesiapsiagaan
-                </span>
-                <span id="status-badge" class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-slate-700/40 text-slate-300 border border-slate-600/50">
-                  STATUS: TIDAK TERHUBUNG
-                </span>
-              </div>
-
-              <!-- REQUIRED ID: status_bahaya -->
-              <h2 id="status_bahaya" class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-slate-300 drop-shadow-md">
-                TIDAK TERHUBUNG
-              </h2>
-
-              <p id="status-desc" class="text-sm sm:text-base text-slate-300 font-normal max-w-2xl leading-relaxed">
-                Sistem dalam status tidak terhubung. Menunggu data sensor riil dari ESP32 Gateway dan Node Sensor.
-              </p>
-            </div>
-          </div>
-
-          <!-- Right: Interactive Simulation / Diagnostic Pills for Demo -->
-          <div class="flex flex-col sm:flex-row md:flex-col gap-2.5 self-start md:self-center border-t md:border-t-0 border-white/10 pt-4 md:pt-0">
-            <span class="text-[11px] font-mono uppercase tracking-wider text-slate-400">
-              Simulasi Status (Demo Juri):
-            </span>
-            <div class="inline-flex rounded-lg p-1 bg-slate-950/70 border border-slate-700/60 shadow-inner flex-wrap gap-1">
-              <button onclick="setSimulationState('TIDAK_TERHUBUNG')" class="px-2.5 py-1 text-xs font-semibold rounded text-slate-300 hover:bg-slate-800 transition font-mono border border-slate-700/50" title="Simulasi jika Gateway/Node terputus">
-                TIDAK TERHUBUNG
-              </button>
-              <button onclick="setSimulationState('AMAN')" class="px-2.5 py-1 text-xs font-semibold rounded text-emerald-400 hover:bg-emerald-500/20 transition font-mono">
-                AMAN
-              </button>
-              <button onclick="setSimulationState('WASPADA')" class="px-2.5 py-1 text-xs font-semibold rounded text-amber-400 hover:bg-amber-500/20 transition font-mono">
-                WASPADA
-              </button>
-              <button onclick="setSimulationState('BAHAYA')" class="px-2.5 py-1 text-xs font-semibold rounded text-rose-400 hover:bg-rose-500/20 transition font-mono">
-                BAHAYA
-              </button>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- Telemetry Metadata Footer within Banner -->
-        <div class="mt-5 pt-4 border-t border-white/10 flex flex-wrap items-center justify-between text-xs font-mono text-slate-400 gap-2">
-          <div class="flex items-center gap-4">
-            <span class="flex items-center gap-1.5">
-              <span id="gateway-meta-dot" class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-              Node Gateway: <strong class="text-slate-200" id="gateway-node-name">ESP32-TITEN-GW01</strong>
-            </span>
-            <span class="hidden sm:inline">&bull;</span>
-            <span class="hidden sm:flex items-center gap-1.5">
-              Protokol: <strong class="text-slate-200">LoRa 433MHz &rarr; Firebase RTDB (ews_data)</strong>
-            </span>
-          </div>
-          <span class="text-amber-400 font-semibold" id="risk-score">
-            Status Sistem: Menunggu Aliran Data
-          </span>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- 2. SENSOR TELEMETRY GRID (3 Columns Desktop, 1 Column Mobile) -->
-    <section>
-      <div class="flex items-center justify-between mb-4">
-        <div class="flex items-center space-x-2.5">
-          <div class="w-2.5 h-2.5 bg-cyan-400 rounded-sm"></div>
-          <h3 class="text-sm font-bold uppercase tracking-wider text-slate-300 font-mono">
-            Sensor Telemetry Matrix
-          </h3>
-        </div>
-        <span id="active-nodes-badge" class="text-xs font-mono text-slate-400 bg-slate-900/60 px-2.5 py-1 rounded-md border border-slate-700/50">
-          0 / 5 Sensor Aktif (Tidak Terhubung)
-        </span>
-      </div>
-
-      <!-- CSS Grid: 1 col on mobile, 3 cols on desktop -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-
-        <!-- CARD 1: Air Temperature (suhu) -->
-        <div class="glass-card cyber-corner rounded-xl p-5 hover:-translate-y-1 transition duration-300 group">
-          <div class="flex items-center justify-between mb-3">
-            <div class="flex items-center space-x-2.5">
-              <div class="p-2.5 rounded-lg bg-orange-500/15 border border-orange-500/30 text-orange-400 group-hover:scale-110 transition">
-                <!-- Thermometer SVG Icon -->
-                <i data-lucide="thermometer" class="w-5 h-5"></i>
-              </div>
-              <div>
-                <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider font-mono">Suhu Udara</h4>
-                <p class="text-xs text-slate-500">Air Temperature</p>
-              </div>
-            </div>
-            <span id="badge-suhu" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">
-              STANDBY
-            </span>
-          </div>
-
-          <!-- Value with REQUIRED ID: suhu -->
-          <div class="my-4">
-            <div class="flex items-baseline space-x-1.5">
-              <span id="suhu" class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-400 font-mono">
-                -- °C
-              </span>
-            </div>
-          </div>
-
-          <!-- Mini Progress Bar / Range Tracker -->
-          <div class="space-y-1.5 pt-2 border-t border-slate-800">
-            <div class="flex justify-between text-[11px] font-mono text-slate-400">
-              <span>Batas Peringatan: 45.0 °C</span>
-              <span id="pct-suhu">Menunggu data...</span>
-            </div>
-            <div class="w-full h-1.5 bg-slate-800/80 rounded-full overflow-hidden">
-              <div id="bar-suhu" class="h-full bg-gradient-to-r from-orange-400 to-amber-500 rounded-full transition-all duration-500" style="width: 0%;"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- CARD 2: Air Humidity (udara) -->
-        <div class="glass-card cyber-corner rounded-xl p-5 hover:-translate-y-1 transition duration-300 group">
-          <div class="flex items-center justify-between mb-3">
-            <div class="flex items-center space-x-2.5">
-              <div class="p-2.5 rounded-lg bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 group-hover:scale-110 transition">
-                <!-- Cloud / Droplet SVG Icon -->
-                <i data-lucide="droplets" class="w-5 h-5"></i>
-              </div>
-              <div>
-                <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider font-mono">Kelembaban Udara</h4>
-                <p class="text-xs text-slate-500">Relative Humidity</p>
-              </div>
-            </div>
-            <span id="badge-udara" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">
-              STANDBY
-            </span>
-          </div>
-
-          <!-- Value with REQUIRED ID: udara -->
-          <div class="my-4">
-            <div class="flex items-baseline space-x-1.5">
-              <span id="udara" class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-400 font-mono">
-                -- %
-              </span>
-            </div>
-          </div>
-
-          <!-- Mini Progress Bar / Range Tracker -->
-          <div class="space-y-1.5 pt-2 border-t border-slate-800">
-            <div class="flex justify-between text-[11px] font-mono text-slate-400">
-              <span>Kelembaban Relatif (RH)</span>
-              <span id="pct-udara">Menunggu data...</span>
-            </div>
-            <div class="w-full h-1.5 bg-slate-800/80 rounded-full overflow-hidden">
-              <div id="bar-udara" class="h-full bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full transition-all duration-500" style="width: 0%;"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- CARD 3: Soil Moisture (tanah) -->
-        <div class="glass-card cyber-corner rounded-xl p-5 hover:-translate-y-1 transition duration-300 group">
-          <div class="flex items-center justify-between mb-3">
-            <div class="flex items-center space-x-2.5">
-              <div class="p-2.5 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 group-hover:scale-110 transition">
-                <!-- Plant / Sprout SVG Icon -->
-                <i data-lucide="sprout" class="w-5 h-5"></i>
-              </div>
-              <div>
-                <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider font-mono">Kelembaban Tanah</h4>
-                <p class="text-xs text-slate-500">Soil Moisture</p>
-              </div>
-            </div>
-            <span id="badge-tanah" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">
-              STANDBY
-            </span>
-          </div>
-
-          <!-- Value with REQUIRED ID: tanah -->
-          <div class="my-4">
-            <div class="flex items-baseline space-x-1.5">
-              <span id="tanah" class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-400 font-mono">
-                -- %
-              </span>
-            </div>
-          </div>
-
-          <!-- Mini Progress Bar / Range Tracker -->
-          <div class="space-y-1.5 pt-2 border-t border-slate-800">
-            <div class="flex justify-between text-[11px] font-mono text-slate-400">
-              <span>Saturasi Air Tanah (VWC)</span>
-              <span id="pct-tanah">Menunggu data...</span>
-            </div>
-            <div class="w-full h-1.5 bg-slate-800/80 rounded-full overflow-hidden">
-              <div id="bar-tanah" class="h-full bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full transition-all duration-500" style="width: 0%;"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- CARD 4: Tilt Angle (miring) -->
-        <div class="glass-card cyber-corner rounded-xl p-5 hover:-translate-y-1 transition duration-300 group">
-          <div class="flex items-center justify-between mb-3">
-            <div class="flex items-center space-x-2.5">
-              <div class="p-2.5 rounded-lg bg-indigo-500/15 border border-indigo-500/30 text-indigo-400 group-hover:scale-110 transition">
-                <!-- Gyroscope / Compass SVG Icon -->
-                <i data-lucide="compass" class="w-5 h-5"></i>
-              </div>
-              <div>
-                <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider font-mono">Sudut Kemiringan</h4>
-                <p class="text-xs text-slate-500">Slope Inclinometer</p>
-              </div>
-            </div>
-            <span id="badge-miring" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">
-              STANDBY
-            </span>
-          </div>
-
-          <!-- Value with REQUIRED ID: miring -->
-          <div class="my-4">
-            <div class="flex items-baseline space-x-1.5">
-              <span id="miring" class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-400 font-mono">
-                -- °
-              </span>
-            </div>
-          </div>
-
-          <!-- Mini Progress Bar / Range Tracker -->
-          <div class="space-y-1.5 pt-2 border-t border-slate-800">
-            <div class="flex justify-between text-[11px] font-mono text-slate-400">
-              <span>Ambang Deformasi: 35.0°</span>
-              <span id="pct-miring">Menunggu data...</span>
-            </div>
-            <div class="w-full h-1.5 bg-slate-800/80 rounded-full overflow-hidden">
-              <div id="bar-miring" class="h-full bg-gradient-to-r from-indigo-400 to-purple-500 rounded-full transition-all duration-500" style="width: 0%;"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- CARD 5: Battery Level (baterai) -->
-        <div class="glass-card cyber-corner rounded-xl p-5 hover:-translate-y-1 transition duration-300 group">
-          <div class="flex items-center justify-between mb-3">
-            <div class="flex items-center space-x-2.5">
-              <div class="p-2.5 rounded-lg bg-teal-500/15 border border-teal-500/30 text-teal-400 group-hover:scale-110 transition">
-                <!-- Battery SVG Icon -->
-                <i data-lucide="battery-charging" class="w-5 h-5"></i>
-              </div>
-              <div>
-                <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider font-mono">Daya Baterai</h4>
-                <p class="text-xs text-slate-500">Node Power Supply</p>
-              </div>
-            </div>
-            <span id="badge-baterai" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">
-              STANDBY
-            </span>
-          </div>
-
-          <!-- Value with REQUIRED ID: baterai -->
-          <div class="my-4">
-            <div class="flex items-baseline space-x-1.5">
-              <span id="baterai" class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-400 font-mono">
-                -- % (0.0V)
-              </span>
-            </div>
-          </div>
-
-          <!-- Mini Progress Bar / Range Tracker -->
-          <div class="space-y-1.5 pt-2 border-t border-slate-800">
-            <div class="flex justify-between text-[11px] font-mono text-slate-400">
-              <span>Kapasitas LiPo / Buffer</span>
-              <span id="pct-baterai">Menunggu data...</span>
-            </div>
-            <div class="w-full h-1.5 bg-slate-800/80 rounded-full overflow-hidden">
-              <div id="bar-baterai" class="h-full bg-gradient-to-r from-teal-400 to-emerald-400 rounded-full transition-all duration-500" style="width: 0%;"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- CARD 6: Network & Link Health (Dual-Link Integrity Monitor) -->
-        <div class="glass-card cyber-corner rounded-xl p-5 hover:-translate-y-1 transition duration-300 group">
-          <div class="flex items-center justify-between mb-3">
-            <div class="flex items-center space-x-2.5">
-              <div class="p-2.5 rounded-lg bg-sky-500/15 border border-sky-500/30 text-sky-400 group-hover:scale-110 transition">
-                <i data-lucide="radio" class="w-5 h-5"></i>
-              </div>
-              <div>
-                <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider font-mono">Link Integrity</h4>
-                <p class="text-xs text-slate-500">Node &bull; Gateway &bull; Web</p>
-              </div>
-            </div>
-            <span id="badge-link" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-700/40 text-slate-300 border border-slate-600/40">
-              TIDAK TERHUBUNG
-            </span>
-          </div>
-
-          <!-- Dual Link Status Rows -->
-          <div class="my-3 space-y-2">
-            <!-- Link 1: Node -> Gateway (LoRa 433MHz) -->
-            <div class="flex items-center justify-between text-xs font-mono p-2 rounded-lg bg-slate-900/70 border border-slate-800">
-              <span class="text-slate-300 flex items-center gap-2">
-                <span id="link-node-dot" class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-                Node &rarr; Gateway (LoRa)
-              </span>
-              <span id="link-node-status" class="font-bold text-amber-400 text-[11px]">Tidak Terhubung</span>
-            </div>
-
-            <!-- Link 2: Gateway -> Web (Firebase) -->
-            <div class="flex items-center justify-between text-xs font-mono p-2 rounded-lg bg-slate-900/70 border border-slate-800">
-              <span class="text-slate-300 flex items-center gap-2">
-                <span id="link-gw-dot" class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-                Gateway &rarr; Web
-              </span>
-              <span id="link-gw-status" class="font-bold text-amber-400 text-[11px]">Tidak Terhubung</span>
-            </div>
-          </div>
-
-          <div class="space-y-1.5 pt-2 border-t border-slate-800">
-            <div class="flex justify-between text-[11px] font-mono text-slate-400">
-              <span>Paket Terakhir:</span>
-              <span id="last-packet-time" class="text-amber-400 font-bold">Tidak Terhubung</span>
-            </div>
-            <div class="w-full h-1.5 bg-slate-800/80 rounded-full overflow-hidden">
-              <div id="bar-link" class="h-full bg-amber-400 rounded-full transition-all duration-500" style="width: 15%;"></div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- 3. EMERGENCY SIREN & EVACUATION PROTOCOL TEST (Interactive Demo Panel) -->
-    <section class="glass-card cyber-corner rounded-xl p-5 border-slate-800">
-      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div class="flex items-center space-x-3.5">
-          <div class="p-3 rounded-lg bg-rose-500/15 border border-rose-500/30 text-rose-400">
-            <i data-lucide="bell-ring" class="w-5 h-5"></i>
-          </div>
-          <div>
-            <h4 class="text-sm font-bold text-slate-200">Protokol Evakuasi &amp; Uji Sirine Lapangan</h4>
-            <p class="text-xs text-slate-400">Memicu transmisi peringatan dini ke node sirine warga dan BPBD</p>
-          </div>
-        </div>
-        <div class="flex items-center gap-3 w-full sm:w-auto">
-          <button onclick="testAlarmBuzzer()" class="w-full sm:w-auto px-4 py-2.5 rounded-lg bg-rose-600/80 hover:bg-rose-500 text-white font-mono text-xs font-bold tracking-wide flex items-center justify-center gap-2 shadow-lg shadow-rose-950/50 transition">
-            <i data-lucide="volume-2" class="w-4 h-4"></i>
-            UJI SUARA ALARM (TEST)
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span id="chipDeviceDataStatus" class="chip-data-status live">LIVE</span>
+          <button id="btnCloseDevicePanel" class="btn-close-panel" title="Tutup Panel Perangkat">
+            <i data-lucide="x" style="width: 16px; height: 16px;"></i>
           </button>
         </div>
       </div>
-    </section>
+    </div>
 
-  </main>
-
-  <!-- 4. FOOTER -->
-  <footer class="border-t border-slate-800/80 bg-slate-950/70 py-5 mt-auto">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 font-mono">
-      <div class="flex items-center space-x-2">
-        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-        <p class="text-slate-400">
-          Developed for MAGE 12 Competition
-        </p>
+    <!-- Metrik Kondisi Fisik Hardware Lapangan -->
+    <div class="device-panel-content">
+      <!-- 1. Baterai Node & Solar Harvesting -->
+      <div class="sensor-metric-card">
+        <div class="sensor-header">
+          <span>Daya Baterai Node (LiPo Buffer)</span>
+          <span id="tagBaterai" class="sensor-status-tag" style="background: var(--color-normal-soft); color: var(--color-normal);">NORMAL</span>
+        </div>
+        <div class="sensor-value-row">
+          <div>
+            <span id="valBaterai" class="sensor-big-value">--</span>
+            <span class="sensor-unit">%</span>
+          </div>
+          <span id="valBateraiVolt" class="tabular-nums" style="font-size: 13px; font-weight: 600; color: var(--text-secondary);">-- V</span>
+        </div>
+        <div class="progress-container">
+          <div id="barBaterai" class="progress-bar-fill" style="width: 0%; background-color: var(--color-normal);"></div>
+        </div>
+        <div class="sensor-footer-info">
+          <span>Solar Harvesting Ready</span>
+          <span>LiPo 3.7V - 4.2V</span>
+        </div>
       </div>
-      <div class="flex items-center space-x-4">
-        <span>Sistem Telemetri Bencana TITEN</span>
-        <span>&bull;</span>
-        <span class="text-cyan-400/80">v2.4 IoT Real-time</span>
+
+      <!-- 2. Transmisi LoRa 433 MHz -->
+      <div class="sensor-metric-card">
+        <div class="sensor-header">
+          <span>Transmisi LoRa SX1278 (433 MHz)</span>
+          <span id="tagRssi" class="sensor-status-tag" style="background: var(--color-normal-soft); color: var(--color-normal);">TERHUBUNG</span>
+        </div>
+        <div class="sensor-value-row">
+          <div>
+            <span id="valRssi" class="sensor-big-value">--</span>
+            <span class="sensor-unit">dBm</span>
+          </div>
+          <span class="tabular-nums" style="font-size: 11px; color: var(--text-muted);">RSSI Paket</span>
+        </div>
+      </div>
+
+      <!-- 3. Relay Sirine Fisik Lapangan -->
+      <div class="sensor-metric-card">
+        <div class="sensor-header">
+          <span>Status Relay / Sirine Lapangan</span>
+          <span id="tagRelay" class="sensor-status-tag" style="background: var(--color-offline-soft); color: var(--color-offline);">STANDBY</span>
+        </div>
+        <div class="sensor-value-row">
+          <div>
+            <span id="valRelay" class="sensor-big-value" style="font-size: 16px;">Nonaktif</span>
+          </div>
+          <span style="font-size: 11px; color: var(--text-muted);">Otomatis saat AWAS</span>
+        </div>
       </div>
     </div>
-  </footer>
+  </aside>
 
-  <!-- ======================================================= -->
-  <!-- SCRIPT FIREBASE (PENGHUBUNG GATEWAY KE WEBSITE)         -->
-  <!-- ======================================================= -->
-  <!-- 1. Memanggil Library Firebase dari Server Google (v8.10.1) -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <!-- Tombol Pulihkan Panel Perangkat saat Collapsed (Desktop) -->
+  <button id="btnOpenDevicePanel" class="btn-toggle-device-panel" title="Buka Panel Kondisi Perangkat">
+    <i data-lucide="cpu" style="width: 14px; height: 14px;"></i>
+    <span>Kondisi Perangkat</span>
+  </button>
 
-  <script>
-    // Inisialisasi ikon Lucide
-    lucide.createIcons();
+  <!-- ================================================================= -->
+  <!-- 4B. KONSOL BAHAYA BENCANA (BAGIAN BAWAH: RINGKASAN, LONGSOR,      -->
+  <!--     KARHUTLA, RIWAYAT — SERTA PERANGKAT PADA MOBILE)             -->
+  <!-- ================================================================= -->
+  <section id="disasterConsoleDeck" class="disaster-console-deck" aria-label="Konsol Pemantauan Bencana">
+    <!-- Pegangan Swipe di Mobile -->
+    <div class="mobile-drag-handle md:hidden"></div>
 
-    // 1. Live Clock Display
-    function updateClock() {
-      const now = new Date();
-      const timeStr = now.toLocaleTimeString('id-ID', { hour12: false }) + ' WIB';
-      const clockEl = document.getElementById('live-clock');
-      if (clockEl) clockEl.textContent = timeStr;
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
+    <!-- Bar Kepala Konsol Bawah -->
+    <div class="deck-header-bar">
+      <!-- Baris Kepala Bagian Atas (Pills & Aksi) -->
+      <div class="deck-header-top-row">
+        <!-- Ringkasan Ganda: Longsor & Karhutla -->
+        <div class="deck-summary-pills">
+          <div id="cardSummaryLongsor" class="deck-summary-card status-normal" title="Status Bahaya Tanah Longsor">
+            <span class="deck-summary-label">Longsor:</span>
+            <span id="badgeSummaryLongsor" class="deck-summary-badge">NORMAL</span>
+          </div>
+          <div id="cardSummaryKarhutla" class="deck-summary-card status-normal" title="Status Bahaya Karhutla">
+            <span class="deck-summary-label">Karhutla:</span>
+            <span id="badgeSummaryKarhutla" class="deck-summary-badge">NORMAL</span>
+          </div>
+        </div>
 
-    // 2. Web Audio API Alarm Sound Synthesizer (Mandiri tanpa dependensi mp3)
-    let audioCtx = null;
-    let isAudioEnabled = true;
+        <!-- Tombol Aksi Kanan Konsol -->
+        <div class="deck-header-actions">
+          <span id="chipDataStatus" class="chip-data-status live">LIVE</span>
+          <button id="btnCloseDeck" class="btn-close-deck" title="Sembunyikan / Ciutkan Konsol Bencana">
+            <i data-lucide="chevron-down" id="iconToggleDeck" style="width: 16px; height: 16px;"></i>
+          </button>
+        </div>
+      </div>
 
-    function getAudioContext() {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      return audioCtx;
-    }
+      <!-- Navigasi Tab Konsol -->
+      <nav class="panel-tabs deck-tabs" role="tablist">
+        <button class="tab-btn active" data-tab="tab-ringkasan" role="tab">Ringkasan</button>
+        <button class="tab-btn" data-tab="tab-longsor" role="tab">Longsor</button>
+        <button class="tab-btn" data-tab="tab-karhutla" role="tab">Karhutla</button>
+        <button class="tab-btn mobile-only-tab" data-tab="tab-perangkat-mobile" role="tab">Perangkat</button>
+        <button class="tab-btn" data-tab="tab-riwayat" role="tab">Riwayat</button>
+      </nav>
+    </div>
 
-    function toggleAudioAlarm() {
-      isAudioEnabled = !isAudioEnabled;
-      const icon = document.getElementById('audio-icon');
-      if (icon) {
-        icon.setAttribute('data-lucide', isAudioEnabled ? 'volume-2' : 'volume-x');
-        lucide.createIcons();
-      }
-    }
-
-    function playBeep(freq = 880, duration = 0.25, type = 'sine') {
-      if (!isAudioEnabled) return;
-      try {
-        const ctx = getAudioContext();
-        if (ctx.state === 'suspended') ctx.resume();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, ctx.currentTime);
-        gain.gain.setValueAtTime(0.2, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + duration);
-      } catch (e) {
-        console.warn('Audio play error:', e);
-      }
-    }
-
-    function testAlarmBuzzer() {
-      playBeep(880, 0.2, 'sawtooth');
-      setTimeout(() => playBeep(1174, 0.3, 'sawtooth'), 220);
-    }
-
-    // Connection State Trackers
-    let hasReceivedData = false;
-    let lastDataTimestamp = 0;
-    let isGatewayOnline = false;
-    let isNodeOnline = false;
-    let isSimulationMode = false;
-
-    // 3. UI State Updater for Status Bahaya (TIDAK_TERHUBUNG, AMAN, WASPADA, BAHAYA)
-    function applyStatusUI(statusText) {
-      const statusCard = document.getElementById('status-card');
-      const statusTitle = document.getElementById('status_bahaya');
-      const statusBadge = document.getElementById('status-badge');
-      const statusDesc = document.getElementById('status-desc');
-      const statusIcon = document.getElementById('status-icon');
-      const statusIconBox = document.getElementById('status-icon-box');
-      const statusGlow = document.getElementById('status-glow');
-
-      const text = String(statusText || 'TIDAK TERHUBUNG').trim();
-      const upper = text.toUpperCase();
-
-      // Reset classes
-      statusCard.classList.remove('status-safe', 'status-warning', 'status-danger', 'status-offline');
-
-      // Set text display
-      statusTitle.innerText = (upper.includes('TIDAK') || upper.includes('BELUM') || upper.includes('OFFLINE') || upper.includes('TERPUTUS') || upper.includes('STANDBY'))
-        ? 'TIDAK TERHUBUNG'
-        : text;
-
-      if (upper.includes('TIDAK') || upper.includes('BELUM') || upper.includes('OFFLINE') || upper.includes('TERPUTUS') || upper.includes('STANDBY')) {
-        statusCard.classList.add('status-offline');
-        statusTitle.className = 'text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-slate-300 drop-shadow-md';
-        statusTitle.style.color = "#94a3b8";
-        statusTitle.style.textShadow = "0 0 10px rgba(148, 163, 184, 0.4)";
-        statusBadge.textContent = 'STATUS: TIDAK TERHUBUNG';
-        statusBadge.className = 'text-xs font-mono font-bold px-2 py-0.5 rounded bg-slate-700/40 text-slate-300 border border-slate-600/50';
-        statusDesc.textContent = 'Sistem dalam status tidak terhubung. Belum ada data telemetri yang diterima dari perangkat sensor.';
-        statusIconBox.className = 'flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-slate-800/60 border border-slate-700/60 flex items-center justify-center shadow-lg shadow-black/40';
-        statusIcon.setAttribute('data-lucide', 'wifi-off');
-        statusIcon.className = 'w-9 h-9 sm:w-11 sm:h-11 text-slate-400';
-        statusGlow.className = 'absolute -right-16 -top-16 w-64 h-64 bg-slate-500/10 rounded-full blur-3xl pointer-events-none';
-      } else if (upper.startsWith('BAHAYA') || upper.startsWith('DANGER') || upper.startsWith('ALERT')) {
-        statusCard.classList.add('status-danger');
-        statusTitle.className = 'text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-rose-300 drop-shadow-lg animate-pulse';
-        statusTitle.style.color = "#ef4444";
-        statusTitle.style.textShadow = "0 0 15px #ef4444";
-        statusBadge.textContent = 'LEVEL 3: SIAGA DARURAT';
-        statusBadge.className = 'text-xs font-mono font-bold px-2 py-0.5 rounded bg-rose-500/30 text-rose-300 border border-rose-500/50';
-        statusDesc.textContent = 'PERINGATAN TINGGI! Terdeteksi anomali kritis pada kemiringan lereng atau lonjakan suhu ekstrem. Protokol evakuasi aktif!';
-        statusIconBox.className = 'flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-rose-500/30 border border-rose-400/60 flex items-center justify-center shadow-lg shadow-rose-950/60';
-        statusIcon.setAttribute('data-lucide', 'alert-triangle');
-        statusIcon.className = 'w-9 h-9 sm:w-11 sm:h-11 text-rose-400';
-        statusGlow.className = 'absolute -right-16 -top-16 w-64 h-64 bg-rose-500/20 rounded-full blur-3xl pointer-events-none';
-        playBeep(980, 0.4, 'sawtooth');
-      } else if (upper.startsWith('WASPADA') || upper.startsWith('WARNING') || upper.startsWith('SIAGA')) {
-        statusCard.classList.add('status-warning');
-        statusTitle.className = 'text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-amber-300 drop-shadow-md';
-        statusTitle.style.color = "#f59e0b";
-        statusTitle.style.textShadow = "0 0 12px #f59e0b";
-        statusBadge.textContent = 'LEVEL 2: WASPADA';
-        statusBadge.className = 'text-xs font-mono font-bold px-2 py-0.5 rounded bg-amber-500/30 text-amber-300 border border-amber-500/50';
-        statusDesc.textContent = 'Perhatian! Terjadi kenaikan parameter lingkungan atau deformasi kemiringan mikro. Mode pemantauan intensif diaktifkan.';
-        statusIconBox.className = 'flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-amber-500/30 border border-amber-400/60 flex items-center justify-center shadow-lg shadow-amber-950/50';
-        statusIcon.setAttribute('data-lucide', 'alert-circle');
-        statusIcon.className = 'w-9 h-9 sm:w-11 sm:h-11 text-amber-300';
-        statusGlow.className = 'absolute -right-16 -top-16 w-64 h-64 bg-amber-500/15 rounded-full blur-3xl pointer-events-none';
-        playBeep(660, 0.25, 'sine');
-      } else {
-        // Safe: AMAN
-        statusCard.classList.add('status-safe');
-        statusTitle.className = 'text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-white drop-shadow-md';
-        statusTitle.style.color = "#10b981";
-        statusTitle.style.textShadow = "0 0 10px #10b981";
-        statusBadge.textContent = 'LEVEL 1: NORMAL';
-        statusBadge.className = 'text-xs font-mono font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
-        statusDesc.textContent = 'Kondisi lereng bukit dan hutan terpantau stabil. Tidak terdeteksi anomali suhu ekstrem, defisit kelembaban, maupun deviasi sudut kemiringan tanah.';
-        statusIconBox.className = 'flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center shadow-lg shadow-emerald-950/40';
-        statusIcon.setAttribute('data-lucide', 'shield-check');
-        statusIcon.className = 'w-9 h-9 sm:w-11 sm:h-11 text-emerald-300';
-        statusGlow.className = 'absolute -right-16 -top-16 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none';
-      }
-      lucide.createIcons();
-    }
-
-    // Comprehensive Dual-Link Connection Manager
-    function updateConnectionStatus(gatewayConnected, nodeConnected, customMessage = null) {
-      isGatewayOnline = gatewayConnected;
-      isNodeOnline = nodeConnected;
-
-      const gwText = document.getElementById('gateway-text');
-      const gwPing = document.getElementById('gateway-ping');
-      const gwDot = document.getElementById('gateway-dot');
-
-      const nodeText = document.getElementById('node-text');
-      const nodePing = document.getElementById('node-ping');
-      const nodeDot = document.getElementById('node-dot');
-
-      const alertBanner = document.getElementById('conn-alert-banner');
-      const alertTitle = document.getElementById('alert-banner-title');
-      const alertDesc = document.getElementById('alert-banner-desc');
-      const alertIcon = document.getElementById('alert-icon');
-      const alertPill = document.getElementById('alert-banner-pill');
-
-      const linkNodeStatus = document.getElementById('link-node-status');
-      const linkNodeDot = document.getElementById('link-node-dot');
-      const linkGwStatus = document.getElementById('link-gw-status');
-      const linkGwDot = document.getElementById('link-gw-dot');
-      const badgeLink = document.getElementById('badge-link');
-      const barLink = document.getElementById('bar-link');
-      const gwMetaDot = document.getElementById('gateway-meta-dot');
-      const activeBadge = document.getElementById('active-nodes-badge');
-
-      // 1. Gateway Status Pill
-      if (gatewayConnected) {
-        if (gwText) {
-          gwText.textContent = "Gateway: Terhubung";
-          gwText.className = "text-xs font-semibold tracking-wide text-emerald-400 font-mono";
-        }
-        if (gwPing) gwPing.className = "animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75";
-        if (gwDot) gwDot.className = "relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500";
-        if (linkGwStatus) {
-          linkGwStatus.textContent = "Terhubung (Firebase)";
-          linkGwStatus.className = "font-bold text-emerald-400 text-[11px]";
-        }
-        if (linkGwDot) linkGwDot.className = "w-2 h-2 rounded-full bg-emerald-400";
-        if (gwMetaDot) gwMetaDot.className = "w-1.5 h-1.5 rounded-full bg-emerald-400";
-      } else {
-        if (gwText) {
-          gwText.textContent = "Gateway: Tidak Terhubung";
-          gwText.className = "text-xs font-semibold tracking-wide text-amber-400 font-mono";
-        }
-        if (gwPing) gwPing.className = "animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75";
-        if (gwDot) gwDot.className = "relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500";
-        if (linkGwStatus) {
-          linkGwStatus.textContent = "Tidak Terhubung";
-          linkGwStatus.className = "font-bold text-amber-400 text-[11px]";
-        }
-        if (linkGwDot) linkGwDot.className = "w-2 h-2 rounded-full bg-amber-400 animate-pulse";
-        if (gwMetaDot) gwMetaDot.className = "w-1.5 h-1.5 rounded-full bg-amber-400";
-      }
-
-      // 2. Node Status Pill
-      if (nodeConnected) {
-        if (nodeText) {
-          nodeText.textContent = "Node: Terhubung (LoRa)";
-          nodeText.className = "text-xs font-semibold tracking-wide text-cyan-400 font-mono";
-        }
-        if (nodePing) nodePing.className = "animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75";
-        if (nodeDot) nodeDot.className = "relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-500";
-        if (linkNodeStatus) {
-          linkNodeStatus.textContent = "Terhubung (LoRa)";
-          linkNodeStatus.className = "font-bold text-cyan-400 text-[11px]";
-        }
-        if (linkNodeDot) linkNodeDot.className = "w-2 h-2 rounded-full bg-cyan-400";
-      } else {
-        if (nodeText) {
-          nodeText.textContent = "Node: Tidak Terhubung";
-          nodeText.className = "text-xs font-semibold tracking-wide text-amber-400 font-mono";
-        }
-        if (nodePing) nodePing.className = "animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75";
-        if (nodeDot) nodeDot.className = "relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500";
-        if (linkNodeStatus) {
-          linkNodeStatus.textContent = "Tidak Terhubung";
-          linkNodeStatus.className = "font-bold text-amber-400 text-[11px]";
-        }
-        if (linkNodeDot) linkNodeDot.className = "w-2 h-2 rounded-full bg-amber-400 animate-pulse";
-      }
-
-      // 3. Link Card Status & Active Nodes Badge
-      if (gatewayConnected && nodeConnected) {
-        if (badgeLink) {
-          badgeLink.textContent = "SYNCHRONIZED";
-          badgeLink.className = "text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
-        }
-        if (barLink) {
-          barLink.style.width = "100%";
-          barLink.className = "h-full bg-gradient-to-r from-cyan-400 to-emerald-400 rounded-full transition-all duration-500";
-        }
-        if (activeBadge) {
-          activeBadge.textContent = "5 / 5 Sensor Aktif (Online)";
-          activeBadge.className = "text-xs font-mono text-cyan-400/90 bg-cyan-950/60 px-2.5 py-1 rounded-md border border-cyan-800/40";
-        }
-      } else if (gatewayConnected && !nodeConnected) {
-        if (badgeLink) {
-          badgeLink.textContent = "NODE OFFLINE";
-          badgeLink.className = "text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-rose-500/15 text-rose-300 border border-rose-500/30";
-        }
-        if (barLink) {
-          barLink.style.width = "50%";
-          barLink.className = "h-full bg-amber-400 rounded-full transition-all duration-500";
-        }
-        if (activeBadge) {
-          activeBadge.textContent = "0 / 5 Sensor (Node Offline)";
-          activeBadge.className = "text-xs font-mono text-rose-400/90 bg-rose-950/60 px-2.5 py-1 rounded-md border border-rose-800/40";
-        }
-      } else {
-        if (badgeLink) {
-          badgeLink.textContent = "TIDAK TERHUBUNG";
-          badgeLink.className = "text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-700/40 text-slate-300 border border-slate-600/40";
-        }
-        if (barLink) {
-          barLink.style.width = "15%";
-          barLink.className = "h-full bg-amber-400 rounded-full transition-all duration-500";
-        }
-        if (activeBadge) {
-          activeBadge.textContent = "0 / 5 Sensor Aktif (Tidak Terhubung)";
-          activeBadge.className = "text-xs font-mono text-slate-400 bg-slate-900/60 px-2.5 py-1 rounded-md border border-slate-700/50";
-        }
-      }
-
-      // 4. Alert Callout Banner
-      if (alertBanner) {
-        if (!gatewayConnected && !nodeConnected) {
-          alertBanner.className = "rounded-xl border border-amber-500/40 bg-gradient-to-r from-amber-950/70 via-slate-900/80 to-amber-950/40 p-4 backdrop-blur-md shadow-lg transition-all duration-300 flex items-start sm:items-center justify-between gap-3";
-          if (alertTitle) alertTitle.textContent = "STATUS: PERANGKAT TIDAK TERHUBUNG";
-          if (alertDesc) alertDesc.textContent = customMessage || "Sistem belum menerima sinyal data telemetri dari ESP32 Gateway dan Node Sensor. Menunggu perangkat terhubung...";
-          if (alertIcon) alertIcon.setAttribute('data-lucide', 'wifi-off');
-          if (alertPill) alertPill.textContent = "TIDAK TERHUBUNG";
-          alertBanner.classList.remove('hidden');
-        } else if (gatewayConnected && !nodeConnected) {
-          alertBanner.className = "rounded-xl border border-rose-500/40 bg-gradient-to-r from-rose-950/70 via-slate-900/80 to-rose-950/40 p-4 backdrop-blur-md shadow-lg transition-all duration-300 flex items-start sm:items-center justify-between gap-3";
-          if (alertTitle) alertTitle.textContent = "PERINGATAN: NODE SENSOR TIDAK TERHUBUNG";
-          if (alertDesc) alertDesc.textContent = customMessage || "Gateway online, namun transmisi dari Node Sensor (LoRa 433MHz) belum terdeteksi. Periksa baterai dan jangkauan Node.";
-          if (alertIcon) alertIcon.setAttribute('data-lucide', 'radio-tower');
-          if (alertPill) alertPill.textContent = "NODE OFFLINE";
-          alertBanner.classList.remove('hidden');
-        } else {
-          // Both connected
-          alertBanner.className = "rounded-xl border border-emerald-500/30 bg-gradient-to-r from-emerald-950/40 via-slate-900/80 to-emerald-950/20 p-3.5 backdrop-blur-md shadow-md transition-all duration-300 flex items-start sm:items-center justify-between gap-3";
-          if (alertTitle) alertTitle.textContent = "KONEKSI TELEMETRI AKTIF: PERANGKAT TERHUBUNG";
-          if (alertDesc) alertDesc.textContent = "Aliran data telemetri real-time aktif dari Node Sensor ke Gateway (LoRa 433MHz) dan Gateway ke Website (Firebase RTDB).";
-          if (alertIcon) alertIcon.setAttribute('data-lucide', 'activity');
-          if (alertPill) alertPill.textContent = "LIVE TELEMETRY";
-        }
-      }
-      lucide.createIcons();
-    }
-
-    // Demo Simulation Function
-    function setSimulationState(state) {
-      isSimulationMode = true;
-      if (state === 'TIDAK_TERHUBUNG' || state === 'BELUM_TERHUBUNG') {
-        hasReceivedData = false;
-        lastDataTimestamp = 0;
-        updateConnectionStatus(false, false, "Mode Simulasi: Gateway & Node Sensor dalam keadaan tidak terhubung (Offline).");
-        applyStatusUI('TIDAK TERHUBUNG');
-        resetSensorCardsToStandby();
-        const score = document.getElementById('risk-score');
-        if (score) score.textContent = 'Status Sistem: Tidak Terhubung (Simulasi)';
-        const lastPacketEl = document.getElementById('last-packet-time');
-        if (lastPacketEl) {
-          lastPacketEl.textContent = 'Mode Simulasi (Offline)';
-          lastPacketEl.className = 'text-amber-400 font-bold';
-        }
-        return;
-      }
-
-      // If AMAN / WASPADA / BAHAYA clicked: generate realistic sample readings for demo
-      hasReceivedData = true;
-      lastDataTimestamp = Date.now();
-      updateConnectionStatus(true, true);
-      const lastPacketEl = document.getElementById('last-packet-time');
-      if (lastPacketEl) {
-        lastPacketEl.textContent = `Mode Simulasi (${state})`;
-        lastPacketEl.className = 'text-emerald-400 font-bold';
-      }
+    <!-- Konten Tab Konsol Bawah -->
+    <div class="panel-content deck-content">
       
-      let sampleData = {};
-      if (state === 'BAHAYA') {
-        sampleData = {
-          suhu: 52.8,
-          kelembapan_udara: 22.0,
-          kelembapan_tanah: 88,
-          kemiringan_x: 37,
-          baterai_persen: 78,
-          baterai_voltase: 3.8,
-          status_bahaya: 'BAHAYA'
-        };
-        const score = document.getElementById('risk-score');
-        if (score) score.textContent = 'Indeks Risiko Terpadu: 0.89 (KRITIS)';
-      } else if (state === 'WASPADA') {
-        sampleData = {
-          suhu: 41.5,
-          kelembapan_udara: 38.0,
-          kelembapan_tanah: 68,
-          kemiringan_x: 24,
-          baterai_persen: 82,
-          baterai_voltase: 3.9,
-          status_bahaya: 'WASPADA'
-        };
-        const score = document.getElementById('risk-score');
-        if (score) score.textContent = 'Indeks Risiko Terpadu: 0.54 (SEDANG)';
-      } else {
-        sampleData = {
-          suhu: 32.5,
-          kelembapan_udara: 65.0,
-          kelembapan_tanah: 40,
-          kemiringan_x: 15,
-          baterai_persen: 85,
-          baterai_voltase: 3.9,
-          status_bahaya: 'AMAN'
-        };
-        const score = document.getElementById('risk-score');
-        if (score) score.textContent = 'Indeks Risiko Terpadu: 0.08 (Sangat Rendah)';
-      }
+      <!-- TAB 1: RINGKASAN -->
+      <div id="tab-ringkasan" class="tab-pane active" role="tabpanel">
+        <div class="deck-ringkasan-grid">
+          <!-- Kotak Rekomendasi Tindakan & Kontak Ganda -->
+          <div id="actionRecommendationBox" class="action-recommendation-box">
+            <div class="action-title">
+              <i data-lucide="shield-alert" style="width: 16px; height: 16px; color: var(--color-primary);"></i>
+              <span>Tindakan yang Disarankan</span>
+            </div>
+            <p id="actionRecommendationText" class="action-text">
+              Kondisi aman. Tetap lakukan patroli pemeliharaan sensor berkala.
+            </p>
+            <div class="emergency-actions-row">
+              <a id="btnEmergencyCallCenter" href="tel:112" class="btn-emergency-call" title="Hubungi Layanan Darurat Terpadu 112">
+                <i data-lucide="phone-call" style="width: 14px; height: 14px;"></i>
+                <span id="labelBtnEmergencyCallCenter">Call Center Darurat 112</span>
+              </a>
+            </div>
+          </div>
 
-      renderSensorValues(sampleData);
-      applyStatusUI(state);
-    }
+          <!-- Cuplikan Cepat Sensor -->
+          <div class="deck-quick-metrics">
+            <div class="sensor-metric-card">
+              <div class="sensor-header">
+                <span>Kemiringan Lereng</span>
+                <span id="quickTagMiring" class="sensor-status-tag" style="background: var(--color-normal-soft); color: var(--color-normal);">NORMAL</span>
+              </div>
+              <div class="sensor-value-row">
+                <div>
+                  <span id="quickValMiring" class="sensor-big-value">--</span>
+                  <span class="sensor-unit">°</span>
+                </div>
+              </div>
+            </div>
 
-    // Reset Sensor Cards to Standby (ketika belum terhubung / tidak ada data riil)
-    function resetSensorCardsToStandby() {
-      // Suhu
-      document.getElementById('suhu').innerText = "-- °C";
-      document.getElementById('suhu').className = "text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-400 font-mono";
-      const badgeSuhu = document.getElementById('badge-suhu');
-      if (badgeSuhu) {
-        badgeSuhu.textContent = "STANDBY";
-        badgeSuhu.className = "text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700";
-      }
-      const barSuhu = document.getElementById('bar-suhu');
-      if (barSuhu) barSuhu.style.width = "0%";
-      const pctSuhu = document.getElementById('pct-suhu');
-      if (pctSuhu) pctSuhu.textContent = "Menunggu data...";
+            <div class="sensor-metric-card">
+              <div class="sensor-header">
+                <span>Suhu Udara</span>
+                <span id="quickTagSuhu" class="sensor-status-tag" style="background: var(--color-normal-soft); color: var(--color-normal);">NORMAL</span>
+              </div>
+              <div class="sensor-value-row">
+                <div>
+                  <span id="quickValSuhu" class="sensor-big-value">--</span>
+                  <span class="sensor-unit">°C</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      // Udara
-      document.getElementById('udara').innerText = "-- %";
-      document.getElementById('udara').className = "text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-400 font-mono";
-      const badgeUdara = document.getElementById('badge-udara');
-      if (badgeUdara) {
-        badgeUdara.textContent = "STANDBY";
-        badgeUdara.className = "text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700";
-      }
-      const barUdara = document.getElementById('bar-udara');
-      if (barUdara) barUdara.style.width = "0%";
-      const pctUdara = document.getElementById('pct-udara');
-      if (pctUdara) pctUdara.textContent = "Menunggu data...";
+      <!-- TAB 2: SEKTOR LONGSOR -->
+      <div id="tab-longsor" class="tab-pane" role="tabpanel">
+        <div class="deck-horizontal-grid">
+          <!-- 1. Kemiringan Lereng -->
+          <div class="sensor-metric-card">
+            <div class="sensor-header">
+              <span>Sudut Kemiringan (MPU6050)</span>
+              <span id="tagMiring" class="sensor-status-tag" style="background: var(--color-normal-soft); color: var(--color-normal);">NORMAL</span>
+            </div>
+            <div class="sensor-value-row">
+              <div>
+                <span id="valMiring" class="sensor-big-value">--</span>
+                <span class="sensor-unit">°</span>
+              </div>
+              <span class="tabular-nums" style="font-size: 11px; color: var(--text-muted);" id="subValMiringY">Y: --°</span>
+            </div>
+            <div class="progress-container">
+              <div id="barMiring" class="progress-bar-fill" style="width: 0%; background-color: var(--color-normal);"></div>
+            </div>
+            <div class="sensor-footer-info">
+              <span id="thresholdLabelMiring">Waspada: ≥12° · Siaga: ≥20° · Awas: >30°</span>
+              <span id="pctMiring">0%</span>
+            </div>
+          </div>
 
-      // Tanah
-      document.getElementById('tanah').innerText = "-- %";
-      document.getElementById('tanah').className = "text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-400 font-mono";
-      const badgeTanah = document.getElementById('badge-tanah');
-      if (badgeTanah) {
-        badgeTanah.textContent = "STANDBY";
-        badgeTanah.className = "text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700";
-      }
-      const barTanah = document.getElementById('bar-tanah');
-      if (barTanah) barTanah.style.width = "0%";
-      const pctTanah = document.getElementById('pct-tanah');
-      if (pctTanah) pctTanah.textContent = "Menunggu data...";
+          <!-- 2. Kelembapan Tanah -->
+          <div class="sensor-metric-card">
+            <div class="sensor-header">
+              <span>Kelembapan Tanah (Air Pori)</span>
+              <span id="tagTanah" class="sensor-status-tag" style="background: var(--color-normal-soft); color: var(--color-normal);">NORMAL</span>
+            </div>
+            <div class="sensor-value-row">
+              <div>
+                <span id="valTanah" class="sensor-big-value">--</span>
+                <span class="sensor-unit">%</span>
+              </div>
+              <span class="tabular-nums" style="font-size: 11px; color: var(--text-muted);">Saturasi VWC</span>
+            </div>
+            <div class="progress-container">
+              <div id="barTanah" class="progress-bar-fill" style="width: 0%; background-color: var(--color-normal);"></div>
+            </div>
+            <div class="sensor-footer-info">
+              <span id="thresholdLabelTanah">Waspada: ≥60% · Siaga: ≥70% · Awas: >80%</span>
+              <span id="pctTanah">0%</span>
+            </div>
+          </div>
 
-      // Miring
-      document.getElementById('miring').innerText = "-- °";
-      document.getElementById('miring').className = "text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-400 font-mono";
-      const badgeMiring = document.getElementById('badge-miring');
-      if (badgeMiring) {
-        badgeMiring.textContent = "STANDBY";
-        badgeMiring.className = "text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700";
-      }
-      const barMiring = document.getElementById('bar-miring');
-      if (barMiring) barMiring.style.width = "0%";
-      const pctMiring = document.getElementById('pct-miring');
-      if (pctMiring) pctMiring.textContent = "Menunggu data...";
+          <!-- 3. Getaran Tanah -->
+          <div class="sensor-metric-card" id="cardGetaran">
+            <div class="sensor-header">
+              <span>Getaran / Akselerasi</span>
+              <span id="tagGetaran" class="sensor-status-tag" style="background: var(--color-normal-soft); color: var(--color-normal);">STABIL</span>
+            </div>
+            <div class="sensor-value-row">
+              <div>
+                <span id="valGetaran" class="sensor-big-value">--</span>
+                <span class="sensor-unit">g</span>
+              </div>
+              <span class="tabular-nums" style="font-size: 11px; color: var(--text-muted);">RMS Micro-vibe</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      // Baterai
-      document.getElementById('baterai').innerText = "-- % (0.0V)";
-      document.getElementById('baterai').className = "text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-400 font-mono";
-      const badgeBat = document.getElementById('badge-baterai');
-      if (badgeBat) {
-        badgeBat.textContent = "OFFLINE";
-        badgeBat.className = "text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700";
-      }
-      const barBat = document.getElementById('bar-baterai');
-      if (barBat) barBat.style.width = "0%";
-      const pctBat = document.getElementById('pct-baterai');
-      if (pctBat) pctBat.textContent = "Menunggu data...";
+      <!-- TAB 3: SEKTOR KARHUTLA -->
+      <div id="tab-karhutla" class="tab-pane" role="tabpanel">
+        <div class="deck-horizontal-grid">
+          <!-- 1. Suhu Udara -->
+          <div class="sensor-metric-card">
+            <div class="sensor-header">
+              <span>Suhu Udara (DHT22)</span>
+              <span id="tagSuhu" class="sensor-status-tag" style="background: var(--color-normal-soft); color: var(--color-normal);">NORMAL</span>
+            </div>
+            <div class="sensor-value-row">
+              <div>
+                <span id="valSuhu" class="sensor-big-value">--</span>
+                <span class="sensor-unit">°C</span>
+              </div>
+              <span class="tabular-nums" style="font-size: 11px; color: var(--text-muted);">Termometer</span>
+            </div>
+            <div class="progress-container">
+              <div id="barSuhu" class="progress-bar-fill" style="width: 0%; background-color: var(--color-normal);"></div>
+            </div>
+            <div class="sensor-footer-info">
+              <span id="thresholdLabelSuhu">Waspada: ≥34°C · Siaga: ≥38°C · Awas: >45°C</span>
+              <span id="pctSuhu">0%</span>
+            </div>
+          </div>
 
-      const lastPacketEl = document.getElementById('last-packet-time');
-      if (lastPacketEl) {
-        lastPacketEl.textContent = 'Tidak Terhubung';
-        lastPacketEl.className = 'text-amber-400 font-bold';
-      }
-    }
+          <!-- 2. Kelembapan Udara -->
+          <div class="sensor-metric-card">
+            <div class="sensor-header">
+              <span>Kelembapan Udara (RH)</span>
+              <span id="tagUdara" class="sensor-status-tag" style="background: var(--color-normal-soft); color: var(--color-normal);">NORMAL</span>
+            </div>
+            <div class="sensor-value-row">
+              <div>
+                <span id="valUdara" class="sensor-big-value">--</span>
+                <span class="sensor-unit">%</span>
+              </div>
+              <span class="tabular-nums" style="font-size: 11px; color: var(--text-muted);">Higrometer</span>
+            </div>
+            <div class="progress-container">
+              <div id="barUdara" class="progress-bar-fill" style="width: 0%; background-color: var(--color-normal);"></div>
+            </div>
+            <div class="sensor-footer-info">
+              <span id="thresholdLabelUdara">Waspada: ≤45% · Siaga: ≤35% · Awas: <25%</span>
+              <span id="pctUdara">0%</span>
+            </div>
+          </div>
 
-    // Cek apakah data yang diterima dari Firebase merupakan data riil dari sensor aktif
-    function isSensorDataActive(data) {
-      if (!data) return false;
+          <!-- 3. Sensor Gas / Asap -->
+          <div class="sensor-metric-card" id="cardGas" style="display: none;">
+            <div class="sensor-header">
+              <span>Konsentrasi Gas / Asap</span>
+              <span id="tagGas" class="sensor-status-tag">NORMAL</span>
+            </div>
+            <div class="sensor-value-row">
+              <div>
+                <span id="valGas" class="sensor-big-value">--</span>
+                <span class="sensor-unit">ppm</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      const suhu = parseFloat(data.suhu);
-      const udara = parseFloat(data.kelembapan_udara !== undefined ? data.kelembapan_udara : data.udara);
-      const tanah = parseFloat(data.kelembapan_tanah !== undefined ? data.kelembapan_tanah : data.tanah);
-      const miring = parseFloat(data.kemiringan_x !== undefined ? data.kemiringan_x : data.miring);
-      const batPersen = parseFloat(data.baterai_persen !== undefined ? data.baterai_persen : data.baterai);
+      <!-- TAB 4: PERANGKAT (KHUSUS TAMPILAN MOBILE) -->
+      <div id="tab-perangkat-mobile" class="tab-pane" role="tabpanel">
+        <div class="deck-horizontal-grid">
+          <div class="sensor-metric-card">
+            <div class="sensor-header">
+              <span>Baterai Node &amp; Solar</span>
+              <span class="sensor-status-tag sync-tagBaterai">NORMAL</span>
+            </div>
+            <div class="sensor-value-row">
+              <div>
+                <span class="sensor-big-value sync-valBaterai">--</span>
+                <span class="sensor-unit">%</span>
+              </div>
+              <span class="tabular-nums sync-valBateraiVolt" style="font-size: 13px; font-weight: 600; color: var(--text-secondary);">-- V</span>
+            </div>
+            <div class="progress-container">
+              <div class="progress-bar-fill sync-barBaterai" style="width: 0%;"></div>
+            </div>
+            <div class="sensor-footer-info">
+              <span>LiPo Buffer 3.7V - 4.2V</span>
+              <span>Solar Active</span>
+            </div>
+          </div>
 
-      // Cek flag eksplisit jika ada
-      if (data.status_node === false || data.node_terhubung === false) return false;
-      const statusStr = String(data.status_bahaya || '').trim().toUpperCase();
-      if (statusStr.includes('TIDAK') || statusStr.includes('BELUM') || statusStr.includes('OFFLINE') || statusStr.includes('STANDBY')) return false;
+          <div class="sensor-metric-card">
+            <div class="sensor-header">
+              <span>Transmisi LoRa 433 MHz</span>
+              <span class="sensor-status-tag sync-tagRssi">TERHUBUNG</span>
+            </div>
+            <div class="sensor-value-row">
+              <div>
+                <span class="sensor-big-value sync-valRssi">--</span>
+                <span class="sensor-unit">dBm</span>
+              </div>
+              <span class="tabular-nums" style="font-size: 11px; color: var(--text-muted);">SX1278 RF</span>
+            </div>
+          </div>
 
-      // Jika seluruh pembacaan sensor masih 0 (kondisi inisial database saat Gateway/Node belum kirim telemetri riil)
-      const allZero = (
-        (isNaN(suhu) || suhu === 0) &&
-        (isNaN(udara) || udara === 0) &&
-        (isNaN(tanah) || tanah === 0) &&
-        (isNaN(miring) || miring === 0) &&
-        (isNaN(batPersen) || batPersen === 0)
-      );
+          <div class="sensor-metric-card">
+            <div class="sensor-header">
+              <span>Status Relay Sirine</span>
+              <span class="sensor-status-tag sync-tagRelay">STANDBY</span>
+            </div>
+            <div class="sensor-value-row">
+              <div>
+                <span class="sensor-big-value sync-valRelay" style="font-size: 16px;">Nonaktif</span>
+              </div>
+              <span style="font-size: 11px; color: var(--text-muted);">Otomatis saat AWAS</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      if (allZero) {
-        return false;
-      }
+      <!-- TAB 5: RIWAYAT GRAFIK -->
+      <div id="tab-riwayat" class="tab-pane" role="tabpanel">
+        <div class="history-controls">
+          <button class="btn-range-filter active" data-range="6h">6 Jam</button>
+          <button class="btn-range-filter" data-range="24h">24 Jam</button>
+          <button class="btn-range-filter" data-range="7d">7 Hari</button>
+        </div>
+        <div class="chart-wrapper" style="height: 170px;">
+          <canvas id="telemetryChart"></canvas>
+        </div>
+        <p style="font-size: 10px; color: var(--text-muted); margin: 4px 0 0 0; text-align: center;">
+          Garis putus-putus menunjukkan ambang batas Waspada, Siaga, dan Awas.
+        </p>
+      </div>
 
-      // Validasi tambahan: di alam nyata Indonesia, suhu dan kelembapan udara tidak mungkin 0
-      if ((isNaN(suhu) || suhu === 0) && (isNaN(udara) || udara === 0)) {
-        return false;
-      }
+    </div>
+  </section>
 
-      return true;
-    }
+  <!-- Tombol Buka Konsol Bencana saat Collapsed (Desktop & Mobile) -->
+  <button id="btnOpenDeck" class="btn-toggle-deck" title="Buka Konsol Telemetri Bencana">
+    <i data-lucide="shield-alert" style="width: 15px; height: 15px;"></i>
+    <span>Konsol Bencana</span>
+  </button>
 
-    // 4. Update Telemetry Cards Values
-    function updateSensorData(data) {
-      if (!data) return;
+  <!-- ================================================================= -->
+  <!-- 5. PANEL LAYER & LEGENDA (PETA OVERLAY)                           -->
+  <!-- ================================================================= -->
+  
+  <!-- Panel Layer (Kanan Atas / Toggleable) -->
+  <div id="layerPanel" class="floating-overlay-card layer-panel hidden">
+    <div class="card-header-sm">
+      <h3 class="card-title-sm">Lapisan Peta &amp; Data</h3>
+      <button id="btnCloseLayers" class="btn-close-panel" title="Tutup Panel Layer">
+        <i data-lucide="x" style="width: 14px; height: 14px;"></i>
+      </button>
+    </div>
 
-      // Validasi apakah sensor benar-benar aktif atau masih default 0
-      if (!isSensorDataActive(data)) {
-        hasReceivedData = false;
-        lastDataTimestamp = 0;
-        updateConnectionStatus(false, false, "ESP32 Gateway belum aktif atau terputus. Menunggu transmisi data telemetri baru...");
-        applyStatusUI('TIDAK TERHUBUNG');
-        resetSensorCardsToStandby();
-        const score = document.getElementById('risk-score');
-        if (score) score.textContent = 'Status Sistem: Gateway Terputus / Tidak Terhubung';
-        const lastPacketEl = document.getElementById('last-packet-time');
-        if (lastPacketEl) {
-          lastPacketEl.textContent = "Tidak Terhubung";
-          lastPacketEl.className = "text-rose-400 font-bold";
-        }
-        return;
-      }
+    <!-- Pilihan Peta Dasar -->
+    <div>
+      <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Peta Dasar</span>
+      <label class="layer-item">
+        <span>OpenStreetMap (Standar)</span>
+        <input type="radio" name="basemap" value="osm" checked />
+      </label>
+      <label class="layer-item">
+        <span>Satelit Esri World Imagery</span>
+        <input type="radio" name="basemap" value="satellite" />
+      </label>
+    </div>
 
-      // Jika data riil valid:
-      isSimulationMode = false;
-      hasReceivedData = true;
-      lastDataTimestamp = Date.now();
-      updateConnectionStatus(true, true);
-      renderSensorValues(data);
+    <!-- Pilihan Lapisan Bahaya & Cuaca -->
+    <div style="border-top: 1px solid var(--border-subtle); padding-top: 6px;">
+      <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Lapisan Tambahan</span>
+      <label class="layer-item">
+        <span>Node Pemantau TITEN</span>
+        <input type="checkbox" id="layerCheckNodes" checked />
+      </label>
+      <label class="layer-item">
+        <span>Zona Rawan Longsor (BNPB 30m)</span>
+        <input type="checkbox" id="layerCheckInarisk" />
+      </label>
+      <label class="layer-item">
+        <div>
+          <span>Radar Hujan (RainViewer)</span>
+          <span class="layer-subnote" style="display:block; font-size:10px; color:var(--text-muted);">Radar regional, resolusi rendah (zoom maks 7)</span>
+        </div>
+        <input type="checkbox" id="layerCheckRadar" />
+      </label>
+      <label class="layer-item">
+        <div>
+          <span>Titik Panas Satelit (NASA FIRMS)</span>
+          <span class="layer-subnote" style="display:block; font-size:10px; color:var(--text-muted);">Sensor VIIRS NOAA-20 NRT</span>
+        </div>
+        <input type="checkbox" id="layerCheckFirms" />
+      </label>
+      <div id="layerNoticeFirms" class="layer-notice" style="display: none; font-size: 11px; padding: 6px 8px; margin-top: 4px; border-radius: 4px; background: var(--bg-surface-muted); color: var(--text-muted); border: 1px dashed var(--border-medium);">
+        Layer NASA FIRMS memerlukan MAP_KEY di Cloudflare Pages (Environment Variable: <code>FIRMS_MAP_KEY</code>).
+      </div>
+    </div>
+  </div>
 
-      if (data.status_bahaya !== undefined && String(data.status_bahaya).trim() !== "") {
-        applyStatusUI(data.status_bahaya);
-      } else {
-        applyStatusUI('AMAN');
-      }
+  <!-- Panel Legenda (Kiri Bawah) -->
+  <aside id="legendPanel" class="floating-overlay-card legend-panel">
+    <div class="card-header-sm">
+      <h3 class="card-title-sm">Tingkat Bahaya Bencana</h3>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <div class="legend-scale-row">
+        <span class="legend-badge" style="background-color: var(--color-awas); color: #FFFFFF;">AWAS</span>
+        <span class="legend-desc">Darurat! Evakuasi mandiri segera.</span>
+      </div>
+      <div class="legend-scale-row">
+        <span class="legend-badge" style="background-color: var(--color-siaga); color: #FFFFFF;">SIAGA</span>
+        <span class="legend-desc">Bahaya tinggi. Petugas dan warga siaga.</span>
+      </div>
+      <div class="legend-scale-row">
+        <span class="legend-badge" style="background-color: var(--color-waspada); color: #1A2332;">WASPADA</span>
+        <span class="legend-desc">Anomali awal. Pemantauan intensif.</span>
+      </div>
+      <div class="legend-scale-row">
+        <span class="legend-badge" style="background-color: var(--color-normal); color: #FFFFFF;">NORMAL</span>
+        <span class="legend-desc">Stabil dalam batas toleransi aman.</span>
+      </div>
+      <div class="legend-scale-row">
+        <span class="legend-badge" style="background-color: var(--color-offline); color: #FFFFFF;">OFFLINE</span>
+        <span class="legend-desc">Node terputus atau dalam deep sleep.</span>
+      </div>
+    </div>
+  </aside>
 
-      const now = new Date();
-      const updatedEl = document.getElementById('last-updated-text');
-      if (updatedEl) {
-        updatedEl.textContent = `Sinkronisasi: ${now.toLocaleTimeString('id-ID')}`;
-      }
+  <!-- ================================================================= -->
+  <!-- 6. KONTROL PETA (KANAN BAWAH)                                     -->
+  <!-- ================================================================= -->
+  <div class="map-controls-group">
+    <button id="btnZoomIn" class="control-btn-circle" title="Perbesar Peta" aria-label="Zoom in">
+      <i data-lucide="plus" style="width: 18px; height: 18px;"></i>
+    </button>
+    <button id="btnZoomOut" class="control-btn-circle" title="Perkecil Peta" aria-label="Zoom out">
+      <i data-lucide="minus" style="width: 18px; height: 18px;"></i>
+    </button>
+    <button id="btnCenterNode" class="control-btn-circle" title="Pusatkan ke Node Aktif" aria-label="Center Node">
+      <i data-lucide="crosshair" style="width: 18px; height: 18px;"></i>
+    </button>
+    <button id="btnFitAllNodes" class="control-btn-circle" title="Tampilkan Semua Node" aria-label="Fit all nodes">
+      <i data-lucide="maximize" style="width: 18px; height: 18px;"></i>
+    </button>
+  </div>
 
-      const score = document.getElementById('risk-score');
-      if (score) {
-        score.textContent = 'Indeks Risiko Terpadu: 0.08 (Telemetri Riil Aktif)';
-      }
-    }
+  <!-- ================================================================= -->
+  <!-- 7. DOCK SIMULASI JURI (HANYA AKTIF SAAT ?demo=1)                  -->
+  <!-- ================================================================= -->
+  <div id="demoModeDock" class="demo-mode-dock hidden" role="toolbar" aria-label="Toolbar Simulasi Demo Juri">
+    <span class="demo-dock-label">MODE DEMO JURI:</span>
+    <button class="btn-demo-sim" data-sim="OFFLINE">Offline</button>
+    <button class="btn-demo-sim" data-sim="NORMAL">Normal</button>
+    <button class="btn-demo-sim" data-sim="WASPADA_LONGSOR">Waspada Longsor</button>
+    <button class="btn-demo-sim" data-sim="SIAGA_LONGSOR">Siaga Longsor</button>
+    <button class="btn-demo-sim" data-sim="AWAS_LONGSOR">Awas Longsor</button>
+    <button class="btn-demo-sim" data-sim="WASPADA_KARHUTLA">Waspada Karhutla</button>
+    <button class="btn-demo-sim" data-sim="AWAS_KARHUTLA">Awas Karhutla</button>
+    <button id="btnExitDemo" class="btn-demo-sim" style="color: var(--color-awas);" title="Keluar Mode Demo">✕ Keluar</button>
+  </div>
 
-    // Render Nilai Sensor Riil ke Layar
-    function renderSensorValues(data) {
-      // a. Suhu
-      if (data.suhu !== undefined) {
-        document.getElementById('suhu').innerText = data.suhu + " °C";
-        document.getElementById('suhu').className = "text-4xl font-extrabold tracking-tight text-white font-mono";
-        const numVal = parseFloat(data.suhu);
-        if (!isNaN(numVal)) {
-          const pct = Math.min(Math.max((numVal / 50) * 100, 5), 100);
-          const bar = document.getElementById('bar-suhu');
-          const pctEl = document.getElementById('pct-suhu');
-          const badge = document.getElementById('badge-suhu');
-          if (bar) bar.style.width = pct + '%';
-          if (pctEl) pctEl.textContent = `${numVal.toFixed(1)} / 50 °C`;
-          if (badge) {
-            if (numVal > 45) {
-              badge.textContent = 'EKSTREM';
-              badge.className = 'text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/40';
-            } else if (numVal > 36) {
-              badge.textContent = 'HANGAT';
-              badge.className = 'text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40';
-            } else {
-              badge.textContent = 'OPTIMAL';
-              badge.className = 'text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
-            }
-          }
-        }
-      }
+  <!-- ================================================================= -->
+  <!-- 8. SCRIPTS (LOCAL VENDOR - CEPAT, OFFLINE-READY, TANPA BLOKIR SRI) -->
+  <!-- ================================================================= -->
+  <!-- Leaflet 1.9.4 JS (Local Vendor) -->
+  <script src="assets/vendor/leaflet.min.js"></script>
 
-      // b. Udara
-      const valUdara = data.kelembapan_udara !== undefined ? data.kelembapan_udara : data.udara;
-      if (valUdara !== undefined) {
-        document.getElementById('udara').innerText = valUdara + " %";
-        document.getElementById('udara').className = "text-4xl font-extrabold tracking-tight text-white font-mono";
-        const numVal = parseFloat(valUdara);
-        if (!isNaN(numVal)) {
-          const pct = Math.min(Math.max(numVal, 0), 100);
-          const bar = document.getElementById('bar-udara');
-          const pctEl = document.getElementById('pct-udara');
-          const badge = document.getElementById('badge-udara');
-          if (bar) bar.style.width = pct + '%';
-          if (pctEl) pctEl.textContent = `${numVal.toFixed(1)}%`;
-          if (badge) {
-            if (numVal < 30) {
-              badge.textContent = 'KERING (DEFISIT)';
-              badge.className = 'text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/40';
-            } else {
-              badge.textContent = 'LEMBAP';
-              badge.className = 'text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
-            }
-          }
-        }
-      }
+  <!-- Chart.js 4.4.1 (Local Vendor) -->
+  <script src="assets/vendor/chart.umd.min.js"></script>
 
-      // c. Tanah
-      const valTanah = data.kelembapan_tanah !== undefined ? data.kelembapan_tanah : data.tanah;
-      if (valTanah !== undefined) {
-        document.getElementById('tanah').innerText = valTanah + " %";
-        document.getElementById('tanah').className = "text-4xl font-extrabold tracking-tight text-white font-mono";
-        const numVal = parseFloat(valTanah);
-        if (!isNaN(numVal)) {
-          const pct = Math.min(Math.max(numVal, 0), 100);
-          const bar = document.getElementById('bar-tanah');
-          const pctEl = document.getElementById('pct-tanah');
-          const badge = document.getElementById('badge-tanah');
-          if (bar) bar.style.width = pct + '%';
-          if (pctEl) pctEl.textContent = `${numVal.toFixed(0)}%`;
-          if (badge) {
-            if (numVal > 70) {
-              badge.textContent = 'JENUH AIR (RISIKO)';
-              badge.className = 'text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40';
-            } else {
-              badge.textContent = 'STABIL';
-              badge.className = 'text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
-            }
-          }
-        }
-      }
+  <!-- Lucide Icons 0.344.0 (Local Vendor) -->
+  <script src="assets/vendor/lucide.min.js"></script>
 
-      // d. Miring
-      const valMiring = data.kemiringan_x !== undefined ? data.kemiringan_x : data.miring;
-      if (valMiring !== undefined) {
-        document.getElementById('miring').innerText = valMiring + " °";
-        document.getElementById('miring').className = "text-4xl font-extrabold tracking-tight text-white font-mono";
-        const numVal = parseFloat(valMiring);
-        if (!isNaN(numVal)) {
-          const absVal = Math.abs(numVal);
-          const pct = Math.min(Math.max((absVal / 90) * 100, 3), 100);
-          const bar = document.getElementById('bar-miring');
-          const pctEl = document.getElementById('pct-miring');
-          const badge = document.getElementById('badge-miring');
-          if (bar) bar.style.width = pct + '%';
-          if (pctEl) pctEl.textContent = `${absVal.toFixed(0)}° / 90°`;
-          if (badge) {
-            if (absVal > 30) {
-              badge.textContent = 'BAHAYA';
-              badge.className = 'text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/40';
-            } else if (absVal > 18) {
-              badge.textContent = 'WASPADAI';
-              badge.className = 'text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40';
-            } else {
-              badge.textContent = 'STABIL';
-              badge.className = 'text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
-            }
-          }
-        }
-      }
+  <!-- Firebase JS SDK v8.10.1 Compat (Local Vendor) -->
+  <script src="assets/vendor/firebase-app.js"></script>
+  <script src="assets/vendor/firebase-database.js"></script>
 
-      // e. Baterai
-      if (data.baterai_persen !== undefined && data.baterai_voltase !== undefined) {
-        document.getElementById('baterai').innerText = data.baterai_persen + "% (" + data.baterai_voltase + "V)";
-        document.getElementById('baterai').className = "text-4xl font-extrabold tracking-tight text-white font-mono";
-        const numVal = parseFloat(data.baterai_persen);
-        if (!isNaN(numVal)) {
-          const pct = Math.min(Math.max(numVal, 5), 100);
-          const bar = document.getElementById('bar-baterai');
-          const pctEl = document.getElementById('pct-baterai');
-          const badge = document.getElementById('badge-baterai');
-          if (bar) bar.style.width = pct + '%';
-          if (pctEl) pctEl.textContent = `${numVal.toFixed(0)}%`;
-          if (badge) {
-            badge.textContent = numVal > 20 ? 'CHARGING' : 'LOW BATT';
-            badge.className = numVal > 20
-              ? 'text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-teal-500/10 text-teal-400 border border-teal-500/20'
-              : 'text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/40';
-          }
-        }
-      } else if (data.baterai !== undefined) {
-        const val = String(data.baterai);
-        document.getElementById('baterai').innerText = val.includes('%') ? val : `${val}%`;
-        document.getElementById('baterai').className = "text-4xl font-extrabold tracking-tight text-white font-mono";
-        const numVal = parseFloat(val);
-        if (!isNaN(numVal)) {
-          const pct = Math.min(Math.max(numVal, 5), 100);
-          const bar = document.getElementById('bar-baterai');
-          const pctEl = document.getElementById('pct-baterai');
-          if (bar) bar.style.width = pct + '%';
-          if (pctEl) pctEl.textContent = `${numVal.toFixed(0)}%`;
-        }
-      }
-    }
+  <!-- Konfigurasi Tunggal EWS TITEN -->
+  <script src="js/config.js"></script>
 
-    // Heartbeat Watchdog Timer (Periksa status koneksi secara aktif setiap detik)
-    // Sesuai permintaan: Jeda 0-6 detik (termasuk 5 detik) tetap TERHUBUNG (stabil), baru jika >= 7 detik tidak ada sinyal -> TIDAK TERHUBUNG
-    setInterval(() => {
-      if (isSimulationMode) return;
-      const lastPacketEl = document.getElementById('last-packet-time');
-
-      if (hasReceivedData && lastDataTimestamp > 0) {
-        const diffSeconds = Math.floor((Date.now() - lastDataTimestamp) / 1000);
-
-        if (diffSeconds < 3) {
-          if (lastPacketEl) {
-            lastPacketEl.textContent = "Baru saja";
-            lastPacketEl.className = "text-emerald-400 font-bold";
-          }
-        } else if (diffSeconds < 7) {
-          // Jeda transmisi 3 hingga 6 detik: TETAP STABIL TERHUBUNG (tidak kelap-kelip)
-          if (lastPacketEl) {
-            lastPacketEl.textContent = `${diffSeconds} detik lalu`;
-            lastPacketEl.className = "text-cyan-400 font-bold";
-          }
-        } else {
-          // TIMEOUT (MULAI 7 DETIK KE ATAS): Tepat 7 detik tidak ada data baru -> TIDAK TERHUBUNG
-          hasReceivedData = false;
-          if (lastPacketEl) {
-            lastPacketEl.textContent = `Terputus (${diffSeconds} dtk lalu)`;
-            lastPacketEl.className = "text-rose-400 font-bold";
-          }
-          updateConnectionStatus(false, false, `Peringatan: ESP32 Gateway tidak mengirim data selama ${diffSeconds} detik. Perangkat kemungkinan terputus.`);
-          applyStatusUI('TIDAK TERHUBUNG');
-          resetSensorCardsToStandby();
-          const score = document.getElementById('risk-score');
-          if (score) score.textContent = 'Status Sistem: Gateway Terputus / Tidak Terhubung';
-        }
-      }
-    }, 1000);
-
-    // Inisialisasi awal saat halaman dibuka
-    updateConnectionStatus(false, false);
-    resetSensorCardsToStandby();
-
-    // 2. Kunci Kontak (URL Realtime Database Anda)
-    const firebaseConfig = {
-      databaseURL: "https://ews-titen-default-rtdb.asia-southeast1.firebasedatabase.app"
-    };
-
-    // 3. Menghidupkan Mesin Firebase
-    try {
-      firebase.initializeApp(firebaseConfig);
-      const database = firebase.database();
-
-      // Monitor Status Koneksi Live Firebase
-      database.ref('.info/connected').on('value', (snap) => {
-        const isOnline = snap.val() === true;
-        if (!isOnline) {
-          updateConnectionStatus(false, false, "Koneksi internet browser terputus dari database Firebase.");
-        }
-      });
-
-      // 4. MENDENGARKAN DATA REAL-TIME DARI ESP32 GATEWAY
-      // Mendengarkan secara langsung node 'ews_data' (mencegah dual-event flickering dengan root '/')
-      database.ref('ews_data').on('value', (snapshot) => {
-        const val = snapshot.val();
-        if (val) {
-          updateSensorData(val);
-        } else {
-          updateConnectionStatus(false, false, "Database Firebase kosong. Belum ada data dari ESP32 Gateway.");
-          applyStatusUI('TIDAK TERHUBUNG');
-          resetSensorCardsToStandby();
-        }
-      }, (error) => {
-        console.warn("Firebase listener error:", error);
-        updateConnectionStatus(false, false, "Gagal membaca database: " + error.message);
-      });
-
-    } catch (err) {
-      console.error("Firebase Init Error:", err);
-      updateConnectionStatus(false, false, "Gagal menginisialisasi Firebase: " + err.message);
-    }
-  </script>
+  <!-- Logika Aplikasi Peta & Telemetri -->
+  <script src="js/app.js"></script>
 
 </body>
 </html>
