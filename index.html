@@ -31,7 +31,7 @@
   <link rel="stylesheet" href="assets/vendor/leaflet.min.css" />
 
   <!-- Stylesheet Utama EWS TITEN (Command Center Layout - Light Mode) -->
-  <link rel="stylesheet" href="css/style.css?v=4.9.3" />
+  <link rel="stylesheet" href="css/style.css?v=4.9.4" />
 </head>
 <body class="bnpb-app-container select-none">
 
@@ -77,24 +77,6 @@
       </div>
 
       <span id="syncLatency" class="time-latency" title="Latensi Pembaruan Paket">Sinkronisasi: Memuat...</span>
-
-      <!-- Tombol Aksi Topbar -->
-      <div class="topbar-actions">
-        <!-- Toggle Audio Alarm -->
-        <button id="btnToggleAudio" class="btn-icon-topbar" title="Bisukan / Aktifkan Alarm Audio" aria-label="Toggle Alarm">
-          <i data-lucide="volume-2" id="iconAudio" style="width: 16px; height: 16px;"></i>
-        </button>
-
-        <!-- Toggle Panel Layer -->
-        <button id="btnToggleLayers" class="btn-icon-topbar" title="Buka Panel Layer Peta" aria-label="Toggle Layer">
-          <i data-lucide="layers" style="width: 16px; height: 16px;"></i>
-        </button>
-
-        <!-- Profil Pengguna -->
-        <button class="btn-icon-topbar" title="Profil Pengguna" aria-label="User Profile">
-          <i data-lucide="user" style="width: 16px; height: 16px;"></i>
-        </button>
-      </div>
     </div>
   </header>
 
@@ -236,9 +218,6 @@
             <h3 class="bnpb-devices-title">Kondisi Perangkat &amp; Gateway</h3>
             <p class="bnpb-devices-subtitle">Hardware Tracker for Disaster Nodes</p>
           </div>
-          <button class="bnpb-btn-icon-subtle" title="Perbesar Status Perangkat">
-            <i data-lucide="maximize-2"></i>
-          </button>
         </div>
 
         <!-- 5 Hardware Cards Grid -->
@@ -643,6 +622,8 @@
       <h4 id="devicePanelNodeTitle"></h4>
       <p id="devicePanelNodeLocation"></p>
     </div>
+    <button id="btnToggleAudio"><i id="iconAudio"></i></button>
+    <button id="btnToggleLayers"></button>
   </div>
 
   <!-- ================================================================= -->
@@ -665,7 +646,7 @@
   <script src="js/config.js?v=4.1.0"></script>
 
   <!-- Logika Aplikasi Peta & Telemetri -->
-  <script src="js/app.js?v=4.9.3"></script>
+  <script src="js/app.js?v=4.9.4"></script>
 
 </body>
 </html>

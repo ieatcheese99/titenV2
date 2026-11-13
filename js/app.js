@@ -581,13 +581,19 @@
     const actionText = getEl("actionRecommendationText");
     const btnCallCenter = getEl("btnEmergencyCallCenter");
     const lblCallCenter = getEl("labelBtnEmergencyCallCenter");
+    const latest = node.latest || {};
 
     if (actionText) {
       if (isDisconnected) {
         actionText.textContent = "Perangkat pemantau sedang offline. Pastikan gateway ESP32 dan daya node aktif.";
       } else {
         const dominantDisaster = (LEVEL_WEIGHT[longsor.level] >= LEVEL_WEIGHT[karhutla.level]) ? longsor : karhutla;
-        actionText.textContent = dominantDisaster.tindakan || "Tetap waspada dan pantau perkembangan telemetri.";
+        let recText = dominantDisaster.tindakan || "Tetap waspada dan pantau perkembangan telemetri.";
+        const aiInference = latest.prediksi_ai || latest.prediksiAI;
+        if (aiInference && aiInference !== "Lereng & Termal Stabil") {
+          recText = `[Edge AI: ${aiInference}] ${recText}`;
+        }
+        actionText.textContent = recText;
       }
     }
     if (actionBox) {
@@ -612,8 +618,6 @@
         alertMiring.style.color = "";
       }
     }
-
-    const latest = node.latest || {};
 
     if (isDisconnected) {
       // TAB 1 (Cuplikan Cepat)
@@ -912,7 +916,10 @@
       }
 
       const subBat = getEl("subBateraiStatus");
-      if (subBat) subBat.textContent = "Solar Active";
+      if (subBat) {
+        const modeDaya = latest.mode_daya || latest.modeDaya;
+        subBat.textContent = modeDaya ? `Mode: ${modeDaya}` : "Solar Active";
+      }
 
       setText("valRssi", latest.rssi ? `${latest.rssi}` : "--");
       const rssiTagText = latest.rssi ? "TERHUBUNG" : "TERPUTUS";
@@ -1367,13 +1374,34 @@
             if (normalizedTs > latestPacketTs) latestPacketTs = normalizedTs;
 
             const isDefault = (nodeKey === CONFIG.DEFAULT_NODE.id);
+            const rawLatest = raw.latest || raw;
+            const vVolt = (rawLatest.baterai_voltase !== undefined) ? parseFloat(rawLatest.baterai_voltase) : ((rawLatest.voltase !== undefined) ? parseFloat(rawLatest.voltase) : 3.9);
+            let vPersen = (rawLatest.baterai_persen !== undefined) ? rawLatest.baterai_persen : ((rawLatest.persen_baterai !== undefined) ? rawLatest.persen_baterai : rawLatest.baterai);
+            if ((vPersen === undefined || vPersen === null) && vVolt > 0) {
+              vPersen = Math.min(Math.max(Math.round(((vVolt - 3.2) / (4.2 - 3.2)) * 100), 0), 100);
+            }
+
+            const normalizedLatest = {
+              ...rawLatest,
+              ts: rawTs,
+              suhu: (rawLatest.suhu !== undefined) ? parseFloat(rawLatest.suhu) : 0,
+              kelembapan_udara: (rawLatest.kelembapan_udara !== undefined) ? parseFloat(rawLatest.kelembapan_udara) : ((rawLatest.udara !== undefined) ? parseFloat(rawLatest.udara) : 0),
+              kelembapan_tanah: (rawLatest.kelembapan_tanah !== undefined) ? parseFloat(rawLatest.kelembapan_tanah) : ((rawLatest.tanah !== undefined) ? parseFloat(rawLatest.tanah) : 0),
+              kemiringan_x: (rawLatest.kemiringan_x !== undefined) ? parseFloat(rawLatest.kemiringan_x) : ((rawLatest.kemiringan !== undefined) ? parseFloat(rawLatest.kemiringan) : ((rawLatest.miring !== undefined) ? parseFloat(rawLatest.miring) : 0)),
+              baterai_voltase: vVolt,
+              baterai_persen: vPersen,
+              status_ews: rawLatest.status_ews || rawLatest.statusEWS || null,
+              mode_daya: rawLatest.mode_daya || rawLatest.modeDaya || null,
+              prediksi_ai: rawLatest.prediksi_ai || rawLatest.prediksiAI || null
+            };
+
             const nodeObj = {
               id: nodeKey,
               nama: isDefault ? CONFIG.DEFAULT_NODE.nama : ((raw.meta && raw.meta.nama) ? raw.meta.nama : (raw.nama || nodeKey)),
               lokasi: isDefault ? CONFIG.DEFAULT_NODE.lokasi : ((raw.meta && raw.meta.lokasi) ? raw.meta.lokasi : (raw.lokasi || "Lokasi Lapangan")),
               lat: isDefault ? CONFIG.DEFAULT_NODE.lat : ((raw.meta && raw.meta.lat) ? raw.meta.lat : (raw.lat || CONFIG.DEFAULT_NODE.lat)),
               lng: isDefault ? CONFIG.DEFAULT_NODE.lng : ((raw.meta && raw.meta.lng) ? raw.meta.lng : (raw.lng || CONFIG.DEFAULT_NODE.lng)),
-              latest: raw.latest || raw,
+              latest: normalizedLatest,
               history: raw.history || null
             };
             state.nodes.set(nodeKey, nodeObj);
@@ -1429,17 +1457,26 @@
           fallbackNode.lokasi = CONFIG.DEFAULT_NODE.lokasi;
           fallbackNode.lat = CONFIG.DEFAULT_NODE.lat;
           fallbackNode.lng = CONFIG.DEFAULT_NODE.lng;
+          const vVolt = (val.baterai_voltase !== undefined) ? parseFloat(val.baterai_voltase) : ((val.voltase !== undefined) ? parseFloat(val.voltase) : 3.9);
+          let vPersen = (val.baterai_persen !== undefined) ? val.baterai_persen : ((val.persen_baterai !== undefined) ? val.persen_baterai : val.baterai);
+          if ((vPersen === undefined || vPersen === null) && vVolt > 0) {
+            vPersen = Math.min(Math.max(Math.round(((vVolt - 3.2) / (4.2 - 3.2)) * 100), 0), 100);
+          }
+
           fallbackNode.latest = {
             ts: packetTs,
-            suhu: val.suhu,
-            kelembapan_udara: val.kelembapan_udara !== undefined ? val.kelembapan_udara : val.udara,
-            kelembapan_tanah: val.kelembapan_tanah !== undefined ? val.kelembapan_tanah : val.tanah,
-            kemiringan_x: val.kemiringan_x !== undefined ? val.kemiringan_x : (val.kemiringan !== undefined ? val.kemiringan : val.miring),
+            suhu: (val.suhu !== undefined) ? parseFloat(val.suhu) : 0,
+            kelembapan_udara: (val.kelembapan_udara !== undefined) ? parseFloat(val.kelembapan_udara) : ((val.udara !== undefined) ? parseFloat(val.udara) : 0),
+            kelembapan_tanah: (val.kelembapan_tanah !== undefined) ? parseFloat(val.kelembapan_tanah) : ((val.tanah !== undefined) ? parseFloat(val.tanah) : 0),
+            kemiringan_x: (val.kemiringan_x !== undefined) ? parseFloat(val.kemiringan_x) : ((val.kemiringan !== undefined) ? parseFloat(val.kemiringan) : ((val.miring !== undefined) ? parseFloat(val.miring) : 0)),
             kemiringan_y: val.kemiringan_y || 0,
             getaran: val.getaran || 0,
-            baterai_persen: val.baterai_persen !== undefined ? val.baterai_persen : (val.persen_baterai !== undefined ? val.persen_baterai : val.baterai),
-            baterai_voltase: val.baterai_voltase || 3.9,
-            rssi: val.rssi || -78
+            baterai_persen: vPersen,
+            baterai_voltase: vVolt,
+            rssi: val.rssi || -78,
+            status_ews: val.status_ews || val.statusEWS || null,
+            mode_daya: val.mode_daya || val.modeDaya || null,
+            prediksi_ai: val.prediksi_ai || val.prediksiAI || null
           };
 
           state.nodes.set(fallbackNode.id, fallbackNode);
