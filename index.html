@@ -31,7 +31,7 @@
   <link rel="stylesheet" href="assets/vendor/leaflet.min.css" />
 
   <!-- Stylesheet Utama EWS TITEN (Command Center Layout - Light Mode) -->
-  <link rel="stylesheet" href="css/style.css?v=4.6.0" />
+  <link rel="stylesheet" href="css/style.css?v=4.7.0" />
 </head>
 <body class="bnpb-app-container select-none">
 
@@ -120,25 +120,12 @@
           </div>
         </div>
 
-        <!-- 3 Quick Counter Badges -->
-        <div class="bnpb-quick-stats">
-          <div class="bnpb-stat-card">
-            <div class="bnpb-stat-num">4 Sensor</div>
-            <div class="bnpb-stat-label">Longsor</div>
-            <!-- Compatibility anchors for app.js -->
-            <span id="quickValMiring" style="display: none;">--</span>
-            <span id="quickTagMiring" style="display: none;">NORMAL</span>
-          </div>
-          <div class="bnpb-stat-card">
-            <div class="bnpb-stat-num">3 Sensor</div>
-            <div class="bnpb-stat-label">Karhutla</div>
-            <span id="quickValSuhu" style="display: none;">--</span>
-            <span id="quickTagSuhu" style="display: none;">NORMAL</span>
-          </div>
-          <div class="bnpb-stat-card">
-            <div class="bnpb-stat-num">LoRa</div>
-            <div class="bnpb-stat-label">Telemetri</div>
-          </div>
+        <!-- Compatibility anchors for app.js (Bagian 4 sensor counter ditiadakan dari UI) -->
+        <div style="display: none;" aria-hidden="true">
+          <span id="quickValMiring">--</span>
+          <span id="quickTagMiring">NORMAL</span>
+          <span id="quickValSuhu">--</span>
+          <span id="quickTagSuhu">NORMAL</span>
         </div>
 
         <!-- Langkah Cepat Section -->
