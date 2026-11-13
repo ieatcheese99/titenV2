@@ -158,17 +158,15 @@ button, input, select {
 }
 
 .brand-logo-img {
-  width: 32px !important;
-  height: 32px !important;
-  min-width: 32px !important;
-  min-height: 32px !important;
-  max-width: 32px !important;
-  max-height: 32px !important;
-  border-radius: 6px;
-  object-fit: cover;
+  height: 30px !important;
+  width: auto !important;
+  max-width: 75px !important;
+  object-fit: contain;
   display: block;
   flex-shrink: 0;
-  box-shadow: 0 2px 6px rgba(0, 74, 173, 0.25);
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
 }
 
 .brand-icon-box {
@@ -1392,9 +1390,10 @@ button, input, select {
   max-width: 18px !important;
   max-height: 18px !important;
   border-radius: 4px;
-  object-fit: cover;
+  object-fit: contain;
   flex-shrink: 0;
   display: block;
+  background: transparent !important;
 }
 
 .btn-skip-zoom {
