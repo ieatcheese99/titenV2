@@ -1341,8 +1341,9 @@ button, input, select {
   }
 
   .brand-tag,
-  .topbar-time {
-    display: none;
+  .topbar-time,
+  .status-chip-summary {
+    display: none !important;
   }
 
   .link-indicators {
@@ -1401,6 +1402,7 @@ button, input, select {
     background: var(--border-strong);
     margin: 8px auto 4px auto;
     cursor: pointer;
+    opacity: 0.7;
   }
 
   .deck-header-bar {
@@ -1408,44 +1410,108 @@ button, input, select {
     flex-direction: column;
     align-items: stretch;
     gap: 8px;
-    padding: 8px 12px 4px 12px;
+    padding: 6px 12px 6px 12px;
+    background: var(--bg-surface-muted);
   }
 
   .deck-header-top-row {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
     gap: 8px;
     width: 100%;
   }
 
-  .deck-summary-pills {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex: 1;
-    min-width: 0;
-  }
-
-  .deck-summary-pills .deck-summary-card {
-    flex: 1;
-    min-width: 0;
-    justify-content: space-between;
-    padding: 3px 6px;
-  }
-
+  /* Baris 1: Chip Status Data (LIVE / DATA LAMA) di kiri & Tombol Tutup di kanan */
   .deck-header-actions {
     display: flex;
     align-items: center;
-    gap: 6px;
+    justify-content: space-between;
+    width: 100%;
+    order: 1;
+  }
+
+  .deck-header-actions .chip-data-status {
+    font-size: 11px;
+    padding: 3px 10px;
+    letter-spacing: 0.03em;
+    font-weight: 700;
+  }
+
+  .deck-header-actions .btn-close-deck {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+  }
+
+  /* Baris 2: Grid 2 Kolom untuk Kartu Status Longsor & Karhutla */
+  .deck-summary-pills {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    width: 100%;
+    order: 2;
+  }
+
+  .deck-summary-pills .deck-summary-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    min-width: 0;
+  }
+
+  .deck-summary-pills .deck-summary-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
+  .deck-summary-pills .deck-summary-badge {
+    font-size: 10px;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    padding: 2px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
     flex-shrink: 0;
   }
 
+  /* Baris 3: Navigasi Tab Horizontal yang Responsif */
   .deck-tabs {
+    display: flex;
+    align-items: center;
+    gap: 6px;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
     border-bottom: 1px solid var(--border-subtle);
-    padding-bottom: 4px;
+    padding-bottom: 6px;
     width: 100%;
+    order: 3;
+  }
+
+  .deck-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .deck-tabs .tab-btn {
+    flex-shrink: 0;
+    white-space: nowrap;
+    padding: 6px 12px;
+    font-size: 12px;
+    min-height: 32px;
   }
 
   .deck-ringkasan-grid {
