@@ -928,19 +928,16 @@ button, input, select {
   height: 13px;
 }
 
-/* 3 Kolom Lidar Style untuk Longsor (Kemiringan Pitch & Roll Digabung) */
-.bnpb-stations-grid {
+/* 2 Kolom Lebar Simetris: Longsor & Karhutla (1 Sensor Fisik = 1 Tampilan) */
+.bnpb-stations-grid,
+.bnpb-stations-grid.bnpb-longsor-grid,
+.bnpb-stations-grid.bnpb-karhutla-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 7px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-}
-
-/* 2 Kolom Lebar untuk Karhutla (1 Sensor DHT22 + Indeks Bahaya) */
-.bnpb-stations-grid.bnpb-karhutla-grid {
-  grid-template-columns: repeat(2, 1fr);
 }
 
 .bnpb-station-col {

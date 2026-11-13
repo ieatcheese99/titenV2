@@ -31,7 +31,7 @@
   <link rel="stylesheet" href="assets/vendor/leaflet.min.css" />
 
   <!-- Stylesheet Utama EWS TITEN (Command Center Layout - Light Mode) -->
-  <link rel="stylesheet" href="css/style.css?v=4.8.4" />
+  <link rel="stylesheet" href="css/style.css?v=4.8.5" />
 </head>
 <body class="bnpb-app-container select-none">
 
@@ -324,7 +324,7 @@
         <div class="bnpb-sensor-header">
           <div>
             <h3 class="bnpb-sensor-title">Sensor Tanah Longsor (Geoteknik)</h3>
-            <p class="bnpb-sensor-subtitle">Monitoring Sudut Kemiringan Lereng, Saturasi Air Pori &amp; Getaran</p>
+            <p class="bnpb-sensor-subtitle">Monitoring Sudut Kemiringan Lereng &amp; Saturasi Air Pori</p>
           </div>
           <div class="bnpb-sensor-actions">
             <button title="Tampilan Grid"><i data-lucide="layout-grid"></i></button>
@@ -333,8 +333,8 @@
           </div>
         </div>
 
-        <!-- 3 Lidar-Style Columns: Sensor Tanah Longsor -->
-        <div class="bnpb-stations-grid">
+        <!-- 2 Kolom Sensor Tanah Longsor: Kemiringan Lereng & Kelembapan Tanah -->
+        <div class="bnpb-stations-grid bnpb-longsor-grid">
 
           <!-- Col 1: Kemiringan Lereng (Pitch & Roll MPU6050) -->
           <div class="bnpb-station-col">
@@ -434,59 +434,6 @@
               <div class="bnpb-grid-item">
                 <span class="bnpb-grid-val">Kedalaman 30cm</span>
                 <span class="bnpb-grid-lbl">Posisi Probe</span>
-              </div>
-              <div class="bnpb-grid-item">
-                <span class="bnpb-grid-val sync-clockWib">--:--:-- WIB</span>
-                <span class="bnpb-grid-lbl">Waktu Update</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Col 3: Getaran Seismik (Micro-vibe) -->
-          <div class="bnpb-station-col" id="cardGetaran">
-            <div class="bnpb-station-top">
-              <span class="bnpb-station-name">Getaran Seismik</span>
-              <i data-lucide="calendar" style="width: 12px; height: 12px;"></i>
-            </div>
-            <div class="bnpb-station-alert">
-              Deteksi Dini Pergerakan Tanah Lereng
-            </div>
-            <div class="bnpb-station-sub">Akselerasi Getaran / RMS Micro-vibe</div>
-
-            <div class="bnpb-station-hero">
-              <svg class="bnpb-hero-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-              <div class="bnpb-hero-val-box">
-                <div class="bnpb-hero-val">
-                  <span id="valGetaran">0.00</span><span class="bnpb-hero-unit">g</span>
-                </div>
-                <div class="bnpb-hero-label">RMS Micro-vibe</div>
-              </div>
-            </div>
-
-            <div class="progress-container">
-              <div id="barGetaran" class="progress-bar-fill" style="width: 0%; background-color: var(--color-offline);"></div>
-            </div>
-
-            <div class="bnpb-card-grid">
-              <div class="bnpb-grid-item">
-                <span id="tagGetaran" class="bnpb-grid-val" style="color: var(--color-offline);">OFFLINE</span>
-                <span class="bnpb-grid-lbl">Status</span>
-              </div>
-              <div class="bnpb-grid-item">
-                <span class="bnpb-grid-val">16-bit ADC</span>
-                <span class="bnpb-grid-lbl">Sensitivitas</span>
-              </div>
-              <div class="bnpb-grid-item">
-                <span class="bnpb-grid-val">&gt;0.25 g</span>
-                <span class="bnpb-grid-lbl">Ambang Bahaya</span>
-              </div>
-              <div class="bnpb-grid-item">
-                <span class="bnpb-grid-val">433 MHz LoRa</span>
-                <span class="bnpb-grid-lbl">Transmisi</span>
-              </div>
-              <div class="bnpb-grid-item">
-                <span class="bnpb-grid-val">Zero Drift</span>
-                <span class="bnpb-grid-lbl">Filter Gangguan</span>
               </div>
               <div class="bnpb-grid-item">
                 <span class="bnpb-grid-val sync-clockWib">--:--:-- WIB</span>
@@ -761,6 +708,7 @@
     <span id="subBateraiStatus"></span>
     <span id="subRssiStatus"></span>
     <span id="subGatewayStatus"></span>
+    <div id="cardGetaran"><span id="valGetaran">0.00</span><span id="tagGetaran">OFFLINE</span><div id="barGetaran"></div></div>
   </div>
 
   <!-- ================================================================= -->
@@ -783,7 +731,7 @@
   <script src="js/config.js?v=4.1.0"></script>
 
   <!-- Logika Aplikasi Peta & Telemetri -->
-  <script src="js/app.js?v=4.8.4"></script>
+  <script src="js/app.js?v=4.8.5"></script>
 
 </body>
 </html>
