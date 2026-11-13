@@ -31,17 +31,17 @@
   <link rel="stylesheet" href="assets/vendor/leaflet.min.css" />
 
   <!-- Stylesheet Utama EWS TITEN (Command Center Layout - Light Mode) -->
-  <link rel="stylesheet" href="css/style.css?v=4.8.9" />
+  <link rel="stylesheet" href="css/style.css?v=4.9.3" />
 </head>
 <body class="bnpb-app-container select-none">
 
   <!-- ================================================================= -->
-  <!-- 1. TOP BAR NAVIGASI TERPADU (CLEAN LIGHT BLUE TITEN)               -->
+  <!-- 1. TOP BAR NAVIGASI TERPADU (TITEN COBALT BLUE PRIMARY THEME)     -->
   <!-- ================================================================= -->
   <header class="topbar">
     <div class="topbar-left">
       <a href="#" class="brand-badge" title="EWS TITEN - Tim TRILOGY MAGE 12" style="display: flex; align-items: center; gap: 10px; max-height: 42px; overflow: hidden; text-decoration: none;">
-        <img src="assets/titen-logo.png?v=2" alt="Logo TITEN" class="brand-logo-img" width="60" height="30" style="height: 30px !important; width: auto !important; max-width: 75px !important; object-fit: contain; flex-shrink: 0; display: block; background: transparent !important;" />
+        <img src="assets/logo-white-transparent.png" alt="Logo TITEN" class="brand-logo-img" width="60" height="30" style="height: 30px !important; width: auto !important; max-width: 75px !important; object-fit: contain; flex-shrink: 0; display: block; background: transparent !important;" />
         <div class="brand-text-group">
           <h1 class="brand-name">EWS TITEN Pemantauan Bencana</h1>
           <span class="brand-tag">TITEN Live</span>
@@ -128,45 +128,56 @@
           <span id="quickTagSuhu">OFFLINE</span>
         </div>
 
-        <!-- Langkah Cepat Section -->
-        <div class="bnpb-quick-actions">
-          <div class="bnpb-section-header">
-            <h3 class="bnpb-section-title">Langkah Cepat</h3>
-            <p class="bnpb-section-desc">Tindakan Berdasarkan Data Pemantauan</p>
+        <!-- Indeks Bahaya Multi-Bencana Section (Pengganti Langkah Cepat) -->
+        <section id="sectionIndeksBahaya" class="bnpb-hazard-section">
+          <!-- Header Indeks Bahaya Biru TITEN -->
+          <div class="bnpb-hazard-header">
+            <div class="bnpb-hazard-title-wrap">
+              <div class="bnpb-hazard-tag-pill">Fokus Utama Sistem EWS</div>
+              <h3 class="bnpb-hazard-title">Indeks Bahaya Multi-Bencana</h3>
+              <p class="bnpb-hazard-subtitle">Analisis Risiko Realtime · Karhutla &amp; Tanah Longsor</p>
+            </div>
           </div>
 
-          <div class="bnpb-action-list">
-            <!-- Action 1: Pemeriksaan -->
-            <div class="bnpb-action-item">
-              <div class="bnpb-action-icon action-search">
-                <i data-lucide="search"></i>
+          <!-- Status Bahaya Longsor & Karhutla Disusun Vertikal Mengisi Space -->
+          <div class="bnpb-hazard-cards-col">
+            <!-- Tanah Longsor Hazard Card -->
+            <div id="cardSummaryLongsor" class="bnpb-hazard-card deck-summary-card">
+              <div class="bnpb-hazard-card-left">
+                <div class="bnpb-hazard-icon-box longsor">
+                  <i data-lucide="mountain" class="hazard-icon-mountain"></i>
+                </div>
+                <div class="bnpb-hazard-card-info">
+                  <span class="bnpb-hazard-card-title">Bahaya Longsor</span>
+                  <span class="bnpb-hazard-card-sub">Kemiringan Lereng &amp; Saturasi Air Pori</span>
+                </div>
               </div>
-              <div class="bnpb-action-body">
-                <strong class="bnpb-action-title">Pemeriksaan</strong>
-                <p class="bnpb-action-text">Lakukan pemeriksaan visual stabilitas kemiringan lereng, saturasi air pori, curah hujan &amp; getaran real-time.</p>
-              </div>
-            </div>
-
-            <!-- Action 2: Peringatan -->
-            <div class="bnpb-action-item">
-              <div class="bnpb-action-icon action-bell">
-                <i data-lucide="bell"></i>
-              </div>
-              <div class="bnpb-action-body">
-                <strong class="bnpb-action-title">Peringatan</strong>
-                <p class="bnpb-action-text">Sistem memberi peringatan berjenjang via sirine lokal, notifikasi suara, dan dashboard saat melampaui ambang batas.</p>
+              <div class="bnpb-hazard-card-right">
+                <span id="badgeSummaryLongsor" class="bnpb-status-pill-big" style="color: var(--color-offline); background: rgba(100, 116, 139, 0.15);">OFFLINE</span>
               </div>
             </div>
 
-            <!-- Action 3: Koordinasi -->
-            <div class="bnpb-action-item">
-              <div class="bnpb-action-icon action-radio">
-                <i data-lucide="radio"></i>
+            <!-- Karhutla Hazard Card -->
+            <div id="cardSummaryKarhutla" class="bnpb-hazard-card deck-summary-card">
+              <div class="bnpb-hazard-card-left">
+                <div class="bnpb-hazard-icon-box karhutla">
+                  <i data-lucide="flame" class="hazard-icon-flame"></i>
+                </div>
+                <div class="bnpb-hazard-card-info">
+                  <span class="bnpb-hazard-card-title">Bahaya Karhutla</span>
+                  <span class="bnpb-hazard-card-sub">Monitoring Suhu &amp; Kelembapan Udara</span>
+                </div>
               </div>
-              <div class="bnpb-action-body">
-                <strong class="bnpb-action-title">Koordinasi</strong>
-                <p class="bnpb-action-text">Pastikan jalur BPBD dan layanan darurat tetap aktif.</p>
+              <div class="bnpb-hazard-card-right">
+                <span id="badgeSummaryKarhutla" class="bnpb-status-pill-big" style="color: var(--color-offline); background: rgba(100, 116, 139, 0.15);">OFFLINE</span>
               </div>
+            </div>
+          </div>
+
+          <!-- Progress Bar Indeks Bahaya Komposit -->
+          <div class="bnpb-hazard-bar-wrap">
+            <div class="progress-container" style="height: 6px; width: 100%; border-radius: 4px; background: rgba(100, 116, 139, 0.12); margin: 0;">
+              <div id="barBahaya" class="progress-bar-fill" style="width: 0%; background-color: var(--color-offline); border-radius: 4px;"></div>
             </div>
           </div>
 
@@ -177,12 +188,12 @@
             </p>
           </div>
 
-          <!-- Call Center 112 Emergency Button -->
+          <!-- Call Center Darurat 112 Emergency Button -->
           <a id="btnEmergencyCallCenter" href="tel:112" class="bnpb-btn-emergency" title="Hubungi Call Center Darurat 112">
             <i data-lucide="phone-call"></i>
             <span id="labelBtnEmergencyCallCenter">Call Center Darurat 112</span>
           </a>
-        </div>
+        </section>
       </div>
 
       <!-- 2. CENTER COLUMN (~46% width): GIS Map Container -->
@@ -294,80 +305,12 @@
             </div>
           </div>
 
-          <!-- Card 5: Identitas Node (Full Width Span 2) -->
-          <div class="bnpb-device-card bnpb-card-span-2">
-            <div class="bnpb-card-top">
-              <span class="bnpb-card-name">Node Lapangan</span>
-              <span id="chipDataStatus" class="chip-data-status stale">OFFLINE</span>
-            </div>
-            <div class="bnpb-card-body" style="align-items: center;">
-              <div>
-                <h4 id="devicePanelNodeTitle" class="bnpb-node-title">Node-01 · Tower 2 ITS</h4>
-                <p id="devicePanelNodeLocation" class="bnpb-node-loc">
-                  <i data-lucide="map-pin"></i>
-                  <span>Gedung Tower 2 ITS, Kampus Sukolilo, Surabaya</span>
-                </p>
-              </div>
-            </div>
-          </div>
-
         </div>
       </div>
 
     </div>
 
-    <!-- ================================================================= -->
-    <!-- INDEKS BAHAYA MULTI-BENCANA BANNER (FOKUS UTAMA SISTEM EWS)        -->
-    <!-- ================================================================= -->
-    <div id="sectionIndeksBahaya" class="bnpb-indeks-bahaya-banner">
-      <div class="bnpb-indeks-left">
-        <div class="bnpb-indeks-tag-pill">Fokus Utama Sistem EWS</div>
-        <h3 class="bnpb-indeks-title">Indeks Bahaya Multi-Bencana</h3>
-        <p class="bnpb-indeks-sub">Analisis Risiko Realtime · Kompilasi Bahaya Karhutla &amp; Tanah Longsor</p>
-      </div>
-
-      <div class="bnpb-indeks-center">
-        <div class="bnpb-indeks-badges">
-          <div id="cardSummaryKarhutla" class="bnpb-indeks-badge-item">
-            <span class="bnpb-indeks-badge-label">Bahaya Karhutla:</span>
-            <span id="badgeSummaryKarhutla" class="bnpb-status-pill-big" style="color: var(--color-offline); background: rgba(100, 116, 139, 0.15);">OFFLINE</span>
-          </div>
-          <div class="bnpb-indeks-divider"></div>
-          <div id="cardSummaryLongsor" class="bnpb-indeks-badge-item">
-            <span class="bnpb-indeks-badge-label">Bahaya Longsor:</span>
-            <span id="badgeSummaryLongsor" class="bnpb-status-pill-big" style="color: var(--color-offline); background: rgba(100, 116, 139, 0.15);">OFFLINE</span>
-          </div>
-        </div>
-        <div class="progress-container" style="height: 5px; margin-top: 4px; width: 100%; max-width: 340px;">
-          <div id="barBahaya" class="progress-bar-fill" style="width: 0%; background-color: var(--color-offline);"></div>
-        </div>
-      </div>
-
-      <div class="bnpb-indeks-right">
-        <div class="bnpb-indeks-chip">
-          <span class="bnpb-indeks-chip-val">Suhu &amp; RH</span>
-          <span class="bnpb-indeks-chip-lbl">Karhutla</span>
-        </div>
-        <div class="bnpb-indeks-chip">
-          <span class="bnpb-indeks-chip-val">Pitch &amp; Pori</span>
-          <span class="bnpb-indeks-chip-lbl">Longsor</span>
-        </div>
-        <div class="bnpb-indeks-chip">
-          <span class="bnpb-indeks-chip-val">Terpadu</span>
-          <span class="bnpb-indeks-chip-lbl">Protokol</span>
-        </div>
-        <div class="bnpb-indeks-chip">
-          <span class="bnpb-indeks-chip-val">Sirine Ready</span>
-          <span class="bnpb-indeks-chip-lbl">Aktuator</span>
-        </div>
-        <div class="bnpb-indeks-chip">
-          <span class="bnpb-indeks-chip-val sync-clockWib">--:--:-- WIB</span>
-          <span class="bnpb-indeks-chip-lbl">Waktu Update</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- ==================== BOTTOM ROW (HEIGHT ~40%) ==================== -->
+    <!-- ==================== BOTTOM ROW (HEIGHT ~44%) ==================== -->
     <div class="bnpb-row-bottom">
 
       <!-- 1. SENSOR TANAH LONGSOR (WIDTH 50%) -->
@@ -695,6 +638,11 @@
     <span id="subRssiStatus"></span>
     <span id="subGatewayStatus"></span>
     <div id="cardGetaran"><span id="valGetaran">0.00</span><span id="tagGetaran">OFFLINE</span><div id="barGetaran"></div></div>
+    <div id="compatNodeIdentitas">
+      <span id="chipDataStatus"></span>
+      <h4 id="devicePanelNodeTitle"></h4>
+      <p id="devicePanelNodeLocation"></p>
+    </div>
   </div>
 
   <!-- ================================================================= -->
@@ -717,7 +665,7 @@
   <script src="js/config.js?v=4.1.0"></script>
 
   <!-- Logika Aplikasi Peta & Telemetri -->
-  <script src="js/app.js?v=4.8.9"></script>
+  <script src="js/app.js?v=4.9.3"></script>
 
 </body>
 </html>

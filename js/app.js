@@ -352,26 +352,29 @@
     let popupAnchor = [0, -14];
 
     if (isAlert) {
-      iconSize = [36, 36];
-      iconAnchor = [18, 18];
-      popupAnchor = [0, -20];
+      iconSize = [38, 54];
+      iconAnchor = [19, 50];
+      popupAnchor = [0, -50];
 
       let bounceClass = "marker-bouncy-waspada";
       let ringClass = "waspada";
+      let markerImg = "assets/titen-marker-waspada.png";
 
       if (worstLevel === "SIAGA") {
         bounceClass = "marker-bouncy-siaga";
         ringClass = "siaga";
+        markerImg = "assets/titen-marker-siaga.png";
       } else if (worstLevel === "AWAS") {
         bounceClass = "marker-bouncy-awas";
         ringClass = "awas";
+        markerImg = "assets/titen-marker-awas.png";
       }
 
       html = `
         <div class="custom-node-marker alert" title="${escapeHtml(node.nama)} · ${worstLevel}">
           <div class="marker-pulse-ring ${ringClass}"></div>
-          <div class="marker-pin-alert ${bounceClass}" style="--alert-color: ${color};">
-            <img src="assets/titen-alert-icon.png" onerror="this.onerror=null; this.src='1.png';" alt="TITEN" class="marker-alert-logo" />
+          <div class="marker-titen-tower ${bounceClass}" style="--alert-color: ${color};">
+            <img src="${markerImg}" onerror="this.onerror=null; this.src='assets/logo-mark-white.png';" alt="TITEN ${worstLevel}" class="marker-titen-logo-img" />
           </div>
           <div class="marker-label">${escapeHtml(node.nama)}</div>
         </div>
@@ -544,7 +547,7 @@
     const badgeL = getEl("badgeSummaryLongsor");
     if (cardL && badgeL) {
       const lvlL = isDisconnected ? "OFFLINE" : longsor.level;
-      cardL.className = `deck-summary-card status-${lvlL.toLowerCase()}`;
+      cardL.className = `bnpb-hazard-card deck-summary-card status-${lvlL.toLowerCase()}`;
       badgeL.textContent = lvlL;
       badgeL.style.backgroundColor = isDisconnected ? "rgba(100, 116, 139, 0.15)" : `${getLevelColor(lvlL)}22`;
       badgeL.style.color = isDisconnected ? "var(--color-offline)" : getLevelColor(lvlL);
@@ -555,7 +558,7 @@
     const badgeK = getEl("badgeSummaryKarhutla");
     if (cardK && badgeK) {
       const lvlK = isDisconnected ? "OFFLINE" : karhutla.level;
-      cardK.className = `deck-summary-card status-${lvlK.toLowerCase()}`;
+      cardK.className = `bnpb-hazard-card deck-summary-card status-${lvlK.toLowerCase()}`;
       badgeK.textContent = lvlK;
       badgeK.style.backgroundColor = isDisconnected ? "rgba(100, 116, 139, 0.15)" : `${getLevelColor(lvlK)}22`;
       badgeK.style.color = isDisconnected ? "var(--color-offline)" : getLevelColor(lvlK);
