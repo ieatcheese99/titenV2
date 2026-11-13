@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="description" content="EWS TITEN - Sistem Peringatan Dini IoT Tanah Longsor dan Karhutla Berbasis LoRa & Peta Interaktif (MAGE 12)" />
+  <meta name="theme-color" content="#004aad" />
+  <title>EWS TITEN — Peta Pemantauan Bencana Terpadu</title>
+
+  <!-- Favicon & Touch Icon Resmi TITEN -->
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
+
+  <!-- Open Graph & Media Sosial Preview (WhatsApp, Facebook, Twitter) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://titenv2.pages.dev/" />
+  <meta property="og:title" content="EWS TITEN — Peta Pemantauan Bencana Terpadu" />
+  <meta property="og:description" content="Sistem Peringatan Dini IoT Tanah Longsor dan Karhutla Berbasis LoRa & Peta Interaktif — Tim TRILOGY SMK Budi Luhur (MAGE 12)" />
+  <meta property="og:image" content="https://titenv2.pages.dev/assets/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="EWS TITEN — Peta Pemantauan Bencana Terpadu" />
+  <meta name="twitter:description" content="Sistem Peringatan Dini IoT Tanah Longsor dan Karhutla Berbasis LoRa & Peta Interaktif (MAGE 12)" />
+  <meta name="twitter:image" content="https://titenv2.pages.dev/assets/og-image.png" />
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json" />
+
+  <!-- Google Fonts: Inter & JetBrains Mono (Pinned) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Leaflet 1.9.4 CSS (Local Vendor) -->
+  <link rel="stylesheet" href="assets/vendor/leaflet.min.css" />
+
+  <!-- Stylesheet Utama EWS TITEN -->
+  <link rel="stylesheet" href="css/style.css?v=3.3.7" />
+</head>
+<body>
+
+  <!-- ================================================================= -->
+  <!-- 1. PETA LAYAR PENUH (LEAFLET CANVAS)                              -->
+  <!-- ================================================================= -->
+  <div id="map" role="region" aria-label="Peta Interaktif Lokasi Node Sensor"></div>
+
+  <!-- Banner Animasi Zoom Pembuka (FlyTo) di Sudut Layar -->
+  <div id="openingZoomBanner" class="opening-zoom-banner hidden" role="status">
+    <img src="assets/logo-mark-white.png" alt="TITEN" class="opening-zoom-logo logo-dark-mode" />
+    <img src="assets/logo-mark-blue.png" alt="TITEN" class="opening-zoom-logo logo-light-mode" />
+    <span id="openingZoomText">Menuju Node-01 · Tower 2 ITS...</span>
+    <button id="btnSkipZoom" class="btn-skip-zoom" title="Lewati animasi kamera">Lewati</button>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- 2. TOP BAR MELAYANG (THIN, CLEAN & FUNCTIONAL)                    -->
+  <!-- ================================================================= -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <a href="#" class="brand-badge" title="EWS TITEN - MAGE 12 TRILOGY">
+        <img src="assets/logo-white-transparent.png" alt="Logo TITEN" class="brand-logo-img logo-dark-mode" />
+        <img src="assets/logo-blue-transparent.png" alt="Logo TITEN" class="brand-logo-img logo-light-mode" />
+        <div class="brand-text-group">
+          <span class="brand-name">EWS TITEN</span>
+          <span class="brand-tag">MAGE 12</span>
+        </div>
+      </a>
+
+      <!-- Ringkasan Status Global -->
+      <div id="topbarSummary" class="status-chip-summary" title="Ringkasan Status Keseluruhan Node">
+        <span class="status-dot" style="background-color: var(--color-offline);"></span>
+        <span id="topbarSummaryText">Memuat node...</span>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <!-- Dua Indikator Koneksi Terpisah -->
+      <div class="link-indicators">
+        <div class="link-pill" id="pillGateway" title="Status koneksi Gateway ke Firebase RTDB">
+          <span class="status-dot" id="dotGateway" style="background-color: var(--color-offline);"></span>
+          <span id="textGateway">Gateway: Offline</span>
+        </div>
+        <div class="link-pill" id="pillNode" title="Status telemetri LoRa 433MHz dari Node">
+          <span class="status-dot" id="dotNode" style="background-color: var(--color-offline);"></span>
+          <span id="textNode">Node: Offline</span>
+        </div>
+      </div>
+
+      <!-- Jam WIB & Latensi Data -->
+      <div class="topbar-time">
+        <span class="time-live" id="clockWib">--:--:-- WIB</span>
+        <span class="time-updated" id="syncLatency">Sinkronisasi: Memuat...</span>
+      </div>
+
+      <!-- Tombol Aksi Topbar -->
+      <div class="topbar-actions">
+        <!-- Toggle Audio Alarm -->
+        <button id="btnToggleAudio" class="btn-icon-topbar" title="Bisukan / Aktifkan Alarm Audio" aria-label="Toggle Alarm">
+          <i data-lucide="volume-2" id="iconAudio" style="width: 18px; height: 18px;"></i>
+        </button>
+
+        <!-- Toggle Panel Layer -->
+        <button id="btnToggleLayers" class="btn-icon-topbar" title="Buka Panel Layer Peta" aria-label="Toggle Layer">
+          <i data-lucide="layers" style="width: 18px; height: 18px;"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================================================================= -->
+  <!-- 3. BANNER KONDISI SISTEM (HANYA MUNCUL JIKA ADA MASALAH)          -->
+  <!-- ================================================================= -->
+  <aside id="systemIssueBanner" class="system-issue-banner hidden" role="alert">
+    <div class="banner-content">
+      <i data-lucide="alert-triangle" id="bannerIssueIcon" style="width: 18px; height: 18px; flex-shrink: 0; color: var(--color-waspada);"></i>
+      <div>
+        <strong id="bannerIssueTitle">Peringatan Sistem:</strong>
+        <span id="bannerIssueDesc">Paket data tidak terdeteksi.</span>
+      </div>
+    </div>
+    <button id="btnCloseBanner" class="banner-close" title="Tutup peringatan">
+      <i data-lucide="x" style="width: 16px; height: 16px;"></i>
+    </button>
+  </aside>
+
+  <!-- Banner Izin Audio Pertama Kali -->
+  <div id="audioPromptBanner" class="audio-prompt-banner hidden">
+    <i data-lucide="bell" style="width: 18px; height: 18px; color: var(--color-primary);"></i>
+    <span>Aktifkan audio untuk mendengar peringatan dini darurat.</span>
+    <button id="btnEnableAudio" class="btn-enable-audio">Aktifkan Suara</button>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- 4A. PANEL KONDISI PERANGKAT LAPANGAN (KIRI ATAS - KHUSUS HARDWARE) -->
+  <!-- ================================================================= -->
+  <aside id="deviceStatusPanel" class="device-status-panel" aria-label="Panel Status Perangkat Node">
+    <div class="panel-header">
+      <div class="panel-header-top">
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+            <i data-lucide="cpu" style="width: 16px; height: 16px; color: var(--color-primary);"></i>
+            <span style="font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.06em;">Kondisi Perangkat</span>
+          </div>
+          <h2 id="devicePanelNodeTitle" class="panel-title">Node-01 · Tower 2 ITS</h2>
+          <p id="devicePanelNodeLocation" class="panel-subtitle">
+            <i data-lucide="map-pin" style="width: 13px; height: 13px;"></i>
+            <span>Gedung Tower 2 ITS, Sukolilo</span>
+          </p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span id="chipDeviceDataStatus" class="chip-data-status live">LIVE</span>
+          <button id="btnCloseDevicePanel" class="btn-close-panel" title="Tutup Panel Perangkat">
+            <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Metrik Kondisi Fisik Hardware Lapangan -->
+    <div class="device-panel-content">
+      <!-- 1. Baterai Node & Solar Harvesting -->
+      <div class="sensor-metric-card">
+        <div class="sensor-header">
+          <span>Daya Baterai Node (LiPo Buffer)</span>
+          <span id="tagBaterai" class="sensor-status-tag" style="background: var(--color-normal-soft); color: var(--color-normal);">NORMAL</span>
+        </div>
+        <div class="sensor-value-row">
+          <div>
+            <span id="valBaterai" class="sensor-big-value">--</span>
+            <span class="sensor-unit">%</span>
+          </div>
+          <span id="valBateraiVolt" class="tabular-nums">-- V</span>
+        </div>
+        <div class="progress-container">
+          <div id="barBaterai" class="progress-bar-fill" style="width: 0%; background-color: var(--color-normal);"></div>
+        </div>
+        <div class="sensor-footer-info">
+          <span>Solar Harvesting Ready</span>
+          <span>LiPo 3.7V - 4.2V</span>
+        </div>
+      </div>
+
+      <!-- 2. Transmisi LoRa 433 MHz -->
+      <div class="sensor-metric-card">
+        <div class="sensor-header">
+          <span>Transmisi LoRa SX1278 (433 MHz)</span>
+          <span id="tagRssi" class="sensor-status-tag" style="background: var(--color-normal-soft); color: var(--color-normal);">TERHUBUNG</span>
+        </div>
+        <div class="sensor-value-row">
+          <div>
+            <span id="valRssi" class="sensor-big-value">--</span>
+            <span class="sensor-unit">dBm</span>
+          </div>
+          <span class="sensor-sub-label">RSSI Paket</span>
+        </div>
+      </div>
+
+      <!-- 3. Relay Sirine Fisik Lapangan -->
+      <div class="sensor-metric-card">
+        <div class="sensor-header">
+          <span>Status Relay / Sirine Lapangan</span>
+          <span id="tagRelay" class="sensor-status-tag" style="background: var(--color-offline-soft); color: var(--color-offline);">STANDBY</span>
+        </div>
+        <div class="sensor-value-row">
+          <div>
+            <span id="valRelay" class="sensor-big-value">Nonaktif</span>
+          </div>
+          <span class="sensor-sub-label">Otomatis saat AWAS</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Tombol Pulihkan Panel Perangkat saat Collapsed (Desktop) -->
+  <button id="btnOpenDevicePanel" class="btn-toggle-device-panel" title="Buka Panel Kondisi Perangkat">
+    <i data-lucide="cpu" style="width: 14px; height: 14px;"></i>
+    <span>Kondisi Perangkat</span>
+  </button>
+
+  <!-- ================================================================= -->
+  <!-- 4B. KONSOL BAHAYA BENCANA (BAGIAN BAWAH: RINGKASAN, LONGSOR,      -->
+  <!--     KARHUTLA, RIWAYAT — SERTA PERANGKAT PADA MOBILE)             -->
+  <!-- ================================================================= -->
+  <section id="disasterConsoleDeck" class="disaster-console-deck" aria-label="Konsol Pemantauan Bencana">
+    <!-- Pegangan Swipe di Mobile -->
+    <div class="mobile-drag-handle md:hidden"></div>
+
+    <!-- Bar Kepala Konsol (Kanan pada PC, Bawah pada Mobile) -->
+    <div class="deck-header-bar">
+      <!-- Baris Kepala Bagian Atas (Pills & Aksi) -->
+      <div class="deck-header-top-row">
+        <!-- Judul & Aksi Panel Kanan (Desktop) -->
+        <div class="deck-title-actions">
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 2px;">
+              <i data-lucide="shield-alert" style="width: 16px; height: 16px; color: var(--color-primary);"></i>
+              <span style="font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.06em;">Kondisi Lapangan</span>
+            </div>
+            <h2 class="panel-title" style="font-size: 18px; margin: 0;">Konsol Bencana</h2>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span id="chipDataStatus" class="chip-data-status live">LIVE</span>
+            <button id="btnCloseDeck" class="btn-close-deck" title="Sembunyikan / Ciutkan Konsol Bencana">
+              <i data-lucide="x" id="iconToggleDeck" style="width: 18px; height: 18px;"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Ringkasan Ganda: Longsor & Karhutla -->
+        <div class="deck-summary-pills">
+          <div id="cardSummaryLongsor" class="deck-summary-card status-normal" title="Status Bahaya Tanah Longsor">
+            <span class="deck-summary-label">Longsor:</span>
+            <span id="badgeSummaryLongsor" class="deck-summary-badge">NORMAL</span>
+          </div>
+          <div id="cardSummaryKarhutla" class="deck-summary-card status-normal" title="Status Bahaya Karhutla">
+            <span class="deck-summary-label">Karhutla:</span>
+            <span id="badgeSummaryKarhutla" class="deck-summary-badge">NORMAL</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigasi Tab Konsol -->
+      <nav class="panel-tabs deck-tabs" role="tablist">
+        <button class="tab-btn active" data-tab="tab-ringkasan" role="tab">Ringkasan</button>
+        <button class="tab-btn" data-tab="tab-longsor" role="tab">Longsor</button>
+        <button class="tab-btn" data-tab="tab-karhutla" role="tab">Karhutla</button>
+        <button class="tab-btn mobile-only-tab" data-tab="tab-perangkat-mobile" role="tab">Perangkat</button>
+        <button class="tab-btn" data-tab="tab-riwayat" role="tab">Riwayat</button>
+      </nav>
+    </div>
+
+    <!-- Konten Tab Konsol Bawah -->
+    <div class="panel-content deck-content">
+      
+      <!-- TAB 1: RINGKASAN -->
+      <div id="tab-ringkasan" class="tab-pane active" role="tabpanel">
+        <div class="deck-ringkasan-grid">
+          <!-- Cuplikan Cepat Sensor -->
+          <div class="deck-quick-metrics">
+            <div class="sensor-metric-card">
+              <div class="sensor-header">
+                <span>Kemiringan Lereng</span>
+                <span id="quickTagMiring" class="sensor-status-tag" style="background: var(--color-normal-soft); color: var(--color-normal);">NORMAL</span>
+              </div>
+              <div class="sensor-value-row">
+                <div>
+                  <span id="quickValMiring" class="sensor-big-value">--</span>
+                  <span class="sensor-unit">°</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="sensor-metric-card">
+              <div class="sensor-header">
+                <span>Suhu Udara</span>
+                <span id="quickTagSuhu" class="sensor-status-tag" style="background: var(--color-normal-soft); color: var(--color-normal);">NORMAL</span>
+              </div>
+              <div class="sensor-value-row">
+                <div>
+                  <span id="quickValSuhu" class="sensor-big-value">--</span>
+                  <span class="sensor-unit">°C</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Kotak Rekomendasi Tindakan & Kontak Ganda -->
+          <div id="actionRecommendationBox" class="action-recommendation-box">
+            <div class="action-title">
+              <i data-lucide="shield-alert" style="width: 16px; height: 16px; color: var(--color-primary);"></i>
+              <span>Tindakan yang Disarankan</span>
+            </div>
+            <p id="actionRecommendationText" class="action-text">
+              Kondisi aman. Tetap lakukan patroli pemeliharaan sensor berkala.
+            </p>
+            <div class="emergency-actions-row">
+              <a id="btnEmergencyCallCenter" href="tel:112" class="btn-emergency-call" title="Hubungi Layanan Darurat Terpadu 112">
+                <i data-lucide="phone-call" style="width: 14px; height: 14px;"></i>
+                <span id="labelBtnEmergencyCallCenter">Call Center Darurat 112</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: SEKTOR LONGSOR -->
+      <div id="tab-longsor" class="tab-pane" role="tabpanel">
+        <div class="deck-horizontal-grid">
+          <!-- 1. Kemiringan Lereng -->
+          <div class="sensor-metric-card">
+            <div class="sensor-header">
+              <span>Sudut Kemiringan (MPU6050)</span>
+              <span id="tagMiring" class="sensor-status-tag" style="background: var(--color-normal-soft); color: var(--color-normal);">NORMAL</span>
+            </div>
+            <div class="sensor-value-row">
+              <div>
+                <span id="valMiring" class="sensor-big-value">--</span>
+                <span class="sensor-unit">°</span>
+              </div>
+              <span class="tabular-nums" style="font-size: 11px; color: var(--text-muted);" id="subValMiringY">Y: --°</span>
+            </div>
+            <div class="progress-container">
+              <div id="barMiring" class="progress-bar-fill" style="width: 0%; background-color: var(--color-normal);"></div>
+            </div>
+            <div class="sensor-footer-info">
+              <span id="thresholdLabelMiring">Waspada: ≥12° · Siaga: ≥20° · Awas: >30°</span>
+              <span id="pctMiring">0%</span>
+            </div>
+          </div>
+
+          <!-- 2. Kelembapan Tanah -->
+          <div class="sensor-metric-card">
+            <div class="sensor-header">
+              <span>Kelembapan Tanah (Air Pori)</span>
+              <span id="tagTanah" class="sensor-status-tag" style="background: var(--color-normal-soft); color: var(--color-normal);">NORMAL</span>
+            </div>
+            <div class="sensor-value-row">
+              <div>
+                <span id="valTanah" class="sensor-big-value">--</span>
+                <span class="sensor-unit">%</span>
+              </div>
+              <span class="tabular-nums" style="font-size: 11px; color: var(--text-muted);">Saturasi VWC</span>
+            </div>
+            <div class="progress-container">
+              <div id="barTanah" class="progress-bar-fill" style="width: 0%; background-color: var(--color-normal);"></div>
+            </div>
+            <div class="sensor-footer-info">
+              <span id="thresholdLabelTanah">Waspada: ≥60% · Siaga: ≥70% · Awas: >80%</span>
+              <span id="pctTanah">0%</span>
+            </div>
+          </div>
+
+          <!-- 3. Getaran Tanah -->
+          <div class="sensor-metric-card" id="cardGetaran">
+            <div class="sensor-header">
+              <span>Getaran / Akselerasi</span>
+              <span id="tagGetaran" class="sensor-status-tag" style="background: var(--color-normal-soft); color: var(--color-normal);">STABIL</span>
+            </div>
+            <div class="sensor-value-row">
+              <div>
+                <span id="valGetaran" class="sensor-big-value">--</span>
+                <span class="sensor-unit">g</span>
+              </div>
+              <span class="tabular-nums" style="font-size: 11px; color: var(--text-muted);">RMS Micro-vibe</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: SEKTOR KARHUTLA -->
+      <div id="tab-karhutla" class="tab-pane" role="tabpanel">
+        <div class="deck-horizontal-grid">
+          <!-- 1. Suhu Udara -->
+          <div class="sensor-metric-card">
+            <div class="sensor-header">
+              <span>Suhu Udara (DHT22)</span>
+              <span id="tagSuhu" class="sensor-status-tag" style="background: var(--color-normal-soft); color: var(--color-normal);">NORMAL</span>
+            </div>
+            <div class="sensor-value-row">
+              <div>
+                <span id="valSuhu" class="sensor-big-value">--</span>
+                <span class="sensor-unit">°C</span>
+              </div>
+              <span class="tabular-nums" style="font-size: 11px; color: var(--text-muted);">Termometer</span>
+            </div>
+            <div class="progress-container">
+              <div id="barSuhu" class="progress-bar-fill" style="width: 0%; background-color: var(--color-normal);"></div>
+            </div>
+            <div class="sensor-footer-info">
+              <span id="thresholdLabelSuhu">Waspada: ≥34°C · Siaga: ≥38°C · Awas: >45°C</span>
+              <span id="pctSuhu">0%</span>
+            </div>
+          </div>
+
+          <!-- 2. Kelembapan Udara -->
+          <div class="sensor-metric-card">
+            <div class="sensor-header">
+              <span>Kelembapan Udara (RH)</span>
+              <span id="tagUdara" class="sensor-status-tag" style="background: var(--color-normal-soft); color: var(--color-normal);">NORMAL</span>
+            </div>
+            <div class="sensor-value-row">
+              <div>
+                <span id="valUdara" class="sensor-big-value">--</span>
+                <span class="sensor-unit">%</span>
+              </div>
+              <span class="tabular-nums" style="font-size: 11px; color: var(--text-muted);">Higrometer</span>
+            </div>
+            <div class="progress-container">
+              <div id="barUdara" class="progress-bar-fill" style="width: 0%; background-color: var(--color-normal);"></div>
+            </div>
+            <div class="sensor-footer-info">
+              <span id="thresholdLabelUdara">Waspada: ≤45% · Siaga: ≤35% · Awas: <25%</span>
+              <span id="pctUdara">0%</span>
+            </div>
+          </div>
+
+          <!-- 3. Sensor Gas / Asap -->
+          <div class="sensor-metric-card" id="cardGas" style="display: none;">
+            <div class="sensor-header">
+              <span>Konsentrasi Gas / Asap</span>
+              <span id="tagGas" class="sensor-status-tag">NORMAL</span>
+            </div>
+            <div class="sensor-value-row">
+              <div>
+                <span id="valGas" class="sensor-big-value">--</span>
+                <span class="sensor-unit">ppm</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: PERANGKAT (KHUSUS TAMPILAN MOBILE) -->
+      <div id="tab-perangkat-mobile" class="tab-pane" role="tabpanel">
+        <div class="deck-horizontal-grid">
+          <div class="sensor-metric-card">
+            <div class="sensor-header">
+              <span>Baterai Node &amp; Solar</span>
+              <span class="sensor-status-tag sync-tagBaterai">NORMAL</span>
+            </div>
+            <div class="sensor-value-row">
+              <div>
+                <span class="sensor-big-value sync-valBaterai">--</span>
+                <span class="sensor-unit">%</span>
+              </div>
+              <span class="tabular-nums sync-valBateraiVolt" style="font-size: 13px; font-weight: 600; color: var(--text-secondary);">-- V</span>
+            </div>
+            <div class="progress-container">
+              <div class="progress-bar-fill sync-barBaterai" style="width: 0%;"></div>
+            </div>
+            <div class="sensor-footer-info">
+              <span>LiPo Buffer 3.7V - 4.2V</span>
+              <span>Solar Active</span>
+            </div>
+          </div>
+
+          <div class="sensor-metric-card">
+            <div class="sensor-header">
+              <span>Transmisi LoRa 433 MHz</span>
+              <span class="sensor-status-tag sync-tagRssi">TERHUBUNG</span>
+            </div>
+            <div class="sensor-value-row">
+              <div>
+                <span class="sensor-big-value sync-valRssi">--</span>
+                <span class="sensor-unit">dBm</span>
+              </div>
+              <span class="tabular-nums" style="font-size: 11px; color: var(--text-muted);">SX1278 RF</span>
+            </div>
+          </div>
+
+          <div class="sensor-metric-card">
+            <div class="sensor-header">
+              <span>Status Relay Sirine</span>
+              <span class="sensor-status-tag sync-tagRelay">STANDBY</span>
+            </div>
+            <div class="sensor-value-row">
+              <div>
+                <span class="sensor-big-value sync-valRelay" style="font-size: 16px;">Nonaktif</span>
+              </div>
+              <span style="font-size: 11px; color: var(--text-muted);">Otomatis saat AWAS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 5: RIWAYAT GRAFIK -->
+      <div id="tab-riwayat" class="tab-pane" role="tabpanel">
+        <div class="history-controls">
+          <button class="btn-range-filter active" data-range="6h">6 Jam</button>
+          <button class="btn-range-filter" data-range="24h">24 Jam</button>
+          <button class="btn-range-filter" data-range="7d">7 Hari</button>
+        </div>
+        <div class="chart-wrapper" style="height: 170px;">
+          <canvas id="telemetryChart"></canvas>
+        </div>
+        <p style="font-size: 10px; color: var(--text-muted); margin: 4px 0 0 0; text-align: center;">
+          Garis putus-putus menunjukkan ambang batas Waspada, Siaga, dan Awas.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Tombol Buka Konsol Bencana saat Collapsed (Desktop & Mobile) -->
+  <button id="btnOpenDeck" class="btn-toggle-deck" title="Buka Konsol Telemetri Bencana">
+    <i data-lucide="shield-alert" style="width: 15px; height: 15px;"></i>
+    <span>Konsol Bencana</span>
+  </button>
+
+  <!-- ================================================================= -->
+  <!-- 5. PANEL LAYER & LEGENDA (PETA OVERLAY)                           -->
+  <!-- ================================================================= -->
+  
+  <!-- Panel Layer (Kanan Atas / Toggleable) -->
+  <div id="layerPanel" class="floating-overlay-card layer-panel hidden">
+    <div class="card-header-sm">
+      <h3 class="card-title-sm">Lapisan Peta &amp; Data</h3>
+      <button id="btnCloseLayers" class="btn-close-panel" title="Tutup Panel Layer">
+        <i data-lucide="x" style="width: 14px; height: 14px;"></i>
+      </button>
+    </div>
+
+    <!-- Pilihan Peta Dasar -->
+    <div>
+      <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Peta Dasar</span>
+      <label class="layer-item">
+        <span>OpenStreetMap (Standar)</span>
+        <input type="radio" name="basemap" value="osm" checked />
+      </label>
+      <label class="layer-item">
+        <span>Satelit Esri World Imagery</span>
+        <input type="radio" name="basemap" value="satellite" />
+      </label>
+    </div>
+
+    <!-- Pilihan Lapisan Bahaya & Cuaca -->
+    <div style="border-top: 1px solid var(--border-subtle); padding-top: 6px;">
+      <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Lapisan Tambahan</span>
+      <label class="layer-item">
+        <span>Node Pemantau TITEN</span>
+        <input type="checkbox" id="layerCheckNodes" checked />
+      </label>
+      <label class="layer-item">
+        <span>Zona Rawan Longsor (BNPB 30m)</span>
+        <input type="checkbox" id="layerCheckInarisk" />
+      </label>
+      <label class="layer-item">
+        <div>
+          <span>Radar Hujan (RainViewer)</span>
+          <span class="layer-subnote" style="display:block; font-size:10px; color:var(--text-muted);">Radar regional, resolusi rendah (zoom maks 7)</span>
+        </div>
+        <input type="checkbox" id="layerCheckRadar" />
+      </label>
+      <label class="layer-item">
+        <div>
+          <span>Titik Panas Satelit (NASA FIRMS)</span>
+          <span class="layer-subnote" style="display:block; font-size:10px; color:var(--text-muted);">Sensor VIIRS NOAA-20 NRT</span>
+        </div>
+        <input type="checkbox" id="layerCheckFirms" />
+      </label>
+      <div id="layerNoticeFirms" class="layer-notice" style="display: none; font-size: 11px; padding: 6px 8px; margin-top: 4px; border-radius: 4px; background: var(--bg-surface-muted); color: var(--text-muted); border: 1px dashed var(--border-medium);">
+        Layer NASA FIRMS memerlukan MAP_KEY di Cloudflare Pages (Environment Variable: <code>FIRMS_MAP_KEY</code>).
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel Legenda (Kiri Bawah) -->
+  <aside id="legendPanel" class="floating-overlay-card legend-panel">
+    <div class="card-header-sm">
+      <h3 class="card-title-sm">Tingkat Bahaya Bencana</h3>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <div class="legend-scale-row">
+        <span class="legend-badge" style="background-color: var(--color-awas); color: #FFFFFF;">AWAS</span>
+        <span class="legend-desc">Darurat! Evakuasi mandiri segera.</span>
+      </div>
+      <div class="legend-scale-row">
+        <span class="legend-badge" style="background-color: var(--color-siaga); color: #FFFFFF;">SIAGA</span>
+        <span class="legend-desc">Bahaya tinggi. Petugas dan warga siaga.</span>
+      </div>
+      <div class="legend-scale-row">
+        <span class="legend-badge" style="background-color: var(--color-waspada); color: #1A2332;">WASPADA</span>
+        <span class="legend-desc">Anomali awal. Pemantauan intensif.</span>
+      </div>
+      <div class="legend-scale-row">
+        <span class="legend-badge" style="background-color: var(--color-normal); color: #FFFFFF;">NORMAL</span>
+        <span class="legend-desc">Stabil dalam batas toleransi aman.</span>
+      </div>
+      <div class="legend-scale-row">
+        <span class="legend-badge" style="background-color: var(--color-offline); color: #FFFFFF;">OFFLINE</span>
+        <span class="legend-desc">Node terputus atau dalam deep sleep.</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================================================================= -->
+  <!-- 6. KONTROL PETA (KANAN BAWAH)                                     -->
+  <!-- ================================================================= -->
+  <div class="map-controls-group">
+    <button id="btnZoomIn" class="control-btn-circle" title="Perbesar Peta" aria-label="Zoom in">
+      <i data-lucide="plus" style="width: 18px; height: 18px;"></i>
+    </button>
+    <button id="btnZoomOut" class="control-btn-circle" title="Perkecil Peta" aria-label="Zoom out">
+      <i data-lucide="minus" style="width: 18px; height: 18px;"></i>
+    </button>
+    <button id="btnCenterNode" class="control-btn-circle" title="Pusatkan ke Node Aktif" aria-label="Center Node">
+      <i data-lucide="crosshair" style="width: 18px; height: 18px;"></i>
+    </button>
+    <button id="btnFitAllNodes" class="control-btn-circle" title="Tampilkan Semua Node" aria-label="Fit all nodes">
+      <i data-lucide="maximize" style="width: 18px; height: 18px;"></i>
+    </button>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- 7. DOCK SIMULASI JURI (HANYA AKTIF SAAT ?demo=1)                  -->
+  <!-- ================================================================= -->
+  <div id="demoModeDock" class="demo-mode-dock hidden" role="toolbar" aria-label="Toolbar Simulasi Demo Juri">
+    <span class="demo-dock-label">MODE DEMO JURI:</span>
+    <button class="btn-demo-sim" data-sim="OFFLINE">Offline</button>
+    <button class="btn-demo-sim" data-sim="NORMAL">Normal</button>
+    <button class="btn-demo-sim" data-sim="WASPADA_LONGSOR">Waspada Longsor</button>
+    <button class="btn-demo-sim" data-sim="SIAGA_LONGSOR">Siaga Longsor</button>
+    <button class="btn-demo-sim" data-sim="AWAS_LONGSOR">Awas Longsor</button>
+    <button class="btn-demo-sim" data-sim="WASPADA_KARHUTLA">Waspada Karhutla</button>
+    <button class="btn-demo-sim" data-sim="AWAS_KARHUTLA">Awas Karhutla</button>
+    <button id="btnExitDemo" class="btn-demo-sim" style="color: var(--color-awas);" title="Keluar Mode Demo">✕ Keluar</button>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- 8. SCRIPTS (LOCAL VENDOR - CEPAT, OFFLINE-READY, TANPA BLOKIR SRI) -->
+  <!-- ================================================================= -->
+  <!-- Leaflet 1.9.4 JS (Local Vendor) -->
+  <script src="assets/vendor/leaflet.min.js"></script>
+
+  <!-- Chart.js 4.4.1 (Local Vendor) -->
+  <script src="assets/vendor/chart.umd.min.js"></script>
+
+  <!-- Lucide Icons 0.344.0 (Local Vendor) -->
+  <script src="assets/vendor/lucide.min.js"></script>
+
+  <!-- Firebase JS SDK v8.10.1 Compat (Local Vendor) -->
+  <script src="assets/vendor/firebase-app.js"></script>
+  <script src="assets/vendor/firebase-database.js"></script>
+
+  <!-- Konfigurasi Tunggal EWS TITEN -->
+  <script src="js/config.js?v=3.3.7"></script>
+
+  <!-- Logika Aplikasi Peta & Telemetri -->
+  <script src="js/app.js?v=3.3.7"></script>
+
+</body>
+</html>

@@ -1,100 +1,82 @@
 /**
- * EWS TITEN - Stylesheet Aplikasi Peta Layar Penuh
- * Desain: Clean Industrial SCADA & Geospatial Command Center
- * Warna Primer: #004aad (Cobalt Blue Resmi Logo TITEN)
- * Mendukung Tema Gelap & Terang, Mobile-First (WCAG AA)
+ * EWS TITEN - Stylesheet Dashboard Pemantauan Terpadu (BNPB Command Center Layout)
+ * Adaptasi UI: 1:1 BNPB MHEWS Gunung Ibu (2-Row Command Center Grid)
+ * Identitas: EWS TITEN - Tim TRILOGY (MAGE 12 - IoT)
+ * Warna Aksen: Orange BNPB #F36A1D & Cobalt Blue TITEN #004aad
+ * Mode: Dark Command Center (High-Contrast Industrial SCADA)
  */
 
 /* ==========================================================================
-   1. VARIABEL TEMA & WARNA INDUSTRI RESMI
+   1. VARIABEL TEMA & WARNA COMMAND CENTER BNPB
    ========================================================================== */
-:root {
-  /* Skala Warna Industri Utama (Diekstrak dari Logo TITEN #004aad) */
+:root,
+[data-theme="dark"],
+.dark {
+  /* Skala Warna Latar Belakang (BNPB Deep Dark Aesthetic) */
+  --bg-canvas: #0C0C0C;
+  --bg-surface: #141414;
+  --bg-surface-elevated: #1A1918;
+  --bg-surface-muted: #232221;
+  --bg-card: #232221;
+  --bg-card-hover: #2D2C2A;
+  --bg-backdrop: rgba(20, 20, 20, 0.94);
+
+  /* Skala Tipografi & Teks */
+  --text-primary: #F9F8F7;
+  --text-secondary: #D4D4D0;
+  --text-muted: #9E9D9A;
+  --text-subtle: #777674;
+
+  /* Garis Batas / Border */
+  --border-subtle: #282726;
+  --border-medium: #353332;
+  --border-strong: #4F4D4A;
+
+  /* Warna Aksen Merek */
   --color-primary: #004aad;
-  --color-primary-hover: #003680;
-  --color-primary-soft: rgba(0, 74, 173, 0.1);
+  --color-brand: #F36A1D;
+  --color-brand-light: #F59047;
+  --color-brand-dark: #CD541B;
+  --color-brand-glow: rgba(243, 106, 29, 0.25);
 
-  /* Warna Status Kebencanaan Resmi (BNPB) - Kuning poster tidak dipakai untuk aksen UI */
+  /* Warna Status Kebencanaan Resmi BNPB */
   --color-normal: #10B981;
-  --color-normal-soft: #ECFDF5;
-  --color-normal-border: #A7F3D0;
+  --color-normal-soft: rgba(16, 185, 129, 0.15);
+  --color-normal-border: rgba(16, 185, 129, 0.3);
 
-  --color-waspada: #FFB800; /* Khusus status WASPADA */
-  --color-waspada-soft: #FFFBEB;
-  --color-waspada-border: #FDE68A;
+  --color-waspada: #F59E0B;
+  --color-waspada-soft: rgba(245, 158, 11, 0.15);
+  --color-waspada-border: rgba(245, 158, 11, 0.3);
 
   --color-siaga: #F97316;
-  --color-siaga-soft: #FFF7ED;
-  --color-siaga-border: #FED7AA;
+  --color-siaga-soft: rgba(249, 115, 22, 0.15);
+  --color-siaga-border: rgba(249, 115, 22, 0.3);
 
-  --color-awas: #DC2626;
-  --color-awas-soft: #FEF2F2;
-  --color-awas-border: #FECACA;
+  --color-awas: #EF4444;
+  --color-awas-soft: rgba(239, 68, 68, 0.15);
+  --color-awas-border: rgba(239, 68, 68, 0.3);
 
-  --color-offline: #64748B;
-  --color-offline-soft: #F1F5F9;
-  --color-offline-border: #CBD5E1;
+  --color-offline: #71717A;
+  --color-offline-soft: rgba(113, 113, 122, 0.15);
+  --color-offline-border: rgba(113, 113, 122, 0.3);
 
   /* Tipografi */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  /* Layout Spacing 3-Column Command Dashboard */
-  --topbar-height: 56px;
-  --panel-left-width: 430px;
-  --panel-right-width: 480px;
-  --panel-outer-gap: 16px;
-  --panel-inner-gap: 16px;
+  /* Elevasi & Efek */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.8);
+
+  --radius-xs: 4px;
   --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-}
-
-@media (min-width: 1201px) and (max-width: 1440px) {
-  :root {
-    --panel-left-width: 380px;
-    --panel-right-width: 430px;
-    --panel-outer-gap: 14px;
-    --panel-inner-gap: 14px;
-  }
-}
-
-@media (min-width: 769px) and (max-width: 1200px) {
-  :root {
-    --panel-left-width: 320px;
-    --panel-right-width: 360px;
-    --panel-outer-gap: 10px;
-    --panel-inner-gap: 10px;
-  }
-}
-
-/* Tema Terang Permanen (Clean Industrial Light Mode) */
-:root,
-[data-theme="light"] {
-  --bg-canvas: #F4F6F9;
-  --bg-surface: #FFFFFF;
-  --bg-surface-elevated: #FFFFFF;
-  --bg-surface-muted: #F8FAFC;
-  --bg-backdrop: rgba(255, 255, 255, 0.94);
-
-  --text-primary: #1A2332;
-  --text-secondary: #475569;
-  --text-muted: #64748B;
-  --text-subtle: #94A3B8;
-
-  --border-subtle: #E2E8F0;
-  --border-medium: #CBD5E1;
-  --border-strong: #94A3B8;
-
-  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
-  --shadow-md: 0 4px 12px -2px rgba(15, 23, 42, 0.08), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
-  --shadow-lg: 0 10px 25px -4px rgba(15, 23, 42, 0.12), 0 4px 10px -2px rgba(15, 23, 42, 0.06);
-
-  --map-filter: none;
+  --radius-md: 8px;
+  --radius-lg: 12px;
 }
 
 /* ==========================================================================
-   2. RESET & BASE
+   2. RESET & DASAR TAMPILAN
    ========================================================================== */
 *, *::before, *::after {
   box-sizing: border-box;
@@ -109,10 +91,11 @@ html, body {
   font-family: var(--font-sans);
   background-color: var(--bg-canvas);
   color: var(--text-primary);
-  font-size: 14px;
-  line-height: 1.5;
+  font-size: 13px;
+  line-height: 1.4;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  user-select: none;
 }
 
 button, input, select {
@@ -125,128 +108,36 @@ button, input, select {
   font-family: var(--font-mono);
 }
 
-/* ==========================================================================
-   3. PETA INTERAKTIF PUSAT (CENTER MAP CONTAINER)
-   ========================================================================== */
-#map {
-  position: absolute;
-  top: calc(var(--topbar-height) + var(--panel-outer-gap));
-  bottom: var(--panel-outer-gap);
-  left: calc(var(--panel-left-width) + var(--panel-outer-gap) + var(--panel-inner-gap));
-  right: calc(var(--panel-right-width) + var(--panel-outer-gap) + var(--panel-inner-gap));
-  width: auto;
-  height: auto;
-  z-index: 10;
-  background-color: var(--bg-canvas);
-  border-radius: 18px;
-  border: 1px solid var(--border-subtle);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
-  overflow: hidden;
-  transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1), right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+/* Custom Scrollbar Presisi */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
 }
-
-/* Pastikan atribusi Leaflet rapi di sudut bawah dan tidak tertutup */
-.leaflet-bottom.leaflet-right {
-  z-index: 998;
+::-webkit-scrollbar-track {
+  background: var(--bg-surface);
 }
-
-.leaflet-control-attribution {
-  background: var(--bg-backdrop) !important;
-  color: var(--text-muted) !important;
-  font-size: 10px !important;
-  padding: 2px 8px !important;
-  border-radius: 4px 0 0 0;
-  border-top: 1px solid var(--border-subtle);
-  border-left: 1px solid var(--border-subtle);
+::-webkit-scrollbar-thumb {
+  background: var(--border-medium);
+  border-radius: 2px;
 }
-
-.leaflet-control-attribution a {
-  color: var(--color-primary) !important;
-  text-decoration: none;
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-strong);
 }
 
 /* ==========================================================================
-   4. ANIMASI ZOOM PEMBUKA (DITAMPILKAN DI SUDUT, TIDAK MENUTUPI PETA)
-   ========================================================================== */
-.opening-zoom-banner {
-  position: absolute;
-  top: calc(var(--topbar-height) + 14px);
-  left: 14px; /* Diposisikan di sudut kiri atas */
-  z-index: 1050;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: var(--bg-backdrop);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--border-medium);
-  padding: 6px 14px;
-  border-radius: 9999px;
-  box-shadow: var(--shadow-md);
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-primary);
-  animation: fadeIn 0.25s ease-out;
-}
-
-.opening-zoom-banner.hidden {
-  display: none !important;
-}
-
-.opening-zoom-logo {
-  width: 20px;
-  height: 20px;
-  object-fit: contain;
-}
-
-.opening-zoom-logo.logo-dark-mode {
-  display: none !important;
-}
-.opening-zoom-logo.logo-light-mode {
-  display: block !important;
-}
-
-.btn-skip-zoom {
-  background: var(--bg-surface-muted);
-  border: 1px solid var(--border-subtle);
-  color: var(--text-secondary);
-  border-radius: 9999px;
-  padding: 3px 10px;
-  font-size: 11px;
-  font-weight: 600;
-  cursor: pointer;
-  min-height: 26px;
-  transition: all 0.15s ease;
-}
-
-.btn-skip-zoom:hover {
-  background: var(--color-primary-soft);
-  color: var(--color-primary);
-  border-color: var(--color-primary);
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* ==========================================================================
-   5. TOP BAR & LOGO ASLI TITEN
+   3. TOPBAR NAVIGASI TERPADU (BNPB MHEWS STYLE)
    ========================================================================== */
 .topbar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: var(--topbar-height);
-  z-index: 1000;
-  background: var(--bg-backdrop);
-  backdrop-filter: blur(10px);
+  height: 46px;
+  background-color: var(--bg-surface);
   border-bottom: 1px solid var(--border-subtle);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 16px;
-  box-shadow: var(--shadow-sm);
+  padding: 0 14px;
+  z-index: 1000;
+  flex-shrink: 0;
+  position: relative;
 }
 
 .topbar-left {
@@ -260,65 +151,59 @@ button, input, select {
   align-items: center;
   gap: 10px;
   text-decoration: none;
-  color: var(--text-primary);
 }
 
-.brand-logo-img {
-  height: 28px;
-  width: auto;
-  max-width: 95px;
-  object-fit: contain;
-  display: block;
+.brand-icon-box {
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, var(--color-brand-dark), var(--color-brand-light));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  box-shadow: 0 2px 6px rgba(243, 106, 29, 0.3);
 }
 
-.brand-logo-img.logo-dark-mode {
-  display: none !important;
-}
-.brand-logo-img.logo-light-mode {
-  display: block !important;
+.brand-icon-box svg {
+  width: 18px;
+  height: 18px;
 }
 
 .brand-text-group {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .brand-name {
-  font-size: 15px;
-  font-weight: 800;
-  letter-spacing: -0.01em;
-  color: var(--text-primary);
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0;
+  letter-spacing: 0.02em;
 }
 
 .brand-tag {
-  font-size: 10px;
-  font-weight: 700;
-  background: var(--color-primary-soft);
-  color: var(--color-primary);
-  padding: 2px 6px;
+  font-size: 9.5px;
+  padding: 1.5px 6px;
   border-radius: 4px;
-  border: 1px solid var(--border-subtle);
+  background: rgba(243, 106, 29, 0.15);
+  color: var(--color-brand-light);
+  border: 1px solid rgba(243, 106, 29, 0.3);
+  font-weight: 600;
 }
 
-.status-chip-summary {
-  display: inline-flex;
+.topbar-summary-chip {
+  display: flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 10px;
-  border-radius: 9999px;
-  font-size: 12px;
-  font-weight: 600;
-  background: var(--bg-surface-muted);
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--bg-surface-elevated);
   border: 1px solid var(--border-subtle);
+  font-size: 11px;
   color: var(--text-secondary);
-}
-
-.status-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  display: inline-block;
 }
 
 .topbar-right {
@@ -330,41 +215,68 @@ button, input, select {
 .link-indicators {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .link-pill {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
-  font-weight: 600;
-  font-family: var(--font-mono);
   padding: 3px 8px;
-  border-radius: 9999px;
-  background: var(--bg-surface-muted);
+  border-radius: 4px;
+  background: var(--bg-surface-elevated);
   border: 1px solid var(--border-subtle);
-  color: var(--text-muted);
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+  background-color: var(--color-offline);
+  flex-shrink: 0;
+}
+
+.status-dot-pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--color-normal);
+  box-shadow: 0 0 6px var(--color-normal);
+  animation: pulseLight 1.8s infinite;
+}
+
+@keyframes pulseLight {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
 }
 
 .topbar-time {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  font-family: var(--font-mono);
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 4px;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
   font-size: 11px;
   color: var(--text-secondary);
-  padding-left: 8px;
-  border-left: 1px solid var(--border-subtle);
+  font-family: var(--font-mono);
 }
 
-.topbar-time .time-live {
-  font-weight: 600;
-  color: var(--text-primary);
+.time-sep {
+  color: var(--text-subtle);
 }
 
-.topbar-time .time-updated {
-  font-size: 9px;
+.time-date {
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+}
+
+.time-latency {
+  font-size: 10px;
   color: var(--text-muted);
 }
 
@@ -375,10 +287,10 @@ button, input, select {
 }
 
 .btn-icon-topbar {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-sm);
-  background: var(--bg-surface);
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  background: var(--bg-surface-elevated);
   border: 1px solid var(--border-subtle);
   color: var(--text-secondary);
   display: flex;
@@ -386,972 +298,859 @@ button, input, select {
   justify-content: center;
   cursor: pointer;
   transition: all 0.15s ease;
-  min-width: 44px; /* Target sentuh WCAG AA */
-  min-height: 44px;
 }
 
 .btn-icon-topbar:hover {
-  background: var(--color-primary-soft);
-  color: var(--color-primary);
-  border-color: var(--color-primary);
-}
-
-/* ==========================================================================
-   6. BANNER KONDISI SISTEM (HANYA SAAT ADA MASALAH)
-   ========================================================================== */
-.system-issue-banner {
-  position: absolute;
-  top: calc(var(--topbar-height) + 12px);
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1040;
-  max-width: 680px;
-  width: calc(100% - 32px);
-  background: var(--bg-surface);
-  border-left: 4px solid var(--color-waspada);
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-md);
-  padding: 10px 14px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  font-size: 12px;
-  color: var(--text-primary);
-}
-
-.system-issue-banner.hidden {
-  display: none !important;
-}
-
-.system-issue-banner.level-danger {
-  border-left-color: var(--color-awas);
-}
-
-.system-issue-banner.level-warning {
-  border-left-color: var(--color-waspada);
-}
-
-.banner-content {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.banner-close {
-  background: transparent;
-  border: none;
-  color: var(--text-muted);
-  cursor: pointer;
-  padding: 4px;
-  display: flex;
-  align-items: center;
-}
-
-/* Banner Interaksi Audio Awal */
-.audio-prompt-banner {
-  position: absolute;
-  top: calc(var(--topbar-height) + 64px); /* Mengambang rapi di bawah banner issue jika keduanya muncul */
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1045;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-medium);
-  border-radius: var(--radius-md);
-  padding: 8px 16px;
-  box-shadow: var(--shadow-lg);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 12px;
-  color: var(--text-primary);
-}
-
-.audio-prompt-banner.hidden {
-  display: none !important;
-}
-
-.btn-enable-audio {
-  background: var(--color-primary);
+  background: var(--bg-surface-muted);
   color: #FFFFFF;
-  border: none;
-  border-radius: var(--radius-sm);
-  padding: 6px 12px;
-  font-size: 11px;
-  font-weight: 600;
-  cursor: pointer;
-  min-height: 36px;
+  border-color: var(--border-medium);
 }
 
 /* ==========================================================================
-   7. PANEL KONDISI PERANGKAT (KIRI ATAS) & KONSOL BENCANA (BAWAH)
+   4. LAYOUT UTAMA: 2-BARIS GRID BNPB COMMAND CENTER
    ========================================================================== */
-
-/* ==========================================================================
-   7. DASHBOARD FLANKING PANELS: KONDISI PERANGKAT (KIRI) & KONSOL BENCANA (KANAN)
-   ========================================================================== */
-
-/* 7A. Panel Kondisi Perangkat (Kiri - Khusus Hardware & Diagnostik) */
-.device-status-panel {
-  position: absolute;
-  top: calc(var(--topbar-height) + var(--panel-outer-gap));
-  bottom: var(--panel-outer-gap);
-  left: var(--panel-outer-gap);
-  width: var(--panel-left-width);
-  height: auto;
-  max-height: none;
-  z-index: 1000;
-  background: var(--bg-backdrop);
-  backdrop-filter: blur(16px);
-  border: 1px solid var(--border-subtle);
-  border-radius: 18px;
-  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.14), 0 3px 12px rgba(0, 0, 0, 0.05);
+.bnpb-app-container {
   display: flex;
   flex-direction: column;
+  width: 100vw;
+  height: 100vh;
   overflow: hidden;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+  background-color: var(--bg-canvas);
 }
 
-.device-status-panel.collapsed {
-  transform: translateX(calc(-100% - 30px));
-  opacity: 0;
-  pointer-events: none;
-}
-
-.btn-toggle-device-panel {
-  position: absolute;
-  top: calc(var(--topbar-height) + var(--panel-outer-gap));
-  left: var(--panel-outer-gap);
-  z-index: 999;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
-  padding: 12px 20px;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text-primary);
-  box-shadow: var(--shadow-md);
-  display: none;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  min-height: 46px;
-}
-
-.btn-toggle-device-panel.visible {
-  display: flex;
-}
-
-.device-status-panel .panel-header {
-  padding: 18px 20px 14px 20px;
-  border-bottom: 1px solid var(--border-subtle);
-  background: var(--bg-surface-muted);
-}
-
-.device-status-panel .panel-title {
-  font-size: 20px;
-  font-weight: 800;
-  line-height: 1.25;
-}
-
-.device-status-panel .panel-subtitle {
-  font-size: 13.5px;
-  font-weight: 500;
-  margin-top: 4px;
-}
-
-.device-status-panel .chip-data-status {
-  font-size: 12px;
-  font-weight: 800;
-  padding: 4px 12px;
-}
-
-.device-status-panel .btn-close-panel {
-  width: 36px;
-  height: 36px;
-}
-
-.device-panel-content {
-  padding: 16px 18px 20px 18px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+.bnpb-dashboard {
   flex: 1;
-}
-
-.device-panel-content .sensor-metric-card {
-  padding: 16px 18px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: 14px;
-  gap: 10px;
-}
-
-.device-panel-content .sensor-header {
-  font-size: 13.5px;
-  font-weight: 700;
-}
-
-.device-panel-content .sensor-status-tag {
-  font-size: 12px;
-  font-weight: 800;
-  padding: 2px 8px;
-  border-radius: 5px;
-}
-
-.device-panel-content .sensor-big-value {
-  font-size: 48px;
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -0.02em;
-}
-
-.device-panel-content .sensor-unit {
-  font-size: 22px;
-  font-weight: 700;
-  margin-left: 3px;
-}
-
-.device-panel-content #valBateraiVolt {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--text-secondary);
-}
-
-.device-panel-content .progress-container {
-  height: 12px;
-  border-radius: 9999px;
-  margin: 4px 0;
-}
-
-.device-panel-content .sensor-footer-info {
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.device-panel-content .sensor-sub-label {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-muted);
-}
-
-.device-panel-content #valRelay {
-  font-size: 26px;
-  font-weight: 800;
-  line-height: 1.2;
-}
-
-/* 7B. Konsol Bencana & Alam (Kanan - Telemetri Bencana & Rekomendasi) */
-.disaster-console-deck {
-  position: absolute;
-  top: calc(var(--topbar-height) + var(--panel-outer-gap));
-  bottom: var(--panel-outer-gap);
-  right: var(--panel-outer-gap);
-  left: auto;
-  transform: none;
-  width: var(--panel-right-width);
-  height: auto;
-  max-height: none;
-  z-index: 1000;
-  background: var(--bg-backdrop);
-  backdrop-filter: blur(16px);
-  border: 1px solid var(--border-subtle);
-  border-radius: 18px;
-  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.14), 0 3px 12px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
-}
-
-.disaster-console-deck.collapsed {
-  transform: translateX(calc(100% + 30px));
-  opacity: 0;
-  pointer-events: none;
-}
-
-.btn-toggle-deck {
-  position: absolute;
-  top: calc(var(--topbar-height) + var(--panel-outer-gap));
-  right: var(--panel-outer-gap);
-  bottom: auto;
-  left: auto;
-  transform: none;
-  z-index: 999;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
-  padding: 12px 20px;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text-primary);
-  box-shadow: var(--shadow-md);
-  display: none;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  min-height: 46px;
-}
-
-.btn-toggle-deck.visible {
-  display: flex;
-}
-
-.deck-header-bar {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 12px;
-  padding: 16px 20px 12px 20px;
-  border-bottom: 1px solid var(--border-subtle);
-  background: var(--bg-surface-muted);
-}
-
-.deck-header-top-row {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
-}
-
-.deck-title-actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-}
-
-.deck-summary-pills {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  padding: 8px;
   gap: 8px;
-  width: 100%;
+  min-height: 0;
+  overflow: hidden;
 }
 
-.deck-summary-card {
+/* BARIS ATAS: TINGGI ~52% */
+.bnpb-row-top {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 12px;
-  border-radius: 10px;
-  background: var(--bg-surface);
+  height: 52%;
+  gap: 8px;
+  min-height: 0;
+}
+
+/* 1. Kolom Kiri: Info & Langkah Cepat (~24% lebar) */
+.bnpb-col-info {
+  width: 24%;
+  background-color: var(--bg-surface);
   border: 1px solid var(--border-subtle);
-  font-size: 13px;
-  font-weight: 700;
-  min-width: 0;
+  border-radius: var(--radius-md);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  overflow-y: auto;
+  min-height: 0;
 }
 
-.deck-summary-card.status-normal { border-left: 3px solid var(--color-normal); }
-.deck-summary-card.status-waspada { border-left: 3px solid var(--color-waspada); }
-.deck-summary-card.status-siaga { border-left: 3px solid var(--color-siaga); }
-.deck-summary-card.status-awas { border-left: 3px solid var(--color-awas); }
-.deck-summary-card.status-offline { border-left: 3px solid var(--color-offline); }
-
-.deck-summary-label {
-  font-size: 12px;
-  font-weight: 800;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  letter-spacing: 0.03em;
-}
-
-.deck-summary-badge {
-  font-size: 11.5px;
-  font-weight: 800;
-  font-family: var(--font-mono);
-  padding: 2px 8px;
-  border-radius: 4px;
+/* Banner Oranye Gradien Khas BNPB */
+.bnpb-banner-orange {
+  background: linear-gradient(135deg, #F59047 0%, #CD541B 100%);
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: 0 2px 8px rgba(205, 84, 27, 0.35);
+  border: 1px solid rgba(102, 49, 33, 0.6);
   flex-shrink: 0;
 }
 
-.deck-tabs {
+.bnpb-banner-header {
   display: flex;
   align-items: center;
-  gap: 6px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  border-bottom: none;
-  background: transparent;
-  padding: 0;
-  width: 100%;
+  justify-content: space-between;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.9);
 }
 
-.deck-tabs::-webkit-scrollbar {
-  display: none;
+.bnpb-banner-clock {
+  background: rgba(0, 0, 0, 0.25);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-weight: 600;
 }
 
-.deck-tabs .tab-btn {
-  flex: 1;
-  text-align: center;
-  padding: 9px 10px;
-  font-size: 13px;
+.bnpb-banner-title {
+  font-size: 12.5px;
   font-weight: 700;
-  min-height: 40px;
-  border-bottom: 2px solid transparent;
+  line-height: 1.25;
+  margin: 0;
+  color: #FFFFFF;
 }
 
-.deck-tabs .tab-btn.active {
-  color: var(--color-primary);
-  border-bottom-color: var(--color-primary);
+.bnpb-banner-subtitle {
+  font-size: 9.5px;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 2px 0 0 0;
 }
 
-.mobile-only-tab {
-  display: none;
+/* 3 Quick Counter Badges */
+.bnpb-quick-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  flex-shrink: 0;
 }
 
-.btn-close-deck {
-  background: transparent;
-  border: none;
+.bnpb-stat-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  padding: 6px 4px;
+  text-align: center;
+}
+
+.bnpb-stat-num {
+  font-size: 11px;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.bnpb-stat-label {
+  font-size: 9px;
   color: var(--text-muted);
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 6px;
+}
+
+/* Langkah Cepat Section */
+.bnpb-quick-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-height: 0;
+  justify-content: space-between;
+}
+
+.bnpb-section-header {
+  margin-bottom: 2px;
+}
+
+.bnpb-section-title {
+  font-size: 11.5px;
+  font-weight: 700;
+  margin: 0;
+  color: #FFFFFF;
+}
+
+.bnpb-section-desc {
+  font-size: 9px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.bnpb-action-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  overflow-y: auto;
+}
+
+.bnpb-action-item {
+  background: rgba(35, 34, 33, 0.7);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  padding: 6px 8px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.bnpb-action-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 34px;
-  min-height: 34px;
+  flex-shrink: 0;
 }
 
-.btn-close-deck:hover {
-  background: var(--bg-surface);
-  color: var(--text-primary);
+.bnpb-action-icon svg, .bnpb-action-icon i {
+  width: 13px;
+  height: 13px;
 }
 
-.deck-content {
-  padding: 16px 18px 20px 18px;
-  overflow-y: auto;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+.bnpb-action-icon.action-search {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60A5FA;
 }
 
-.deck-ringkasan-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+.bnpb-action-icon.action-bell {
+  background: rgba(245, 158, 11, 0.15);
+  color: #FBBF24;
 }
 
-.deck-quick-metrics {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
+.bnpb-action-icon.action-radio {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34D399;
 }
 
-.deck-quick-metrics .sensor-metric-card {
-  padding: 16px 16px;
-  border-radius: 14px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-height: 140px;
+.bnpb-action-body {
+  font-size: 9px;
+  line-height: 1.35;
 }
 
-.deck-quick-metrics .sensor-header {
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.deck-quick-metrics .sensor-status-tag {
-  font-size: 11px;
-  font-weight: 800;
-  padding: 2px 7px;
-  border-radius: 4px;
-}
-
-.deck-quick-metrics .sensor-big-value {
-  font-size: 46px;
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -0.02em;
-}
-
-.deck-quick-metrics .sensor-unit {
-  font-size: 20px;
-  font-weight: 700;
-  margin-left: 2px;
-}
-
-.deck-horizontal-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.deck-horizontal-grid .sensor-metric-card {
-  padding: 16px 18px;
-  border-radius: 14px;
-  gap: 10px;
-}
-
-.deck-horizontal-grid .sensor-header {
-  font-size: 13.5px;
-  font-weight: 700;
-}
-
-.deck-horizontal-grid .sensor-status-tag {
-  font-size: 11.5px;
-  font-weight: 800;
-  padding: 2px 7px;
-}
-
-.deck-horizontal-grid .sensor-big-value {
-  font-size: 40px;
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -0.02em;
-}
-
-.deck-horizontal-grid .sensor-unit {
-  font-size: 18px;
-  font-weight: 700;
-  margin-left: 2px;
-}
-
-.deck-horizontal-grid .tabular-nums {
-  font-size: 13px;
+.bnpb-action-title {
+  display: block;
   font-weight: 600;
+  color: #FFFFFF;
+  font-size: 9.5px;
 }
 
-.deck-horizontal-grid .progress-container {
-  height: 12px;
-  border-radius: 9999px;
-}
-
-.deck-horizontal-grid .sensor-footer-info {
-  font-size: 11.5px;
-  font-weight: 600;
-}
-
-/* Komponen Umum (Header & Elemen Panel) */
-.node-detail-panel {
-  display: none; /* Kompatibilitas elemen lama */
-}
-
-.btn-toggle-panel {
-  display: none !important;
-}
-
-/* Kepala Panel */
-.panel-header {
-  padding: 16px 20px 12px 20px;
-  border-bottom: 1px solid var(--border-subtle);
-  background: var(--bg-surface-muted);
-}
-
-.panel-header-top {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.panel-title {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text-primary);
-  letter-spacing: -0.01em;
-}
-
-.panel-subtitle {
-  margin: 3px 0 0 0;
-  font-size: 12px;
+.bnpb-action-text {
   color: var(--text-muted);
+  margin: 0;
+}
+
+.bnpb-action-rec-box {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: var(--radius-sm);
+  padding: 5px 8px;
+  margin-top: 2px;
+}
+
+.bnpb-action-rec-text {
+  font-size: 9px;
+  color: #A7F3D0;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.bnpb-btn-emergency {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #FCA5A5;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 10.5px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.bnpb-btn-emergency:hover {
+  background: rgba(239, 68, 68, 0.3);
+  color: #FFFFFF;
+}
+
+.bnpb-btn-emergency svg, .bnpb-btn-emergency i {
+  width: 13px;
+  height: 13px;
+}
+
+/* 2. Kolom Tengah: GIS Satellite Map (~46% lebar) */
+.bnpb-col-map {
+  width: 46%;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.bnpb-col-map #map {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+  z-index: 1;
+}
+
+/* Map Floating Controls */
+.bnpb-map-ctrl-topleft {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 20;
+}
+
+.bnpb-map-ctrl-topright {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 20;
+}
+
+.bnpb-map-ctrl-bottomleft {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  z-index: 20;
+  display: flex;
+  gap: 4px;
+}
+
+.bnpb-map-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: rgba(26, 25, 24, 0.92);
+  border: 1px solid var(--border-medium);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+  transition: all 0.15s ease;
+}
+
+.bnpb-map-btn:hover {
+  background: #2D2C2A;
+  color: #FFFFFF;
+  border-color: var(--border-strong);
+}
+
+.bnpb-map-btn svg, .bnpb-map-btn i {
+  width: 14px;
+  height: 14px;
+}
+
+/* Leaflet dark theme fix */
+.leaflet-container {
+  background: #141414 !important;
+  font-family: inherit;
+}
+
+.leaflet-control-attribution {
+  background: rgba(20, 20, 20, 0.85) !important;
+  color: var(--text-muted) !important;
+  font-size: 9px !important;
+  padding: 2px 6px !important;
+  border-radius: 4px 0 0 0;
+}
+
+.leaflet-control-attribution a {
+  color: var(--color-brand-light) !important;
+  text-decoration: none;
+}
+
+/* 3. Kolom Kanan: Kondisi Perangkat & Gateway (~30% lebar, 2x3 grid) */
+.bnpb-col-devices {
+  width: 30%;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.bnpb-devices-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+
+.bnpb-devices-title {
+  font-size: 11.5px;
+  font-weight: 700;
+  margin: 0;
+  color: #FFFFFF;
+}
+
+.bnpb-devices-subtitle {
+  font-size: 9px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.bnpb-btn-icon-subtle {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+}
+
+.bnpb-btn-icon-subtle:hover {
+  color: #FFFFFF;
+}
+
+.bnpb-btn-icon-subtle svg, .bnpb-btn-icon-subtle i {
+  width: 13px;
+  height: 13px;
+}
+
+/* 2x3 Grid of 6 Hardware Cards */
+.bnpb-devices-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 7px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.bnpb-device-card {
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  padding: 7px 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.bnpb-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.bnpb-card-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bnpb-card-body {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 3px 0;
+}
+
+.bnpb-val-large {
+  font-size: 17px;
+  font-weight: 700;
+  color: #FFFFFF;
+  font-family: var(--font-mono);
+  line-height: 1;
+}
+
+.bnpb-val-unit {
+  font-size: 9.5px;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-left: 2px;
+}
+
+.bnpb-val-sub {
+  font-size: 9.5px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+}
+
+.bnpb-node-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.bnpb-node-loc {
+  font-size: 8.5px;
+  color: var(--text-muted);
+  margin: 2px 0 0 0;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.bnpb-node-loc svg {
+  width: 10px;
+  height: 10px;
+}
+
+.bnpb-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 8px;
+  color: var(--text-subtle);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 3px;
+}
+
+/* ==========================================================================
+   5. BARIS BAWAH: TINGGI ~48% (SENSOR LONGSOR & KARHUTLA)
+   ========================================================================== */
+.bnpb-row-bottom {
+  display: flex;
+  height: 48%;
+  gap: 8px;
+  min-height: 0;
+}
+
+/* Panel Sensor Kiri & Kanan: 50% Lebar Masing-masing */
+.bnpb-col-sensor {
+  width: 50%;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.bnpb-sensor-header {
+  background-color: var(--bg-card);
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 7px;
+  flex-shrink: 0;
+}
+
+.bnpb-sensor-title {
+  font-size: 11.5px;
+  font-weight: 700;
+  margin: 0;
+  color: #FFFFFF;
+}
+
+.bnpb-sensor-subtitle {
+  font-size: 9px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.bnpb-sensor-actions {
   display: flex;
   align-items: center;
   gap: 6px;
+  color: var(--text-muted);
 }
 
-.chip-data-status {
-  font-size: 10px;
+.bnpb-sensor-actions button {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+}
+
+.bnpb-sensor-actions button:hover {
+  color: #FFFFFF;
+}
+
+.bnpb-sensor-actions svg, .bnpb-sensor-actions i {
+  width: 13px;
+  height: 13px;
+}
+
+/* 4 Kolom Lidar Style untuk Longsor */
+.bnpb-stations-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 7px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.bnpb-station-col {
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  padding: 7px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 9.5px;
+}
+
+.bnpb-station-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--border-medium);
+  margin-bottom: 5px;
+}
+
+.bnpb-station-name {
   font-weight: 700;
-  font-family: var(--font-mono);
-  padding: 2px 8px;
-  border-radius: 9999px;
-  text-transform: uppercase;
+  color: #FFFFFF;
+  font-size: 10px;
 }
 
-.chip-data-status.live {
+.bnpb-station-alert {
+  background: rgba(120, 53, 15, 0.35);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  color: #FCD34D;
+  padding: 3px 5px;
+  border-radius: 4px;
+  font-size: 8px;
+  line-height: 1.2;
+  margin-bottom: 5px;
+}
+
+.bnpb-station-sub {
+  font-size: 8.5px;
+  color: var(--text-muted);
+  margin-bottom: 5px;
+}
+
+.bnpb-station-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 4px 0;
+  padding: 0 2px;
+}
+
+.bnpb-hero-svg {
+  width: 26px;
+  height: 26px;
+  color: var(--color-brand);
+}
+
+.bnpb-hero-val-box {
+  text-align: right;
+}
+
+.bnpb-hero-val {
+  font-size: 18px;
+  font-weight: 700;
+  color: #FFFFFF;
+  font-family: var(--font-mono);
+  line-height: 1;
+}
+
+.bnpb-hero-unit {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-left: 2px;
+}
+
+.bnpb-hero-label {
+  font-size: 8px;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+
+.bnpb-station-table {
+  border-top: 1px solid var(--border-medium);
+  padding-top: 4px;
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5px;
+  font-size: 8px;
+}
+
+.bnpb-tbl-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.tbl-k {
+  color: var(--text-muted);
+}
+
+.tbl-v {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* Panel Kanan: Karhutla 4 Card + Seismogram Waveform */
+.bnpb-karhutla-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  gap: 7px;
+}
+
+.bnpb-karhutla-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 7px;
+  height: 90px;
+  flex-shrink: 0;
+}
+
+.bnpb-karhutla-card {
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  padding: 7px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.bnpb-status-pill-big {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  display: inline-block;
   background: var(--color-normal-soft);
   color: var(--color-normal);
   border: 1px solid var(--color-normal-border);
 }
 
-.chip-data-status.stale {
-  background: var(--color-waspada-soft);
-  color: var(--color-waspada);
-  border: 1px solid var(--color-waspada-border);
-}
-
-.btn-close-panel {
-  background: transparent;
-  border: none;
-  color: var(--text-muted);
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  min-width: 36px;
-  min-height: 36px;
-  justify-content: center;
-}
-
-.btn-close-panel:hover {
-  background: var(--bg-surface);
-  color: var(--text-primary);
-}
-
-/* Ringkasan Ganda: LONGSOR & KARHUTLA */
-.panel-summary-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--border-subtle);
-  background: var(--bg-surface);
-}
-
-.summary-card {
-  padding: 10px;
+/* Seismogram Waveform Box */
+.bnpb-seismo-box {
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-medium);
   border-radius: var(--radius-sm);
-  background: var(--bg-surface-muted);
-  border: 1px solid var(--border-subtle);
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.summary-card.status-normal {
-  border-left: 3px solid var(--color-normal);
-}
-.summary-card.status-waspada {
-  border-left: 3px solid var(--color-waspada);
-}
-.summary-card.status-siaga {
-  border-left: 3px solid var(--color-siaga);
-}
-.summary-card.status-awas {
-  border-left: 3px solid var(--color-awas);
-}
-.summary-card.status-offline {
-  border-left: 3px solid var(--color-offline);
-}
-
-.summary-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.summary-label {
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  letter-spacing: 0.05em;
-}
-
-.summary-level-badge {
-  font-size: 10px;
-  font-weight: 700;
-  font-family: var(--font-mono);
-  padding: 1px 6px;
-  border-radius: 4px;
-}
-
-.summary-desc {
-  font-size: 11px;
-  color: var(--text-secondary);
-  line-height: 1.35;
-  margin: 0;
-}
-
-/* Navigasi Tab / Segmen */
-.panel-tabs {
-  display: flex;
-  overflow-x: auto;
-  border-bottom: 1px solid var(--border-subtle);
-  background: var(--bg-surface-muted);
-  padding: 0 8px;
-  scrollbar-width: none;
-}
-
-.panel-tabs::-webkit-scrollbar {
-  display: none;
-}
-
-.tab-btn {
-  background: transparent;
-  border: none;
-  padding: 9px 12px;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-muted);
-  cursor: pointer;
-  white-space: nowrap;
-  border-bottom: 2px solid transparent;
-  transition: all 0.15s ease;
-  min-height: 40px;
-}
-
-.tab-btn:hover {
-  color: var(--text-primary);
-}
-
-.tab-btn.active {
-  color: var(--color-primary);
-  border-bottom-color: var(--color-primary);
-}
-
-/* Konten Tab Scrollable */
-.panel-content {
-  padding: 14px 16px;
-  overflow-y: auto;
+  padding: 7px 10px;
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  min-height: 0;
 }
 
-.tab-pane {
-  display: none;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.tab-pane.active {
-  display: flex;
-}
-
-/* Kartu Metrik Sensor */
-.sensor-metric-card {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: 14px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.sensor-header {
+.bnpb-seismo-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 11.5px;
-  color: var(--text-muted);
+  margin-bottom: 4px;
+  flex-shrink: 0;
+}
+
+.bnpb-seismo-title {
+  font-size: 10.5px;
   font-weight: 600;
+  color: #FFFFFF;
 }
 
-.sensor-value-row {
+.bnpb-chart-wrapper {
+  flex: 1;
+  position: relative;
+  min-height: 0;
+  width: 100%;
+}
+
+.bnpb-chart-wrapper canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.history-controls {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
+  align-items: center;
+  gap: 4px;
 }
 
-.sensor-big-value {
-  font-size: 28px;
-  font-weight: 700;
-  font-family: var(--font-mono);
-  color: var(--text-primary);
-}
-
-.sensor-unit {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text-muted);
-  margin-left: 2px;
-}
-
-.sensor-status-tag {
-  font-size: 10px;
-  font-weight: 700;
-  font-family: var(--font-mono);
-  padding: 2px 7px;
+.btn-range-filter {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
   border-radius: 4px;
+  color: var(--text-muted);
+  font-size: 9.5px;
+  font-weight: 600;
+  padding: 2px 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-range-filter:hover {
+  color: #FFFFFF;
+  border-color: var(--border-medium);
+}
+
+.btn-range-filter.active {
+  background: var(--color-brand-dark);
+  color: #FFFFFF;
+  border-color: var(--color-brand);
+}
+
+/* ==========================================================================
+   6. ELEMEN REUSABLE & STATUS BADGES
+   ========================================================================== */
+.sensor-status-tag {
+  font-size: 8px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  padding: 1.5px 5px;
+  border-radius: 3px;
+  background: var(--color-normal-soft);
+  color: var(--color-normal);
+  border: 1px solid currentColor;
+}
+
+.chip-data-status {
+  font-size: 9px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  padding: 1.5px 6px;
+  border-radius: 3px;
+}
+
+.chip-data-status.live {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--color-normal);
+  border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
 .progress-container {
   width: 100%;
-  height: 8px;
-  background: var(--bg-surface-muted);
-  border-radius: 9999px;
+  height: 3.5px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
   overflow: hidden;
-  position: relative;
-  border: 1px solid var(--border-subtle);
+  margin: 3px 0;
 }
 
 .progress-bar-fill {
   height: 100%;
-  border-radius: 9999px;
-  transition: width 0.4s ease;
-}
-
-.sensor-footer-info {
-  display: flex;
-  justify-content: space-between;
-  font-size: 10px;
-  font-family: var(--font-mono);
-  color: var(--text-subtle);
-}
-
-/* Kotak Rekomendasi Tindakan & Kontak Ganda */
-.action-recommendation-box {
-  background: var(--bg-surface-muted);
-  border: 1px solid var(--border-subtle);
-  border-radius: 16px;
-  padding: 22px 26px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  justify-content: space-between;
-}
-
-.action-recommendation-box.critical {
-  background: var(--color-awas-soft);
-  border-color: var(--color-awas-border);
-}
-
-.action-title {
-  font-size: 17px;
-  font-weight: 800;
-  text-transform: uppercase;
-  color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.action-title i, .action-title svg {
-  width: 20px;
-  height: 20px;
-}
-
-.action-text {
-  font-size: 15.5px;
-  color: var(--text-secondary);
-  margin: 0;
-  line-height: 1.6;
-  font-weight: 500;
-}
-
-.emergency-actions-row {
-  display: flex;
-  margin-top: 4px;
-}
-
-.btn-emergency-call {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  background: var(--color-primary);
-  color: #FFFFFF;
-  text-decoration: none;
-  border-radius: 12px;
-  padding: 16px 24px;
-  font-size: 17px;
-  font-weight: 800;
-  min-height: 54px;
-  transition: background-color 0.15s ease;
-  text-align: center;
-  width: 100%;
-}
-
-.btn-emergency-call i, .btn-emergency-call svg {
-  width: 20px;
-  height: 20px;
-}
-
-.btn-emergency-call:hover {
-  background: var(--color-primary-hover);
-}
-
-/* Riwayat Grafik */
-.history-controls {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
-.btn-range-filter {
-  flex: 1;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
-  padding: 10px 18px;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text-secondary);
-  cursor: pointer;
-  min-height: 44px;
-}
-
-.btn-range-filter.active {
-  background: var(--color-primary-soft);
-  color: var(--color-primary);
-  border-color: var(--color-primary);
-}
-
-.chart-wrapper {
-  position: relative;
-  width: 100%;
-  height: 340px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: 14px;
-  padding: 12px;
+  background-color: var(--color-normal);
+  transition: width 0.3s ease, background-color 0.3s ease;
 }
 
 /* ==========================================================================
-   8. PANEL KONTROL PETA, LAYER & LEGENDA
+   7. MODAL, OVERLAY & BANNER (AUDIO, LAYER, LEGENDA, ZOOM, DEMO)
    ========================================================================== */
-.map-controls-group {
-  position: absolute;
-  right: calc(var(--panel-right-width) + var(--panel-outer-gap) + var(--panel-inner-gap) + 16px);
-  bottom: calc(var(--panel-outer-gap) + 16px);
-  z-index: 100;
+.floating-overlay-card {
+  position: fixed;
+  z-index: 1100;
+  background: rgba(20, 20, 20, 0.96);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: 12px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-}
-
-.control-btn-circle {
-  width: 44px;
-  height: 44px;
-  border-radius: var(--radius-sm);
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: var(--shadow-md);
-  transition: all 0.15s ease;
-}
-
-.control-btn-circle:hover {
-  background: var(--bg-surface-muted);
-  color: var(--color-primary);
-}
-
-.floating-overlay-card {
-  position: absolute;
-  z-index: 1000;
-  background: var(--bg-backdrop);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg);
-  padding: 12px 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
   transition: all 0.2s ease;
 }
 
@@ -1360,9 +1159,9 @@ button, input, select {
 }
 
 .layer-panel {
-  top: calc(var(--topbar-height) + var(--panel-outer-gap) + 12px);
-  right: calc(var(--panel-right-width) + var(--panel-outer-gap) + var(--panel-inner-gap) + 16px);
-  width: 290px;
+  top: 54px;
+  right: 14px;
+  width: 280px;
 }
 
 .card-header-sm {
@@ -1370,76 +1169,247 @@ button, input, select {
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid var(--border-subtle);
-  padding-bottom: 8px;
+  padding-bottom: 6px;
 }
 
 .card-title-sm {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
-  color: var(--text-primary);
+  color: #FFFFFF;
   margin: 0;
+}
+
+.btn-close-panel {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+}
+
+.btn-close-panel:hover {
+  color: #FFFFFF;
 }
 
 .layer-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 12px;
+  font-size: 11px;
   cursor: pointer;
-  padding: 5px 0;
+  padding: 4px 0;
   color: var(--text-secondary);
-  gap: 8px;
 }
 
 .layer-item input[type="checkbox"],
 .layer-item input[type="radio"] {
   cursor: pointer;
-  accent-color: var(--color-primary);
-  width: 16px;
-  height: 16px;
-  flex-shrink: 0;
+  accent-color: var(--color-brand);
+  width: 14px;
+  height: 14px;
 }
 
 .layer-notice {
-  font-size: 10px;
+  font-size: 9.5px;
   color: var(--text-muted);
-  font-style: italic;
   padding-top: 4px;
-  border-top: 1px solid var(--border-subtle);
   line-height: 1.3;
 }
 
 .legend-panel {
-  left: calc(var(--panel-left-width) + var(--panel-outer-gap) + var(--panel-inner-gap) + 16px);
-  bottom: calc(var(--panel-outer-gap) + 16px);
-  width: 220px;
-  z-index: 100;
+  left: 20px;
+  bottom: 20px;
+  width: 230px;
+  z-index: 1050;
 }
 
 .legend-scale-row {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 11px;
+  font-size: 10px;
 }
 
 .legend-badge {
-  width: 65px;
-  font-size: 9px;
+  width: 58px;
+  font-size: 8.5px;
   font-weight: 700;
   font-family: var(--font-mono);
-  padding: 2px 4px;
-  border-radius: 4px;
+  padding: 1.5px 4px;
+  border-radius: 3px;
   text-align: center;
 }
 
 .legend-desc {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-secondary);
 }
 
+/* System Issue Banner */
+.system-issue-banner {
+  position: fixed;
+  top: 54px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1200;
+  background: rgba(26, 25, 24, 0.96);
+  border: 1px solid var(--color-waspada);
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--shadow-lg);
+  color: #FFFFFF;
+  font-size: 11.5px;
+}
+
+.system-issue-banner.hidden {
+  display: none !important;
+}
+
+.banner-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.banner-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+}
+
+.banner-close:hover {
+  color: #FFFFFF;
+}
+
+/* Audio Prompt Banner */
+.audio-prompt-banner {
+  position: fixed;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1200;
+  background: rgba(20, 20, 20, 0.96);
+  border: 1px solid var(--color-brand);
+  border-radius: var(--radius-md);
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: var(--shadow-lg);
+  font-size: 11.5px;
+  color: #FFFFFF;
+}
+
+.audio-prompt-banner.hidden {
+  display: none !important;
+}
+
+.btn-enable-audio {
+  background: var(--color-brand);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Opening Zoom Banner */
+.opening-zoom-banner {
+  position: fixed;
+  top: 54px;
+  left: 14px;
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(20, 20, 20, 0.92);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border-medium);
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 11px;
+  color: #FFFFFF;
+}
+
+.opening-zoom-banner.hidden {
+  display: none !important;
+}
+
+.opening-zoom-logo {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.btn-skip-zoom {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  border-radius: 9999px;
+  padding: 2px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Demo Mode Dock */
+.demo-mode-dock {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1150;
+  background: var(--bg-surface);
+  border: 1px solid var(--color-brand);
+  border-radius: var(--radius-md);
+  padding: 6px 12px;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.demo-mode-dock.hidden {
+  display: none !important;
+}
+
+.demo-dock-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--color-brand);
+  padding-right: 6px;
+  border-right: 1px solid var(--border-subtle);
+}
+
+.btn-demo-sim {
+  background: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-xs);
+  padding: 3px 6px;
+  font-size: 10px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.btn-demo-sim:hover {
+  background: var(--bg-card-hover);
+  color: #FFFFFF;
+}
+
 /* ==========================================================================
-   9. MARKER NODE & DENYUT PULSE
+   8. MARKER PETA & ANIMASI PULSE
    ========================================================================== */
 .custom-node-marker {
   position: relative;
@@ -1450,15 +1420,15 @@ button, input, select {
 }
 
 .marker-pin {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
-  border: 2.5px solid #FFFFFF;
+  border: 2px solid #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #FFFFFF;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
   transition: transform 0.2s ease;
 }
 
@@ -1468,19 +1438,19 @@ button, input, select {
 
 .marker-label {
   position: absolute;
-  top: 32px;
+  top: 30px;
   left: 50%;
   transform: translateX(-50%);
-  background: var(--bg-backdrop);
+  background: rgba(20, 20, 20, 0.9);
   border: 1px solid var(--border-subtle);
   border-radius: 4px;
   padding: 2px 6px;
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: 700;
   font-family: var(--font-mono);
   white-space: nowrap;
   box-shadow: var(--shadow-sm);
-  color: var(--text-primary);
+  color: #FFFFFF;
   pointer-events: none;
 }
 
@@ -1488,8 +1458,8 @@ button, input, select {
   position: absolute;
   top: -6px;
   left: -6px;
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   background: var(--color-awas);
   opacity: 0.75;
@@ -1503,404 +1473,71 @@ button, input, select {
   100% { transform: scale(1.8); opacity: 0; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .marker-pulse-ring {
-    animation: none !important;
-    display: none !important;
-  }
-  .opening-zoom-banner {
-    animation: none !important;
-  }
-}
+/* Compatibility classes */
+.hidden { display: none !important; }
 
 /* ==========================================================================
-   10. DOCK SIMULASI JURI (?demo=1)
+   9. RESPONSIVITAS MOBILE & TABLET
    ========================================================================== */
-.demo-mode-dock {
-  position: absolute;
-  bottom: calc(290px + 28px); /* Mengambang tepat di atas konsol bencana bawah pada desktop */
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1050;
-  background: var(--bg-surface);
-  border: 1px solid var(--color-primary);
-  border-radius: var(--radius-md);
-  padding: 8px 12px;
-  box-shadow: var(--shadow-lg);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.demo-mode-dock.hidden {
-  display: none !important;
-}
-
-.demo-dock-label {
-  font-size: 11px;
-  font-weight: 700;
-  font-family: var(--font-mono);
-  color: var(--color-primary);
-  padding-right: 6px;
-  border-right: 1px solid var(--border-subtle);
-}
-
-.btn-demo-sim {
-  background: var(--bg-surface-muted);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
-  padding: 4px 8px;
-  font-size: 11px;
-  font-weight: 600;
-  font-family: var(--font-mono);
-  color: var(--text-secondary);
-  cursor: pointer;
-  min-height: 34px;
-}
-
-.btn-demo-sim:hover {
-  background: var(--color-primary-soft);
-  color: var(--color-primary);
-}
-
-/* ==========================================================================
-   11. RESPONSIVITAS MOBILE (BOTTOM SHEET ADAPTATION)
-   ========================================================================== */
-@media (max-width: 768px) {
-  :root {
-    --panel-width: 100vw;
+@media (max-width: 1024px) {
+  html, body {
+    overflow-y: auto;
+    height: auto;
   }
+  .bnpb-app-container {
+    height: auto;
+    overflow-y: auto;
+  }
+  .bnpb-dashboard {
+    height: auto;
+    overflow-y: visible;
+  }
+  .bnpb-row-top {
+    flex-direction: column;
+    height: auto;
+  }
+  .bnpb-col-info, .bnpb-col-map, .bnpb-col-devices {
+    width: 100%;
+    height: auto;
+  }
+  .bnpb-col-map {
+    height: 340px;
+  }
+  .bnpb-row-bottom {
+    flex-direction: column;
+    height: auto;
+  }
+  .bnpb-col-sensor {
+    width: 100%;
+    height: auto;
+  }
+  .bnpb-stations-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .bnpb-karhutla-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    height: auto;
+  }
+  .bnpb-chart-wrapper {
+    height: 180px;
+  }
+}
 
+@media (max-width: 640px) {
   .topbar {
-    padding: 0 10px;
-    padding-top: env(safe-area-inset-top, 0px);
+    padding: 0 8px;
   }
-
-  .brand-tag,
-  .topbar-time,
-  .status-chip-summary {
-    display: none !important;
+  .brand-name {
+    font-size: 12px;
   }
-
   .link-indicators {
-    display: flex;
-    gap: 4px;
-  }
-
-  .link-pill {
-    padding: 2px 6px;
-    font-size: 10px;
-  }
-
-  .opening-zoom-banner {
-    top: calc(var(--topbar-height) + 8px);
-    left: 10px;
-    max-width: calc(100vw - 20px);
-    font-size: 11px;
-    padding: 4px 10px;
-  }
-
-  /* Reset peta pada mobile menjadi layar penuh di latar belakang */
-  #map {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100vw;
-    height: 100vh;
-    border-radius: 0;
-    border: none;
-    box-shadow: none;
-    z-index: 1;
-  }
-
-  /* Sembunyikan panel kondisi perangkat kiri atas di mobile (digabung ke tab Perangkat bottom sheet) */
-  .device-status-panel,
-  .btn-toggle-device-panel {
-    display: none !important;
-  }
-
-  /* Sembunyikan judul desktop konsol bencana di mobile */
-  .deck-title-actions {
-    display: none !important;
-  }
-
-  /* Tampilkan tab Perangkat pada konsol bencana mobile */
-  .mobile-only-tab {
-    display: inline-block !important;
-  }
-
-  /* Transformasikan disaster-console-deck menjadi mobile bottom sheet penuh */
-  .disaster-console-deck {
-    top: auto;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100vw;
-    max-width: 100vw;
-    max-height: 75vh;
-    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.25);
-    transform: translateY(0);
-    padding-bottom: env(safe-area-inset-bottom, 6px);
-    z-index: 1020;
-  }
-
-  .disaster-console-deck.collapsed {
-    transform: translateY(100%);
-  }
-
-  .mobile-drag-handle {
-    width: 44px;
-    height: 5px;
-    border-radius: 9999px;
-    background: var(--border-strong);
-    margin: 8px auto 4px auto;
-    cursor: pointer;
-    opacity: 0.7;
-  }
-
-  .deck-header-bar {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-    padding: 6px 12px 6px 12px;
-    background: var(--bg-surface-muted);
-  }
-
-  .deck-header-top-row {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    width: 100%;
-  }
-
-  /* Baris 1: Chip Status Data (LIVE / DATA LAMA) di kiri & Tombol Tutup di kanan */
-  .deck-header-actions {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    order: 1;
-  }
-
-  .deck-header-actions .chip-data-status {
-    font-size: 11px;
-    padding: 3px 10px;
-    letter-spacing: 0.03em;
-    font-weight: 700;
-  }
-
-  .deck-header-actions .btn-close-deck {
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: var(--radius-sm);
-    background: var(--bg-surface);
-    border: 1px solid var(--border-subtle);
-    color: var(--text-secondary);
-  }
-
-  /* Baris 2: Grid 2 Kolom untuk Kartu Status Longsor & Karhutla */
-  .deck-summary-pills {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    width: 100%;
-    order: 2;
-  }
-
-  .deck-summary-pills .deck-summary-card {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 6px 10px;
-    border-radius: var(--radius-sm);
-    background: var(--bg-surface);
-    border: 1px solid var(--border-subtle);
-    min-width: 0;
-  }
-
-  .deck-summary-pills .deck-summary-label {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
-    white-space: nowrap;
-  }
-
-  .deck-summary-pills .deck-summary-badge {
-    font-size: 10px;
-    font-weight: 700;
-    font-family: var(--font-mono);
-    padding: 2px 6px;
-    border-radius: 4px;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-
-  /* Baris 3: Navigasi Tab Horizontal yang Responsif */
-  .deck-tabs {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    border-bottom: 1px solid var(--border-subtle);
-    padding-bottom: 6px;
-    width: 100%;
-    order: 3;
-  }
-
-  .deck-tabs::-webkit-scrollbar {
     display: none;
   }
-
-  .deck-tabs .tab-btn {
-    flex-shrink: 0;
-    white-space: nowrap;
-    padding: 6px 12px;
-    font-size: 12px;
-    min-height: 32px;
-  }
-
-  .deck-ringkasan-grid {
+  .bnpb-stations-grid {
     grid-template-columns: 1fr;
-    gap: 12px;
   }
-
-  .deck-quick-metrics {
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-
-  .deck-quick-metrics .sensor-metric-card,
-  .deck-horizontal-grid .sensor-metric-card {
-    padding: 12px 14px;
-    min-height: auto;
-  }
-
-  .deck-quick-metrics .sensor-header,
-  .deck-horizontal-grid .sensor-header {
-    font-size: 11.5px;
-  }
-
-  .deck-quick-metrics .sensor-big-value {
-    font-size: 28px;
-  }
-
-  .deck-quick-metrics .sensor-unit {
-    font-size: 14px;
-  }
-
-  .deck-horizontal-grid {
+  .bnpb-devices-grid {
     grid-template-columns: 1fr;
-    gap: 10px;
-  }
-
-  .deck-horizontal-grid .sensor-big-value {
-    font-size: 26px;
-  }
-
-  .deck-horizontal-grid .sensor-unit {
-    font-size: 13px;
-  }
-
-  .action-recommendation-box {
-    padding: 12px 14px;
-    border-radius: var(--radius-md);
-  }
-
-  .action-title {
-    font-size: 12.5px;
-  }
-
-  .action-title i, .action-title svg {
-    width: 15px;
-    height: 15px;
-  }
-
-  .action-text {
-    font-size: 12px;
-  }
-
-  .btn-emergency-call {
-    font-size: 12.5px;
-    padding: 10px 14px;
-    min-height: 40px;
-    border-radius: var(--radius-sm);
-  }
-
-  .btn-emergency-call i, .btn-emergency-call svg {
-    width: 14px;
-    height: 14px;
-  }
-
-  .chart-wrapper {
-    height: 220px;
-  }
-
-  .btn-range-filter {
-    padding: 6px 8px;
-    font-size: 11px;
-    min-height: 36px;
-  }
-
-  .btn-toggle-deck {
-    bottom: calc(20px + env(safe-area-inset-bottom, 0px));
-    left: 14px;
-    top: auto;
-    z-index: 1020;
-  }
-
-  .node-detail-panel {
-    display: none !important;
-  }
-
-  .btn-toggle-panel {
-    display: none !important;
-  }
-
-  .layer-panel {
-    top: calc(var(--topbar-height) + 8px);
-    right: 10px;
-    left: 10px;
-    width: auto;
-    max-width: calc(100vw - 20px);
-  }
-
-  .legend-panel {
-    display: none;
-  }
-
-  .map-controls-group {
-    bottom: calc(90px + env(safe-area-inset-bottom, 0px));
-    right: 12px;
-  }
-
-  .demo-mode-dock {
-    top: calc(var(--topbar-height) + 8px);
-    bottom: auto;
-    left: 10px;
-    right: 10px;
-    transform: none;
-    width: auto;
-    justify-content: center;
-    gap: 6px;
-    padding: 6px 8px;
-    z-index: 1060;
-  }
-
-  .btn-demo-sim {
-    padding: 4px 6px;
-    font-size: 10px;
-    min-height: 30px;
+    grid-template-rows: auto;
   }
 }
