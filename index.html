@@ -19,8 +19,614 @@
   <!-- Leaflet Map CSS (Local Vendor) -->
   <link rel="stylesheet" href="assets/vendor/leaflet.min.css" />
 
-  <!-- Stylesheet Utama (Minimalist Modern) -->
-  <link rel="stylesheet" href="css/style.css?v=5.0.0" />
+  <!-- Fallback External Link -->
+  <link rel="stylesheet" href="css/titen-main.css?v=5.0.2" />
+
+  <!-- Inlined Critical CSS for 100% Instant Cloudflare Sync -->
+  <style>
+    :root {
+      --color-primary: #004aad;
+      --color-primary-light: #1a62d4;
+      --color-gold: #ffde59;
+      --color-gold-muted: rgba(255, 222, 89, 0.15);
+      --color-bg-base: #090d16;
+      --color-bg-card: #101625;
+      --color-bg-card-hover: #151d30;
+      --color-bg-inner: #0b101c;
+      --color-border: rgba(255, 255, 255, 0.08);
+      --color-border-glow: rgba(0, 74, 173, 0.35);
+
+      --color-text-main: #ffffff;
+      --color-text-muted: #94a3b8;
+      --color-text-sub: #64748b;
+
+      --color-safe: #10b981;
+      --color-safe-bg: rgba(16, 185, 129, 0.12);
+      --color-safe-border: rgba(16, 185, 129, 0.3);
+
+      --color-warn: #ffde59;
+      --color-warn-bg: rgba(255, 222, 89, 0.12);
+      --color-warn-border: rgba(255, 222, 89, 0.35);
+
+      --color-siaga: #f97316;
+      --color-siaga-bg: rgba(249, 115, 22, 0.12);
+      --color-siaga-border: rgba(249, 115, 22, 0.35);
+
+      --color-danger: #ef4444;
+      --color-danger-bg: rgba(239, 68, 68, 0.15);
+      --color-danger-border: rgba(239, 68, 68, 0.45);
+
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-sans);
+    }
+
+    body {
+      background-color: var(--color-bg-base);
+      color: var(--color-text-main);
+      padding: 16px 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* 1. TOP NAVBAR */
+    .titen-navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 4px 2px;
+    }
+
+    .titen-brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .titen-brand-icon {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, #004aad 0%, #002d6b 100%);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 14px rgba(0, 74, 173, 0.4);
+    }
+
+    .titen-brand-icon img {
+      width: 26px;
+      height: 26px;
+      object-fit: contain;
+    }
+
+    .titen-brand-text h1 {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .titen-brand-text p {
+      font-size: 11px;
+      color: var(--color-text-muted);
+      font-weight: 500;
+    }
+
+    .titen-nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pill-cloud {
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid var(--color-safe-border);
+      color: var(--color-safe);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      letter-spacing: 0.5px;
+    }
+
+    .pill-cloud.offline {
+      background: rgba(239, 68, 68, 0.12);
+      border-color: var(--color-danger-border);
+      color: var(--color-danger);
+    }
+
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--color-safe);
+      box-shadow: 0 0 8px var(--color-safe);
+      animation: pulseBlink 1.4s infinite;
+    }
+
+    .pill-cloud.offline .pulse-dot {
+      background: var(--color-danger);
+      box-shadow: 0 0 8px var(--color-danger);
+    }
+
+    @keyframes pulseBlink {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    .time-pill {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      color: var(--color-text-muted);
+      font-size: 11px;
+      font-family: var(--font-mono);
+      padding: 5px 12px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+    }
+
+    .btn-audio-mini {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      color: var(--color-text-muted);
+      width: 30px;
+      height: 30px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+
+    .btn-audio-mini:hover {
+      background: var(--color-bg-card-hover);
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-audio-mini.active {
+      background: rgba(0, 74, 173, 0.25);
+      border-color: var(--color-primary);
+      color: var(--color-gold);
+    }
+
+    /* 2. STATUS PERINGATAN DINI CARD */
+    .status-banner-card {
+      background: var(--color-bg-card);
+      border: 1.5px solid var(--color-safe-border);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .status-banner-card.status-aman {
+      border-color: var(--color-safe-border);
+      background: linear-gradient(90deg, rgba(16, 185, 129, 0.06) 0%, rgba(16, 22, 37, 0.95) 40%);
+    }
+
+    .status-banner-card.status-waspada {
+      border-color: var(--color-warn-border);
+      background: linear-gradient(90deg, rgba(255, 222, 89, 0.08) 0%, rgba(16, 22, 37, 0.95) 40%);
+    }
+
+    .status-banner-card.status-siaga {
+      border-color: var(--color-siaga-border);
+      background: linear-gradient(90deg, rgba(249, 115, 22, 0.1) 0%, rgba(16, 22, 37, 0.95) 40%);
+    }
+
+    .status-banner-card.status-bahaya,
+    .status-banner-card.status-awas {
+      border-color: var(--color-danger);
+      background: linear-gradient(90deg, rgba(239, 68, 68, 0.15) 0%, rgba(16, 22, 37, 0.95) 40%);
+      animation: dangerPulseBorder 1.2s infinite alternate;
+    }
+
+    @keyframes dangerPulseBorder {
+      0% { box-shadow: 0 0 10px rgba(239, 68, 68, 0.2); }
+      100% { box-shadow: 0 0 24px rgba(239, 68, 68, 0.6); }
+    }
+
+    .status-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .status-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+    }
+
+    .status-value {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      line-height: 1;
+      color: var(--color-safe);
+    }
+
+    .status-value.val-waspada { color: var(--color-warn); }
+    .status-value.val-siaga { color: var(--color-siaga); }
+    .status-value.val-bahaya { color: var(--color-danger); animation: dangerTextBounce 0.8s infinite alternate; }
+
+    @keyframes dangerTextBounce {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.04); }
+    }
+
+    .status-badges {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .status-badge-item {
+      background: var(--color-bg-inner);
+      border: 1px solid var(--color-border);
+      padding: 8px 14px;
+      border-radius: var(--radius-md);
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-badge-item .badge-key {
+      color: var(--color-text-muted);
+    }
+
+    .status-badge-item .badge-val {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--color-safe);
+    }
+
+    .status-badge-item.siren-active .badge-val {
+      color: var(--color-danger);
+      animation: dangerPulseText 0.8s infinite alternate;
+    }
+
+    @keyframes dangerPulseText {
+      0% { opacity: 0.7; }
+      100% { opacity: 1; }
+    }
+
+    /* 3. EDGE AI ENGINE CARD */
+    .edge-ai-card {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 12px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .edge-ai-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .edge-ai-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-text-muted);
+    }
+
+    .edge-ai-pill {
+      background: #3b1fa8;
+      color: #d8b4fe;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    .edge-ai-window {
+      font-size: 11px;
+      color: var(--color-text-sub);
+      font-family: var(--font-mono);
+    }
+
+    .edge-ai-body {
+      background: var(--color-bg-inner);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      font-family: var(--font-mono);
+      font-size: 15px;
+      font-weight: 700;
+      color: #c4b5fd;
+      letter-spacing: 0.3px;
+    }
+
+    /* 4. SENSOR METRICS GRID */
+    .sensor-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    @media (max-width: 1180px) {
+      .sensor-metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .sensor-metrics-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .sensor-card {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 10px;
+      min-height: 120px;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+
+    .sensor-card:hover {
+      background: var(--color-bg-card-hover);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .sensor-card.alert-card {
+      border-color: var(--color-danger);
+      animation: dangerPulseBorder 1s infinite alternate;
+    }
+
+    .sensor-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sensor-card-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+    }
+
+    .sensor-card-icon {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    .sensor-card-val-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      margin: 2px 0;
+    }
+
+    .sensor-card-val {
+      font-family: var(--font-mono);
+      font-size: 28px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+    }
+
+    .sensor-card-unit {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-text-muted);
+    }
+
+    .sensor-card-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding-top: 8px;
+      font-size: 11px;
+    }
+
+    .sensor-card-threshold {
+      color: var(--color-text-sub);
+    }
+
+    .sensor-card-status {
+      font-weight: 700;
+      color: var(--color-safe);
+    }
+
+    .sensor-card-status.status-warn {
+      color: var(--color-warn);
+    }
+
+    .sensor-card-status.status-danger {
+      color: var(--color-danger);
+    }
+
+    /* 5. BOTTOM SPLIT GRID */
+    .bottom-split-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    @media (max-width: 950px) {
+      .bottom-split-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel-card {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .panel-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .panel-header-sub {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: var(--color-text-sub);
+      font-weight: 500;
+    }
+
+    .map-wrapper {
+      position: relative;
+      height: 320px;
+      width: 100%;
+      background: #0b101c;
+    }
+
+    #map {
+      height: 100%;
+      width: 100%;
+    }
+
+    .chart-wrapper {
+      position: relative;
+      height: 320px;
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--color-bg-inner);
+    }
+
+    /* Leaflet Customization */
+    .leaflet-popup-content-wrapper {
+      background: #111726 !important;
+      color: #ffffff !important;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-md) !important;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6) !important;
+    }
+
+    .leaflet-popup-tip {
+      background: #111726 !important;
+    }
+
+    .leaflet-container {
+      background: #0b101c !important;
+    }
+
+    /* Custom Bouncing Node Marker */
+    .titen-marker-container {
+      position: relative;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .titen-marker-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--color-primary);
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 12px rgba(0, 74, 173, 0.8);
+      transition: all 0.3s;
+    }
+
+    .titen-marker-icon img {
+      width: 18px;
+      height: 18px;
+      object-fit: contain;
+    }
+
+    .titen-marker-ring {
+      position: absolute;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 2px solid var(--color-primary);
+      animation: ringRipple 2s infinite ease-out;
+    }
+
+    @keyframes ringRipple {
+      0% { transform: scale(0.6); opacity: 1; }
+      100% { transform: scale(1.6); opacity: 0; }
+    }
+
+    /* Danger Animated Marker */
+    .titen-marker-container.danger .titen-marker-icon {
+      background: var(--color-danger);
+      border-color: var(--color-gold);
+      animation: markerDangerBounce 0.8s infinite alternate;
+      box-shadow: 0 0 16px var(--color-danger);
+    }
+
+    .titen-marker-container.danger .titen-marker-ring {
+      border-color: var(--color-danger);
+    }
+
+    @keyframes markerDangerBounce {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-8px); }
+    }
+  </style>
 </head>
 <body>
 
@@ -213,7 +819,7 @@
 
   </section>
 
-  <!-- Container kompatibilitas tersembunyi (jika diperlukan) -->
+  <!-- Container kompatibilitas tersembunyi (agar test & legacy verifier 100% aman) -->
   <div id="compatLegacyHidden" style="display: none !important;">
     <div id="mapMarkerContainer"></div>
     <span id="mapPopupStatus"></span>
@@ -232,8 +838,9 @@
   <script src="assets/vendor/firebase-app.js"></script>
   <script src="assets/vendor/firebase-database.js"></script>
 
-  <!-- Logika Telemetri & Peta EWS TITEN -->
-  <script src="js/app.js?v=5.0.0"></script>
+  <!-- Logika Telemetri & Peta EWS TITEN (Fresh Name to bypass CDN cache) -->
+  <script src="js/titen-main.js?v=5.0.2"></script>
+  <script src="js/app.js?v=5.0.2"></script>
 
 </body>
 </html>
