@@ -826,11 +826,11 @@
 
     // ATURAN UTAMA:
     // Online HANYA jika ada bukti nyata perangkat mengirim data segar.
-    // Bukti = state._liveUpdateCount >= 2 (artinya data sudah berubah minimal sekali sejak halaman dibuka)
+    // Bukti = state._liveUpdateCount >= 1 (artinya data sudah berubah minimal sekali sejak halaman dibuka)
     //         DAN lastFirebaseUpdate dalam rentang timeout yang sah.
-    // Jika _liveUpdateCount < 2, itu berarti hanya snapshot awal (data lama yang sudah ada di DB).
+    // Jika _liveUpdateCount === 0, itu berarti hanya snapshot awal (data lama yang sudah ada di DB).
     const staleTimeoutMs = (CONFIG.NETWORK.STALE_DATA_TIMEOUT_SEC || 180) * 1000;
-    const hasLiveData = state._liveUpdateCount >= 2;
+    const hasLiveData = state._liveUpdateCount >= 1;
     const isFresh = state.lastFirebaseUpdate > 0 && (now - state.lastFirebaseUpdate <= staleTimeoutMs);
     const isOnline = hasLiveData && isFresh;
 
@@ -872,16 +872,16 @@
     const issues = [];
     const now = Date.now();
 
-    // 1. Cek koneksi Firebase Gateway
+    // 1. Cek koneksi Gateway & Perangkat
     if (!state.isGatewayOnline) {
       issues.push({
         level: "warning",
-        title: "Gateway Offline:",
-        desc: "Koneksi gateway stasiun posko ke cloud terputus."
+        title: "Perangkat Belum Terhubung:",
+        desc: "Gateway ESP32 dan Node sensor sedang offline / belum mengirim paket data."
       });
     }
 
-    // 2. Cek apakah seluruh node offline atau data lama
+    // 2. Cek apakah seluruh node offline atau data lama (hanya jika Gateway sedang Online)
     let totalNodes = state.nodes.size;
     let staleCount = 0;
     state.nodes.forEach(node => {
@@ -890,7 +890,7 @@
       }
     });
 
-    if (totalNodes > 0 && staleCount === totalNodes) {
+    if (totalNodes > 0 && staleCount === totalNodes && state.isGatewayOnline) {
       issues.push({
         level: "danger",
         title: "Telemetri Lama:",
@@ -1032,6 +1032,7 @@
 
     let _lastNodesHash = null;   // Hash JSON nodes terakhir
     let _lastEwsHash = null;     // Hash JSON ews_data terakhir
+    let _hasModernNodes = false; // Flag apakah schema nodes/ aktif
 
     try {
       firebase.initializeApp(CONFIG.FIREBASE);
@@ -1047,6 +1048,7 @@
       db.ref("nodes").on("value", (snapshot) => {
         const data = snapshot.val();
         if (data && typeof data === "object") {
+          _hasModernNodes = true;
           // Deteksi apakah data benar-benar berubah dari snapshot sebelumnya
           const currentHash = JSON.stringify(data);
           const isRealChange = (_lastNodesHash !== null && currentHash !== _lastNodesHash);
@@ -1072,22 +1074,21 @@
             renderOrUpdateNodeMarker(nodeObj);
           });
 
-          // Hanya update lastFirebaseUpdate jika data BENAR-BENAR berubah
+          // Hanya update jika data BENAR-BENAR berubah secara live
           if (isRealChange) {
             state._liveUpdateCount++;
             state.lastFirebaseUpdate = (latestPacketTs > 0) ? latestPacketTs : Date.now();
           }
-          // Snapshot pertama: JANGAN set lastFirebaseUpdate (tetap 0)
           evaluateNetworkStatus();
         }
       }, (err) => {
         console.warn("Firebase nodes/ listener notice:", err);
       });
 
-      // 2. Fallback Kompatibilitas untuk schema lama: ews_data
+      // 2. Fallback Kompatibilitas untuk schema: ews_data
       db.ref("ews_data").on("value", (snapshot) => {
         const val = snapshot.val();
-        if (val && !state.nodes.has("node-01")) {
+        if (val && !_hasModernNodes) {
           // Deteksi apakah data benar-benar berubah dari snapshot sebelumnya
           const currentHash = JSON.stringify(val);
           const isRealChange = (_lastEwsHash !== null && currentHash !== _lastEwsHash);
@@ -1096,39 +1097,43 @@
           const rawTs = (val.timestamp || val.ts) ? Number(val.timestamp || val.ts) : 0;
           const normalizedTs = (rawTs < 1e11 && rawTs > 0) ? rawTs * 1000 : rawTs;
 
-          // packetTs untuk display di UI (bukan untuk status Online/Offline)
+          // packetTs untuk display di UI
           let packetTs = 0;
           if (normalizedTs > 0) {
             packetTs = normalizedTs;
           }
 
-          // Hanya update lastFirebaseUpdate jika data BENAR-BENAR berubah
+          // Hanya update lastFirebaseUpdate jika data BENAR-BENAR berubah secara live
           if (isRealChange) {
             state._liveUpdateCount++;
             state.lastFirebaseUpdate = (normalizedTs > 0) ? normalizedTs : Date.now();
             packetTs = state.lastFirebaseUpdate;
           }
-          // Snapshot pertama: JANGAN set lastFirebaseUpdate (tetap 0)
 
-          const fallbackNode = {
+          const existingNode = state.nodes.get(CONFIG.DEFAULT_NODE.id);
+          const fallbackNode = existingNode || {
             id: CONFIG.DEFAULT_NODE.id,
             nama: val.node_id || CONFIG.DEFAULT_NODE.nama,
             lokasi: CONFIG.DEFAULT_NODE.lokasi,
             lat: val.latitude || CONFIG.DEFAULT_NODE.lat,
             lng: val.longitude || CONFIG.DEFAULT_NODE.lng,
-            latest: {
-              ts: packetTs,
-              suhu: val.suhu,
-              kelembapan_udara: val.kelembapan_udara !== undefined ? val.kelembapan_udara : val.udara,
-              kelembapan_tanah: val.kelembapan_tanah !== undefined ? val.kelembapan_tanah : val.tanah,
-              kemiringan_x: val.kemiringan_x !== undefined ? val.kemiringan_x : (val.kemiringan !== undefined ? val.kemiringan : val.miring),
-              kemiringan_y: val.kemiringan_y || 0,
-              getaran: val.getaran || 0,
-              baterai_persen: val.baterai_persen !== undefined ? val.baterai_persen : (val.persen_baterai !== undefined ? val.persen_baterai : val.baterai),
-              baterai_voltase: val.baterai_voltase || 3.9,
-              rssi: val.rssi || -78
-            }
           };
+          fallbackNode.nama = val.node_id || CONFIG.DEFAULT_NODE.nama;
+          fallbackNode.lat = val.latitude || CONFIG.DEFAULT_NODE.lat;
+          fallbackNode.lng = val.longitude || CONFIG.DEFAULT_NODE.lng;
+          fallbackNode.latest = {
+            ts: packetTs,
+            suhu: val.suhu,
+            kelembapan_udara: val.kelembapan_udara !== undefined ? val.kelembapan_udara : val.udara,
+            kelembapan_tanah: val.kelembapan_tanah !== undefined ? val.kelembapan_tanah : val.tanah,
+            kemiringan_x: val.kemiringan_x !== undefined ? val.kemiringan_x : (val.kemiringan !== undefined ? val.kemiringan : val.miring),
+            kemiringan_y: val.kemiringan_y || 0,
+            getaran: val.getaran || 0,
+            baterai_persen: val.baterai_persen !== undefined ? val.baterai_persen : (val.persen_baterai !== undefined ? val.persen_baterai : val.baterai),
+            baterai_voltase: val.baterai_voltase || 3.9,
+            rssi: val.rssi || -78
+          };
+
           state.nodes.set(fallbackNode.id, fallbackNode);
           renderOrUpdateNodeMarker(fallbackNode);
           evaluateNetworkStatus();
@@ -1532,7 +1537,7 @@
         }
 
         // Hanya tampilkan waktu jika ada live update (bukan dari data stale awal)
-        if (latestTs > 0 && state._liveUpdateCount >= 2) {
+        if (latestTs > 0 && state._liveUpdateCount >= 1) {
           const diffSec = Math.floor((now.getTime() - latestTs) / 1000);
           if (diffSec < 60) {
             syncEl.textContent = `Diperbarui ${Math.max(0, diffSec)} detik lalu`;

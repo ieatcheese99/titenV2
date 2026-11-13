@@ -1,16 +1,16 @@
 /**
  * EWS TITEN - Service Worker
- * Versi Cache: v3.2.0 (Pembaruan Favicon & Ikon Transparan)
+ * Versi Cache: v3.3.1 (Pembaruan Status Offline & Cache-Bust)
  */
 
-const CACHE_NAME = "ews-titen-v3.2.0";
+const CACHE_NAME = "ews-titen-v3.3.1";
 const ASSETS_TO_CACHE = [
   "./",
   "./index.html",
   "./qr.html",
-  "./css/style.css",
-  "./js/config.js",
-  "./js/app.js",
+  "./css/style.css?v=3.3.1",
+  "./js/config.js?v=3.3.1",
+  "./js/app.js?v=3.3.1",
   "./manifest.json",
   "./assets/vendor/leaflet.min.css",
   "./assets/vendor/leaflet.min.js",
