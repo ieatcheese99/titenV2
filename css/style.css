@@ -260,18 +260,13 @@ body {
 }
 
 .status-banner-card.status-waspada {
-  border-color: var(--color-warn-border);
+  border-color: var(--color-gold);
   border-left-color: var(--color-gold-dark);
   background: var(--color-warn-bg);
 }
 
-.status-banner-card.status-siaga {
-  border-color: var(--color-siaga-border);
-  border-left-color: var(--color-siaga);
-  background: var(--color-siaga-bg);
-}
-
 .status-banner-card.status-bahaya,
+.status-banner-card.status-siaga,
 .status-banner-card.status-awas {
   border-color: var(--color-danger);
   border-left-color: var(--color-danger);
@@ -336,8 +331,9 @@ body {
   50% { opacity: 1; }
 }
 
+.status-value.val-aman { color: var(--color-safe); }
 .status-value.val-waspada { color: var(--color-gold-dark); }
-.status-value.val-siaga { color: var(--color-siaga); }
+.status-value.val-siaga { color: var(--color-gold-dark); }
 .status-value.val-bahaya {
   color: var(--color-danger);
   animation: textDangerBounce 0.8s infinite alternate;
@@ -346,6 +342,53 @@ body {
 @keyframes textDangerBounce {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.06); }
+}
+
+/* 3 STATUS SISTEM LEVELS (AMAN, WASPADA, BAHAYA) */
+.status-sistem-levels {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f1f5f9;
+  padding: 5px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+}
+
+.level-pill {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  padding: 5px 12px;
+  border-radius: 4px;
+  color: #94a3b8;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  transition: all 0.25s ease;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+}
+
+.level-pill.level-aman.active {
+  background: var(--color-safe);
+  color: #ffffff;
+  border-color: var(--color-safe);
+  box-shadow: 0 2px 8px rgba(16, 138, 0, 0.35);
+}
+
+.level-pill.level-waspada.active {
+  background: var(--color-gold);
+  color: #0f172a;
+  border-color: var(--color-gold-dark);
+  box-shadow: 0 2px 8px rgba(255, 222, 89, 0.5);
+}
+
+.level-pill.level-bahaya.active {
+  background: var(--color-danger);
+  color: #ffffff;
+  border-color: var(--color-danger);
+  box-shadow: 0 0 12px rgba(222, 53, 11, 0.6);
+  animation: dangerPulseBorder 1s infinite alternate;
 }
 
 .status-badges {

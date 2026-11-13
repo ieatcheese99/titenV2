@@ -335,6 +335,15 @@
       textStatus.className = "status-value val-mencari";
     }
 
+    const levelAman = getEl("levelAman");
+    const levelWaspada = getEl("levelWaspada");
+    const levelBahaya = getEl("levelBahaya");
+    if (levelAman && levelWaspada && levelBahaya) {
+      levelAman.className = "level-pill level-aman";
+      levelWaspada.className = "level-pill level-waspada";
+      levelBahaya.className = "level-pill level-bahaya";
+    }
+
     setText("badgeModeDaya", "Mencari...");
     setText("textPrediksiAi", "Menunggu transmisi telemetri dari Gateway ESP32 & Node sensor...");
 
@@ -396,6 +405,15 @@
       cardStatus.className = "status-banner-card status-offline";
       textStatus.textContent = "Tidak Terhubung";
       textStatus.className = "status-value val-offline";
+    }
+
+    const levelAman = getEl("levelAman");
+    const levelWaspada = getEl("levelWaspada");
+    const levelBahaya = getEl("levelBahaya");
+    if (levelAman && levelWaspada && levelBahaya) {
+      levelAman.className = "level-pill level-aman";
+      levelWaspada.className = "level-pill level-waspada";
+      levelBahaya.className = "level-pill level-bahaya";
     }
 
     setText("badgeModeDaya", "Tidak Terhubung");
@@ -618,46 +636,59 @@
       textCloud.textContent = "GATEWAY TERHUBUNG";
     }
 
-    // 5. Evaluasi Status Peringatan Dini Global & Animasi Bahaya
+    // 5. Evaluasi Status Sistem (3 Status Saja: AMAN, WASPADA, BAHAYA)
     const cardStatus = getEl("cardStatusBanner");
     const textStatus = getEl("textStatusEws");
     const markerContainer = getEl("mapMarkerContainer");
     const mapPopupStatus = getEl("mapPopupStatus");
+    const levelAman = getEl("levelAman");
+    const levelWaspada = getEl("levelWaspada");
+    const levelBahaya = getEl("levelBahaya");
 
-    let isDanger = rawStatus.includes("BAHAYA") || rawStatus.includes("AWAS") || (!isNaN(miring) && miring >= 25) || (!isNaN(suhu) && suhu >= 40);
-    let isSiaga = rawStatus.includes("SIAGA") || (!isNaN(miring) && miring >= 20) || (!isNaN(suhu) && suhu >= 38);
-    let isWaspada = rawStatus.includes("WASPADA") || (!isNaN(miring) && miring >= 12) || (!isNaN(suhu) && suhu >= 36) || (!isNaN(tanah) && tanah >= 60);
+    // Kriteria 3 Status:
+    // 1. BAHAYA: Kemiringan >= 20° atau Suhu >= 38°C atau status dari hardware mengandung BAHAYA/AWAS/SIAGA/DARURAT
+    // 2. WASPADA: Kemiringan >= 12° atau Suhu >= 35°C atau Kelembapan Tanah >= 50% atau status mengandung WASPADA
+    // 3. AMAN: Kondisi normal di bawah ambang batas waspada
+    let isBahaya = rawStatus.includes("BAHAYA") || rawStatus.includes("AWAS") || rawStatus.includes("SIAGA") || rawStatus.includes("DARURAT") || (!isNaN(miring) && miring >= 20) || (!isNaN(suhu) && suhu >= 38);
+    let isWaspada = !isBahaya && (rawStatus.includes("WASPADA") || (!isNaN(miring) && miring >= 12) || (!isNaN(suhu) && suhu >= 35) || (!isNaN(tanah) && tanah >= 50));
 
     let displayStatus = "AMAN";
     let statusClass = "status-aman";
     let statusColor = "#108a00";
 
-    if (isDanger) {
-      displayStatus = rawStatus.includes("BAHAYA") ? rawStatus : "BAHAYA";
+    if (isBahaya) {
+      displayStatus = "BAHAYA";
       statusClass = "status-bahaya";
       statusColor = "#de350b";
-    } else if (isSiaga) {
-      displayStatus = "SIAGA";
-      statusClass = "status-siaga";
-      statusColor = "#e27d00";
     } else if (isWaspada) {
       displayStatus = "WASPADA";
       statusClass = "status-waspada";
       statusColor = "#b8860b";
+    } else {
+      displayStatus = "AMAN";
+      statusClass = "status-aman";
+      statusColor = "#108a00";
     }
 
     if (cardStatus && textStatus) {
       cardStatus.className = `status-banner-card ${statusClass}`;
       textStatus.textContent = displayStatus;
       textStatus.className = "status-value";
-      if (isDanger) textStatus.classList.add("val-bahaya");
-      else if (isSiaga) textStatus.classList.add("val-siaga");
+      if (isBahaya) textStatus.classList.add("val-bahaya");
       else if (isWaspada) textStatus.classList.add("val-waspada");
+      else textStatus.classList.add("val-aman");
+    }
+
+    // Highlight 3 Status Pills (AMAN / WASPADA / BAHAYA)
+    if (levelAman && levelWaspada && levelBahaya) {
+      levelAman.className = "level-pill level-aman" + (displayStatus === "AMAN" ? " active" : "");
+      levelWaspada.className = "level-pill level-waspada" + (displayStatus === "WASPADA" ? " active" : "");
+      levelBahaya.className = "level-pill level-bahaya" + (displayStatus === "BAHAYA" ? " active" : "");
     }
 
     // Marker Peta Animasi
     if (markerContainer) {
-      if (isDanger) {
+      if (isBahaya) {
         markerContainer.classList.add("danger");
       } else {
         markerContainer.classList.remove("danger");
@@ -667,6 +698,10 @@
     if (mapPopupStatus) {
       mapPopupStatus.textContent = displayStatus;
       mapPopupStatus.style.color = statusColor;
+    }
+
+    if (isBahaya) {
+      triggerAudioAlarm();
     }
 
     // Update posisi marker jika koordinat valid
