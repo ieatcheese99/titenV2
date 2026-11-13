@@ -1,16 +1,16 @@
 /**
  * EWS TITEN - Service Worker
- * Versi Cache: v3.3.2 (Pembaruan Tata Letak Mobile Bottom Sheet)
+ * Versi Cache: v3.3.3 (Pembaruan Tata Letak PC & Penyesuaian Ukuran Panel)
  */
 
-const CACHE_NAME = "ews-titen-v3.3.2";
+const CACHE_NAME = "ews-titen-v3.3.3";
 const ASSETS_TO_CACHE = [
   "./",
   "./index.html",
   "./qr.html",
-  "./css/style.css?v=3.3.2",
-  "./js/config.js?v=3.3.2",
-  "./js/app.js?v=3.3.2",
+  "./css/style.css?v=3.3.3",
+  "./js/config.js?v=3.3.3",
+  "./js/app.js?v=3.3.3",
   "./manifest.json",
   "./assets/vendor/leaflet.min.css",
   "./assets/vendor/leaflet.min.js",
