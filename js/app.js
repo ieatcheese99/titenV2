@@ -16,11 +16,12 @@
     audioEnabled: false,
     audioCtx: null,
     isGatewayLive: false,
+    hasReceivedData: false,
     liveUpdateCount: 0,
-    initialSnapshotReceived: false,
-    initialDataString: null,
+    lastData: null,
     lastPacketTime: 0,
-    staleTimeoutSec: 35, // Gateway deep sleep ~20s, toleransi 35 detik
+    lastPacketTimeStr: "",
+    staleTimeoutSec: 90, // Toleransi untuk siklus deep sleep 20s (tidak memutuskan status)
     history: {
       labels: [],
       suhu: [],
@@ -40,12 +41,16 @@
     if (el) el.textContent = text;
   }
 
-  // 1. Live Clock
+  // 1. Live Clock & Update Time
   function initClock() {
     function tick() {
       const now = new Date();
       const timeStr = now.toLocaleTimeString("id-ID", { hour12: false });
-      setText("clockWib", `Update: ${timeStr} WIB`);
+      if (state.lastPacketTimeStr) {
+        setText("clockWib", `Update: ${state.lastPacketTimeStr} WIB`);
+      } else {
+        setText("clockWib", `Update: ${timeStr} WIB`);
+      }
     }
     setInterval(tick, 1000);
     tick();
@@ -300,9 +305,21 @@
     });
   }
 
-  function pushChartData(suhuVal, tanahVal, miringVal) {
+  function pushChartData(suhuVal, tanahVal, miringVal, timeLabel) {
     if (!state.chart) return;
-    const nowStr = new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+    const nowStr = timeLabel || new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+
+    // Hindari duplikasi titik beruntun dengan nilai dan waktu yang sama
+    const len = state.history.labels.length;
+    if (len > 0) {
+      const lastLabel = state.history.labels[len - 1];
+      const lastSuhu = state.history.suhu[len - 1];
+      const lastTanah = state.history.tanah[len - 1];
+      const lastMiring = state.history.miring[len - 1];
+      if (lastLabel === nowStr && lastSuhu === suhuVal && lastTanah === tanahVal && lastMiring === miringVal) {
+        return;
+      }
+    }
 
     state.history.labels.push(nowStr);
     state.history.suhu.push(suhuVal);
@@ -326,6 +343,17 @@
   // 5. State Tampilan: SEDANG MENCARI GATEWAY
   function setUiSearching() {
     state.isGatewayLive = false;
+
+    // Jika sudah ada data terakhir yang dimuat, jangan hapus angka sensor dari layar
+    if (state.hasReceivedData && state.lastData) {
+      const pillCloud = getEl("pillCloud");
+      const textCloud = getEl("textCloudStatus");
+      if (pillCloud && textCloud) {
+        pillCloud.className = "pill-cloud searching";
+        textCloud.textContent = "MEMUAT PEMBARUAN GATEWAY...";
+      }
+      return;
+    }
 
     const cardStatus = getEl("cardStatusBanner");
     const textStatus = getEl("textStatusEws");
@@ -354,7 +382,7 @@
       textCloud.textContent = "SEDANG MENCARI GATEWAY";
     }
 
-    // Set Sensor Placeholders
+    // Set Sensor Placeholders hanya jika belum ada data sama sekali
     setText("valSuhu", "--.-");
     setText("valUdara", "--.-");
     setText("valTanah", "--");
@@ -399,6 +427,19 @@
   function setUiDisconnected(reason) {
     state.isGatewayLive = false;
 
+    // JIKA SUDAH ADA BACAAN DATA TERAKHIR: JANGAN PERNAH MENGHAPUS NILAI SENSOR & STATUS EWS
+    // Pertahankan status dan angka telemetri dari data terakhir
+    if (state.hasReceivedData && state.lastData) {
+      const pillCloud = getEl("pillCloud");
+      const textCloud = getEl("textCloudStatus");
+      if (pillCloud && textCloud) {
+        pillCloud.className = "pill-cloud offline";
+        textCloud.textContent = "STANDBY (DATA TERAKHIR)";
+      }
+      return;
+    }
+
+    // HANYA JIKA BELUM PERNAH ADA DATA MASUK SAMA SEKALI
     const cardStatus = getEl("cardStatusBanner");
     const textStatus = getEl("textStatusEws");
     if (cardStatus && textStatus) {
@@ -474,30 +515,43 @@
     }
   }
 
-  // 7. Pembaharuan UI Telemetri Riil (HANYA SAAT ADA PAKET TRANSMISI AKTIF DARI GATEWAY)
+  // 7. Pembaharuan UI Telemetri Riil (Menampilkan Bacaan Data Terakhir & Mempertahankan Status)
   function updateTelemetryUI(data) {
     if (!data || typeof data !== "object") {
-      setUiDisconnected("Paket Kosong");
       return;
     }
 
     // Verifikasi kelengkapan data minimal
-    const hasCoreData = (data.suhu !== undefined || data.kelembapan_tanah !== undefined || data.kemiringan !== undefined || data.status_ews !== undefined);
+    const hasCoreData = (
+      data.suhu !== undefined ||
+      data.kelembapan_tanah !== undefined ||
+      data.kemiringan !== undefined ||
+      data.kemiringan_x !== undefined ||
+      data.status_ews !== undefined ||
+      data.kelembapan_udara !== undefined ||
+      data.kelembapan !== undefined
+    );
     if (!hasCoreData) {
-      setUiDisconnected("Format Tidak Sesuai");
       return;
     }
 
+    state.hasReceivedData = true;
     state.isGatewayLive = true;
     state.lastPacketTime = Date.now();
+    state.lastData = data;
+
+    // Simpan ke localStorage agar bacaan data terakhir persisten saat reload
+    try {
+      localStorage.setItem("titen_last_ews_data", JSON.stringify(data));
+    } catch (e) {}
 
     // Normalisasi Nilai Sensor Riil
     const suhu = (data.suhu !== undefined) ? parseFloat(data.suhu) : NaN;
     const udara = (data.kelembapan_udara !== undefined) ? parseFloat(data.kelembapan_udara) : (data.kelembapan !== undefined ? parseFloat(data.kelembapan) : NaN);
     const tanah = (data.kelembapan_tanah !== undefined) ? parseInt(data.kelembapan_tanah) : NaN;
-    const miring = (data.kemiringan !== undefined) ? parseFloat(data.kemiringan) : (data.pitch !== undefined ? Math.abs(parseFloat(data.pitch)) : NaN);
-    const persenBat = (data.persen_baterai !== undefined) ? parseInt(data.persen_baterai) : (data.baterai !== undefined ? parseInt(data.baterai) : NaN);
-    const voltBat = (data.tegangan_baterai !== undefined) ? parseFloat(data.tegangan_baterai).toFixed(2) : (!isNaN(persenBat) ? (3.3 + (persenBat / 100) * 0.9).toFixed(2) : "-.--");
+    const miring = (data.kemiringan !== undefined) ? parseFloat(data.kemiringan) : (data.pitch !== undefined ? Math.abs(parseFloat(data.pitch)) : (data.kemiringan_x !== undefined ? Math.abs(parseFloat(data.kemiringan_x)) : NaN));
+    const persenBat = (data.persen_baterai !== undefined) ? parseInt(data.persen_baterai) : (data.baterai_persen !== undefined ? parseInt(data.baterai_persen) : (data.baterai !== undefined ? parseInt(data.baterai) : NaN));
+    const voltBat = (data.tegangan_baterai !== undefined) ? parseFloat(data.tegangan_baterai).toFixed(2) : (data.baterai_voltase !== undefined ? parseFloat(data.baterai_voltase).toFixed(2) : (!isNaN(persenBat) ? (3.3 + (persenBat / 100) * 0.9).toFixed(2) : "-.--"));
     const rssi = (data.rssi !== undefined) ? parseInt(data.rssi) : NaN;
 
     const rawStatus = (data.status_ews || "AMAN").toUpperCase();
@@ -505,7 +559,22 @@
     const prediksiAi = data.prediksi_ai || "Lereng & Termal Stabil";
     const alarmAktif = data.alarm_aktif === true;
 
-    // 1. Tampilkan Angka Sensor Riil
+    // Ambil Timestamp Data Terakhir
+    let packetTimeStr = "";
+    if (data.timestamp || data.ts) {
+      const ts = data.timestamp || data.ts;
+      const d = new Date(ts > 1e11 ? ts : ts * 1000);
+      if (!isNaN(d.getTime())) {
+        packetTimeStr = d.toLocaleTimeString("id-ID", { hour12: false });
+      }
+    }
+    if (!packetTimeStr) {
+      packetTimeStr = new Date().toLocaleTimeString("id-ID", { hour12: false });
+    }
+    state.lastPacketTimeStr = packetTimeStr;
+    setText("clockWib", `Update: ${packetTimeStr} WIB`);
+
+    // 1. Tampilkan Angka Sensor Riil (Bacaan Data Terakhir)
     setText("valSuhu", isNaN(suhu) ? "--.-" : suhu.toFixed(1));
     setText("valUdara", isNaN(udara) ? "--.-" : udara.toFixed(1));
     setText("valTanah", isNaN(tanah) ? "--" : tanah.toString());
@@ -621,7 +690,7 @@
     //    - Tindakan: Real-Time Active (1s) + Sirine 125dB + Alarm Web & Posko
     //
     // 2. WASPADA:
-    //    - Tanah Longsor: Sudut >= 25° ATAU Tanah >= 60°% ATAU Tren AI Aktif
+    //    - Tanah Longsor: Sudut >= 25° ATAU Tanah >= 60% ATAU Tren AI Aktif
     //    - Karhutla: (Suhu >= 36°C & Udara <= 45%) ATAU Tren AI Aktif
     //    - Flag Hardware: status_ews mengandung WASPADA
     //    - Tindakan: Real-Time Active (1s) + Peringatan Dini AI + Buzzer Pendek
@@ -693,7 +762,7 @@
       textCloud.textContent = "GATEWAY TERHUBUNG";
     }
 
-    // Banner Status Sistem & Nilai
+    // Banner Status Sistem & Nilai (Tetap dari data terakhir, tidak berubah jadi tidak terhubung)
     const cardStatus = getEl("cardStatusBanner");
     const textStatus = getEl("textStatusEws");
     const markerContainer = getEl("mapMarkerContainer");
@@ -732,10 +801,6 @@
       mapPopupStatus.style.color = statusColor;
     }
 
-    if (isBahaya) {
-      triggerAudioAlarm();
-    }
-
     // Update posisi marker jika koordinat valid
     if (data.latitude && data.longitude && !isNaN(parseFloat(data.latitude)) && !isNaN(parseFloat(data.longitude))) {
       const lat = parseFloat(data.latitude);
@@ -746,19 +811,21 @@
 
     if (state.circle) {
       state.circle.setStyle({
-        color: isDanger ? "#de350b" : (isWaspada ? "#ffde59" : "#004aad"),
-        fillColor: isDanger ? "#de350b" : (isWaspada ? "#ffde59" : "#004aad")
+        color: isBahaya ? "#de350b" : (isWaspada ? "#ffde59" : "#004aad"),
+        fillColor: isBahaya ? "#de350b" : (isWaspada ? "#ffde59" : "#004aad")
       });
     }
 
-    // Bunyikan Alarm Audio jika bahaya
-    if (isDanger) {
+    // Bunyikan Alarm Audio jika bahaya / waspada
+    if (isBahaya) {
       playAlertChirp(true);
+    } else if (isWaspada) {
+      playAlertChirp(false);
     }
 
     // Perbarui Grafik Real-Time Hanya dengan Data Valid
     if (!isNaN(suhu) && !isNaN(tanah) && !isNaN(miring)) {
-      pushChartData(suhu, tanah, miring);
+      pushChartData(suhu, tanah, miring, packetTimeStr);
     }
   }
 
@@ -766,7 +833,9 @@
   function initFirebase() {
     if (typeof firebase === "undefined") {
       console.warn("Firebase SDK tidak termuat.");
-      setUiDisconnected("Firebase SDK Offline");
+      if (!state.hasReceivedData) {
+        setUiDisconnected("Firebase SDK Offline");
+      }
       return;
     }
 
@@ -784,9 +853,27 @@
       db.ref(".info/connected").on("value", (snap) => {
         const isConnected = snap.val() === true;
         if (!isConnected) {
-          setUiDisconnected("Internet Terputus");
-        } else if (!state.isGatewayLive) {
-          setUiSearching();
+          if (!state.hasReceivedData) {
+            setUiDisconnected("Internet Terputus");
+          } else {
+            const pillCloud = getEl("pillCloud");
+            const textCloud = getEl("textCloudStatus");
+            if (pillCloud && textCloud) {
+              pillCloud.className = "pill-cloud offline";
+              textCloud.textContent = "OFFLINE (DATA TERAKHIR)";
+            }
+          }
+        } else {
+          if (state.hasReceivedData) {
+            const pillCloud = getEl("pillCloud");
+            const textCloud = getEl("textCloudStatus");
+            if (pillCloud && textCloud) {
+              pillCloud.className = "pill-cloud";
+              textCloud.textContent = "GATEWAY TERHUBUNG";
+            }
+          } else {
+            setUiSearching();
+          }
         }
       });
 
@@ -794,30 +881,13 @@
       db.ref("ews_data").on("value", (snapshot) => {
         const data = snapshot.val();
         if (!data || typeof data !== "object") {
-          setUiDisconnected("Data Kosong");
+          if (!state.hasReceivedData) {
+            setUiDisconnected("Data Kosong");
+          }
           return;
         }
 
-        const dataStr = JSON.stringify(data);
-
-        // Snapshot pertama kali pada saat buka web adalah data lama/stale di database
-        if (!state.initialSnapshotReceived) {
-          state.initialSnapshotReceived = true;
-          state.initialDataString = dataStr;
-
-          // Gateway belum tentu aktif dinyalakan saat buka web -> Tetap di state mencari!
-          setUiSearching();
-
-          // Beri jendela waktu 12 detik: jika gateway tidak mengirimkan pembaruan, nyatakan TIDAK TERHUBUNG
-          setTimeout(() => {
-            if (!state.isGatewayLive) {
-              setUiDisconnected("Gateway Belum Dinyalakan");
-            }
-          }, 12000);
-          return;
-        }
-
-        // Jika ada penulisan data baru berikutnya dari gateway ESP32:
+        // Tampilkan langsung data terbaru (baik snapshot pertama saat buka web maupun update berkala berikutnya)
         state.liveUpdateCount++;
         state.isGatewayLive = true;
         state.lastPacketTime = Date.now();
@@ -825,24 +895,35 @@
 
       }, (err) => {
         console.warn("Firebase ews_data error:", err);
-        setUiDisconnected("Error Firebase");
+        if (!state.hasReceivedData) {
+          setUiDisconnected("Error Firebase");
+        }
       });
 
-      // Watchdog Rutin: Cek setiap 3 detik apakah gateway masih aktif mengirim
+      // Watchdog Rutin: Toleransi siklus deep sleep (misal 20 detik)
+      // JANGAN PERNAH menghapus pembacaan data terakhir dan jangan ubah status EWS menjadi tidak terhubung
       setInterval(() => {
-        if (state.isGatewayLive) {
+        if (state.isGatewayLive && state.lastPacketTime > 0) {
           const elapsedSec = (Date.now() - state.lastPacketTime) / 1000;
+          // Gateway deep sleep 20s. Beri toleransi 90 detik sebelum gateway ditandai standby
           if (elapsedSec > state.staleTimeoutSec) {
-            // Lebih dari 35 detik tidak ada transmisi baru -> Gateway offline/dimatikan
             state.isGatewayLive = false;
-            setUiDisconnected("Gateway Terputus");
+            const pillCloud = getEl("pillCloud");
+            const textCloud = getEl("textCloudStatus");
+            if (pillCloud && textCloud) {
+              pillCloud.className = "pill-cloud offline";
+              textCloud.textContent = "STANDBY (DATA TERAKHIR)";
+            }
+            // Status EWS (AMAN/WASPADA/BAHAYA) dan seluruh kartu sensor TETAP MENAMPILKAN DATA TERAKHIR
           }
         }
-      }, 3000);
+      }, 4000);
 
     } catch (err) {
       console.warn("Firebase initialization notice:", err);
-      setUiDisconnected("Gagal Inisialisasi");
+      if (!state.hasReceivedData) {
+        setUiDisconnected("Gagal Inisialisasi");
+      }
     }
   }
 
@@ -852,7 +933,26 @@
     initAudio();
     initMap();
     initChart();
-    setUiSearching(); // Default awal: Sedang Mencari Gateway
+
+    // Muat data terakhir dari localStorage jika ada agar langsung tampil tanpa blank/--
+    let cachedData = null;
+    try {
+      const rawCache = localStorage.getItem("titen_last_ews_data");
+      if (rawCache) {
+        cachedData = JSON.parse(rawCache);
+      }
+    } catch (e) {
+      console.warn("Gagal membaca cache lokal:", e);
+    }
+
+    if (cachedData && typeof cachedData === "object") {
+      updateTelemetryUI(cachedData);
+      const textCloud = getEl("textCloudStatus");
+      if (textCloud) textCloud.textContent = "GATEWAY TERHUBUNG (DATA TERAKHIR)";
+    } else {
+      setUiSearching(); // Default awal hanya jika belum pernah ada data
+    }
+
     initFirebase();
   });
 
