@@ -21,7 +21,7 @@
     lastData: null,
     lastPacketTime: 0,
     lastPacketTimeStr: "",
-    staleTimeoutSec: 90, // Toleransi untuk siklus deep sleep 20s (tidak memutuskan status)
+    staleTimeoutSec: 60, // 1 menit (60 detik): tidak terhubung hanya muncul setelah 1 menit tanpa data baru
     history: {
       labels: [],
       suhu: [],
@@ -423,23 +423,11 @@
     }
   }
 
-  // 6. State Tampilan: TIDAK TERHUBUNG
+  // 6. State Tampilan: TIDAK TERHUBUNG (Hanya muncul jika tidak terhubung / tidak ada data baru selama 1 menit)
   function setUiDisconnected(reason) {
     state.isGatewayLive = false;
 
-    // JIKA SUDAH ADA BACAAN DATA TERAKHIR: JANGAN PERNAH MENGHAPUS NILAI SENSOR & STATUS EWS
-    // Pertahankan status dan angka telemetri dari data terakhir
-    if (state.hasReceivedData && state.lastData) {
-      const pillCloud = getEl("pillCloud");
-      const textCloud = getEl("textCloudStatus");
-      if (pillCloud && textCloud) {
-        pillCloud.className = "pill-cloud offline";
-        textCloud.textContent = "STANDBY (DATA TERAKHIR)";
-      }
-      return;
-    }
-
-    // HANYA JIKA BELUM PERNAH ADA DATA MASUK SAMA SEKALI
+    // Status Banner & Mode Daya beralih ke Tidak Terhubung
     const cardStatus = getEl("cardStatusBanner");
     const textStatus = getEl("textStatusEws");
     if (cardStatus && textStatus) {
@@ -458,7 +446,9 @@
     }
 
     setText("badgeModeDaya", "Tidak Terhubung");
-    setText("textPrediksiAi", reason ? `Gateway ESP32 belum dinyalakan atau sedang offline (${reason}).` : "Gateway ESP32 belum dinyalakan atau sedang offline.");
+    setText("textPrediksiAi", state.hasReceivedData 
+      ? "Gateway ESP32 tidak terhubung (tidak ada data baru selama > 1 menit). Menampilkan bacaan data terakhir."
+      : (reason ? `Gateway ESP32 belum dinyalakan atau sedang offline (${reason}).` : "Gateway ESP32 belum dinyalakan atau sedang offline."));
 
     const pillCloud = getEl("pillCloud");
     const textCloud = getEl("textCloudStatus");
@@ -467,24 +457,26 @@
       textCloud.textContent = "TIDAK TERHUBUNG";
     }
 
-    // Sensor status offline
-    setText("valSuhu", "--.-");
-    setText("valUdara", "--.-");
-    setText("valTanah", "--");
-    setText("valMiring", "--");
-    setText("valBateraiVolt", "-.--");
-    setText("subBaterai", "Gateway Terputus");
-    setText("valRssi", "--");
-    setText("subRssi", "LoRa Terputus");
+    // PAKAI DATA TERAKHIR: Hanya jika BELUM PERNAH ada data sama sekali dari awal, tampilkan placeholder --.-
+    if (!state.hasReceivedData) {
+      setText("valSuhu", "--.-");
+      setText("valUdara", "--.-");
+      setText("valTanah", "--");
+      setText("valMiring", "--");
+      setText("valBateraiVolt", "-.--");
+      setText("subBaterai", "Gateway Terputus");
+      setText("valRssi", "--");
+      setText("subRssi", "LoRa Terputus");
 
-    const tags = ["tagSuhu", "tagUdara", "tagTanah", "tagMiring", "tagBaterai", "tagRssi"];
-    tags.forEach(id => {
-      const el = getEl(id);
-      if (el) {
-        el.textContent = "Tidak Terhubung";
-        el.className = "sensor-card-status status-offline";
-      }
-    });
+      const tags = ["tagSuhu", "tagUdara", "tagTanah", "tagMiring", "tagBaterai", "tagRssi"];
+      tags.forEach(id => {
+        const el = getEl(id);
+        if (el) {
+          el.textContent = "Tidak Terhubung";
+          el.className = "sensor-card-status status-offline";
+        }
+      });
+    }
 
     const cards = ["cardSuhu", "cardUdara", "cardTanah", "cardMiring", "cardBaterai", "cardRssi"];
     cards.forEach(id => {
@@ -900,24 +892,17 @@
         }
       });
 
-      // Watchdog Rutin: Toleransi siklus deep sleep (misal 20 detik)
-      // JANGAN PERNAH menghapus pembacaan data terakhir dan jangan ubah status EWS menjadi tidak terhubung
+      // Watchdog Rutin: Cek status koneksi & data baru (toleransi 1 menit / 60 detik)
+      // "tidak terhubung buat saja ketika tidak terhubung 1 menit/data baru selama 1 menit"
       setInterval(() => {
         if (state.isGatewayLive && state.lastPacketTime > 0) {
           const elapsedSec = (Date.now() - state.lastPacketTime) / 1000;
-          // Gateway deep sleep 20s. Beri toleransi 90 detik sebelum gateway ditandai standby
-          if (elapsedSec > state.staleTimeoutSec) {
-            state.isGatewayLive = false;
-            const pillCloud = getEl("pillCloud");
-            const textCloud = getEl("textCloudStatus");
-            if (pillCloud && textCloud) {
-              pillCloud.className = "pill-cloud offline";
-              textCloud.textContent = "STANDBY (DATA TERAKHIR)";
-            }
-            // Status EWS (AMAN/WASPADA/BAHAYA) dan seluruh kartu sensor TETAP MENAMPILKAN DATA TERAKHIR
+          // Jika sudah mencapai 1 menit (60 detik) tidak ada data baru, ubah status menjadi Tidak Terhubung
+          if (elapsedSec >= state.staleTimeoutSec) {
+            setUiDisconnected("Tidak ada data baru selama 1 menit");
           }
         }
-      }, 4000);
+      }, 1000);
 
     } catch (err) {
       console.warn("Firebase initialization notice:", err);
